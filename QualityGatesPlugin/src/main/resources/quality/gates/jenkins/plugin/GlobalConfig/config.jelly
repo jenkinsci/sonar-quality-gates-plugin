@@ -1,0 +1,42 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+    xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <style type="text/css">
+            .my-style .yui-button{
+                float: right;
+            }
+    </style>
+
+    <f:section title="Quality Gates" >
+                <f:entry field="listOfGlobalConfigData" >
+                    <f:repeatable name="listOfGlobalConfigData" var="globalConfigData" items="${instance.listOfGlobalConfigData}" add="${%Add Sonar instance}">
+                        <table class="my-style">
+                            <tr>
+                                <td>
+                                    <f:entry field="globalConfigData" >
+                                          <f:entry field="name" title="Name" description="Make sure the name is unique value" >
+                                                <f:textbox name="name" value="${globalConfigData.name}" />
+                                          </f:entry>
+                                          <f:entry field="sonarUrl" title="SonarQube Server URL" description="Default value is 'http://localhost:9000'" >
+                                                <f:textbox name="url" value="${globalConfigData.sonarUrl}" />
+                                          </f:entry>
+                                           <f:entry field="username" title="SonarQube account login" description="Default value is 'admin'" >
+                                                 <f:textbox name="account" value="${globalConfigData.username}" />
+                                           </f:entry>
+                                         <f:entry field="password" title="SonarQube account password" description="Default value is 'admin'" >
+                                               <f:password name="password" value="${globalConfigData.password}" />
+                                         </f:entry>
+                                    </f:entry>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <f:repeatableDeleteButton value="${%Delete}" />
+                                </td>
+                            </tr>
+                         </table>
+                    </f:repeatable>
+                </f:entry>
+        </f:section>
+</j:jelly>

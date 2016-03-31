@@ -1,0 +1,52 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+    xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <style type="text/css">
+        .errorUL
+        {
+            color:#F5B041;
+            font-weight:bold;
+        }
+    </style>
+
+    <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() == 0}">
+        <f:section>
+            <f:entry>
+              <ul class="errorUL">
+                    <li>There are no Quality Gates instances configured.</li>
+                    <li>Please configure a Quality Gate instance in the <a href="/configure">system configuration.</a></li>
+                    <li>By default http://localhost:9000, Username: admin, Password: admin will be used.</li>
+              </ul>
+            </f:entry>
+
+            <f:entry field="jobConfigData" description="Enter your project key.">
+                <f:entry title="Project Key" field="projectKey">
+                    <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+                </f:entry>
+            </f:entry>
+        </f:section>
+    </j:if>
+    <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() == 1}">
+                <f:section>
+                     <f:entry field="jobConfigData" description="Enter your project key.">
+                          <f:entry title="Project Key" field="projectKey">
+                                <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+                          </f:entry>
+                     </f:entry>
+                </f:section>
+    </j:if>
+    <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() >= 2}">
+        <f:section>
+             <f:entry field="listOfGlobalConfigData" title="Sonar instance 'Name'" description="Choose sonar instance">
+                 <f:select name="sonarInstancesNames" value="${instance.jobConfigData.globalConfigDataForSonarInstance.name}"/>
+             </f:entry>
+
+             <f:entry field="jobConfigData" description="Enter your project key.">
+                  <f:entry title="Project Key" field="projectKey">
+                        <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+                  </f:entry>
+             </f:entry>
+        </f:section>
+    </j:if>
+</j:jelly>
