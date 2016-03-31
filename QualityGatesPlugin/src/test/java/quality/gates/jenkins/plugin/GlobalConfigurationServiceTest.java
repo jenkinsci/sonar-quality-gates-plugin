@@ -65,20 +65,7 @@ public class GlobalConfigurationServiceTest {
         JSONObject jsonObject = null;
         assertFalse(globalConfigurationService.isNotNullJson(jsonObject));
     }
-//
-//    @Test
-//    public void testIsNotNullJsonWhenJsonIsNull2(){
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("listOfGlobalConfigData", null);
-//        assertTrue(globalConfigurationService.isNotNullJson(jsonObject));
-//    }
-//
-//    @Test
-//    public void testIsNotNullJsonWhenJsonIsNull3(){
-//        JSONObject jsonObject = new JSONObject();
-//        assertTrue(globalConfigurationService.isNotNullJson(jsonObject));
-//    }
-    //----------------------------------------------------
+
     @Test
     public void testIsNotEmptyOrNullWhenNotNull(){
         JSON json = (JSON) new JSONTokener(jsonStr).nextValue();
@@ -90,14 +77,6 @@ public class GlobalConfigurationServiceTest {
         JSON json = null;
         assertFalse(globalConfigurationService.isNotEmptyOrNull(json));
     }
-
-//    @Test
-//    public void testIsNotEmptyOrNullWhenEmpty(){
-//        JSON json = (JSON) new JSONTokener("").nextValue();
-//        assertFalse(globalConfigurationService.isNotEmptyOrNull(json));
-//    }
-
-    //--------------------------------------------------------------------
 
     @Test
     public void testGetGlobalConfigsArrayWhenObject(){
@@ -157,8 +136,6 @@ public class GlobalConfigurationServiceTest {
     @Test
     public void testInitGlobalDataConfig(){
         JSONArray array = JSONArray.fromObject("[{\"name\":\"Sonar1\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"},{\"name\":\"Sonar2\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]");
-//        globalDataConfigs = JSONSerializer.toJSON(array);
-//        JSONArray jsonArray =  JSONArray.fromObject(array);
         doReturn(JSONArray.fromObject(array)).when(spyGlobalConfigurationService).getGlobalConfigsArray(any(JSON.class));
         doNothing().when(spyGlobalConfigurationService).addGlobalConfigDataForSonarInstance(any(JSONObject.class));
         spyGlobalConfigurationService.initGlobalDataConfig(any(JSON.class));
