@@ -1,16 +1,16 @@
 package quality.gates.sonar.api;
 
-        import org.json.JSONArray;
-        import org.json.JSONException;
-        import org.json.JSONObject;
-        import org.junit.Before;
-        import org.junit.Test;
-        import quality.gates.jenkins.plugin.QGException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import quality.gates.jenkins.plugin.QGException;
 
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-        import static org.junit.Assert.*;
+import static org.junit.Assert.*;
 
 public class QualityGateResponseParserTest {
 
@@ -164,12 +164,12 @@ public class QualityGateResponseParserTest {
     }
 
     @Test
-    public void testGetJSONObjectFromArrayWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException{
+    public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException{
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString("[]");
         JSONObject expectedObject = new JSONObject();
         expectedObject.put("dt", "2000-01-01T12:00:00+0100");
         expectedObject.put("n", "Green");
-        JSONObject actual = qualityGateResponseParser.getJSONObjectFromArray(array, 0);
+        JSONObject actual = qualityGateResponseParser.createObjectWithStatusGreen(array);
         assertEquals(expectedObject.toString(), actual.toString());
     }
 
