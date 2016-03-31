@@ -28,9 +28,14 @@ public class QualityGateResponseParser {
     protected JSONObject getLatestEventResult(JSONArray jsonArray) throws QGException {
         List<JSONObject> jsonObjects = new ArrayList<>();
         JSONObject returnObject;
+        int jsonArrayLength = jsonArray.length();
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            jsonObjects.add(getJSONObjectFromArray(jsonArray, i));
+        if(jsonArrayLength == 0){
+            jsonObjects.add(createObjectWithStatusGreen(jsonArray));
+        }else {
+            for (int i = 0; i < jsonArrayLength; i++) {
+                jsonObjects.add(getJSONObjectFromArray(jsonArray, i));
+            }
         }
 
         String latestDate = getValueForJSONKey(jsonObjects, 0, "dt");
@@ -55,6 +60,17 @@ public class QualityGateResponseParser {
             return dateFormat.parse(date);
         } catch (ParseException e) {
             throw new QGException("Wrong date format", e);
+        }
+    }
+
+    protected JSONObject createObjectWithStatusGreen(JSONArray array) {
+        try {
+            JSONObject returnObject = new JSONObject();
+            returnObject.put("dt", "2000-01-01T12:00:00+0100");
+            returnObject.put("n", "Green");
+            return returnObject;
+        } catch (JSONException e) {
+            throw new QGException(e);
         }
     }
 

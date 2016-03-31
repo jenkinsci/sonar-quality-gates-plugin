@@ -27,7 +27,13 @@ public class SonarHttpRequesterIT {
     }
 
     @Test
-    public void testPerformGetOldSchool() throws Exception {
+    public void testPerformGetAPIInfo() throws Exception {
+        int status = 200;
+        String result = getResponse(status);
+        assertTrue(result.equals("OK"));
+    }
+
+    private String getResponse(int status) {
         String projectKey = "com.opensource:quality-gates";
 
         stubFor(get(urlPathEqualTo("/api/events"))
@@ -35,11 +41,10 @@ public class SonarHttpRequesterIT {
                 .withQueryParam("format", equalTo("json"))
                 .withQueryParam("categories", equalTo("Alert"))
                 .willReturn(aResponse()
-                        .withStatus(200).withBody("OK")));
+                        .withStatus(status).withBody("OK")));
 
         JobConfigData jobConfigData = new JobConfigData();
         jobConfigData.setProjectKey(projectKey);
-        String result = sonarHttpRequester.getAPIInfo(jobConfigData, globalConfigDataForSonarInstance);
-        assertTrue(result.equals("OK"));
+        return sonarHttpRequester.getAPIInfo(jobConfigData, globalConfigDataForSonarInstance);
     }
 }
