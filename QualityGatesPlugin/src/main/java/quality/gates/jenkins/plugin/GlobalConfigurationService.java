@@ -15,33 +15,21 @@ public class GlobalConfigurationService {
 
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigInstances;
 
-    public GlobalConfigurationService() {
-        this.listOfGlobalConfigInstances = new ArrayList<>();
+    public void setListOfGlobalConfigInstances(List<GlobalConfigDataForSonarInstance> listOfGlobalConfigInstances) {
+        this.listOfGlobalConfigInstances = listOfGlobalConfigInstances;
     }
 
     protected List<GlobalConfigDataForSonarInstance> instantiateGlobalConfigData(JSONObject json) {
         LOGGER.info(String.format("JSON in the GlobalConfig: %s", json));
+        listOfGlobalConfigInstances = new ArrayList<>();
 
-        if (isNotNullJson(json)) {
-            setGlobalDataConfigWhenNotNull(json);
-            LOGGER.info(String.format("JSON in the GlobalConfig after: %s", json));
-        }
-        return listOfGlobalConfigInstances;
-    }
-
-    protected boolean isNotNullJson(JSONObject json) {
-        return json != null && !json.isNullObject();
-    }
-
-    protected boolean isNotEmptyOrNull(JSON globalDataConfigs) {
-        return globalDataConfigs != null && !globalDataConfigs.isEmpty();
-    }
-
-    protected void setGlobalDataConfigWhenNotNull(JSONObject json) {
         JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
-        if (isNotEmptyOrNull(globalDataConfigs)) {
-            initGlobalDataConfig(globalDataConfigs);
+        if(globalDataConfigs == null){
+            globalDataConfigs = new JSONArray();
         }
+        initGlobalDataConfig(globalDataConfigs);
+        LOGGER.info(String.format("JSON in the GlobalConfig after: %s", json));
+        return listOfGlobalConfigInstances;
     }
 
     protected void initGlobalDataConfig(JSON globalDataConfigs) {
@@ -73,10 +61,18 @@ public class GlobalConfigurationService {
         if (!"".equals(name)) {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name,
                     globalConfigData.optString("url"), globalConfigData.optString("account"), globalConfigData.optString("password"));
-            if (!listOfGlobalConfigInstances.contains(globalConfigDataForSonarInstance)) {
+            if(!containsGlobalConfigWithName(name)) {
                 listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
             }
         }
+    }
+
+    protected boolean containsGlobalConfigWithName(String name) {
+        for (GlobalConfigDataForSonarInstance globalConfigDataInstance:listOfGlobalConfigInstances) {
+            if(globalConfigDataInstance.getName().equals(name))
+                return true;
+        }
+        return false;
     }
 
 }
