@@ -126,6 +126,12 @@
         </plugins>
     </build>
 
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/quality-gates-plugin</url>
+    </scm>
+
     <developers>
         <developer>
             <id>ivanash</id>
