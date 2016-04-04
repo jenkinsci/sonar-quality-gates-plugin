@@ -5,11 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import quality.gates.jenkins.plugin.QGException;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class QualityGateResponseParser {
@@ -31,21 +27,19 @@ public class QualityGateResponseParser {
         int jsonArrayLength = jsonArray.length();
 
         if(jsonArrayLength == 0){
-            jsonObjects.add(createObjectWithStatusGreen(jsonArray));
+            jsonObjects.add(createObjectWithStatusGreen());
         }else {
             for (int i = 0; i < jsonArrayLength; i++) {
                 jsonObjects.add(getJSONObjectFromArray(jsonArray, i));
             }
         }
 
-        String latestDate = getValueForJSONKey(jsonObjects, 0, "dt");
+        String mostRecentAlertID = getValueForJSONKey(jsonObjects, 0, "id");
         returnObject = jsonObjects.get(0);
 
-        Date latestDateParsed = parseDate(latestDate);
         for (int i = 0; i < jsonObjects.size(); i++) {
-            String dt = getValueForJSONKey(jsonObjects, i, "dt");
-            Date parsedDateString = parseDate(dt);
-            if (latestDateParsed.before(parsedDateString)) {
+            String alertId = getValueForJSONKey(jsonObjects, i, "id");
+            if (Integer.parseInt(alertId) > Integer.parseInt(mostRecentAlertID)) {
                 returnObject = jsonObjects.get(i);
             }
         }
@@ -53,19 +47,10 @@ public class QualityGateResponseParser {
         return returnObject;
     }
 
-    protected Date parseDate(String date) throws QGException {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        date = date.replaceAll("\\+[0-9]{4}", ".000-0100");
-        try {
-            return dateFormat.parse(date);
-        } catch (ParseException e) {
-            throw new QGException("Wrong date format", e);
-        }
-    }
-
-    protected JSONObject createObjectWithStatusGreen(JSONArray array) {
+    protected JSONObject createObjectWithStatusGreen() {
         try {
             JSONObject returnObject = new JSONObject();
+            returnObject.put("id", "1");
             returnObject.put("dt", "2000-01-01T12:00:00+0100");
             returnObject.put("n", "Green");
             return returnObject;
@@ -76,12 +61,6 @@ public class QualityGateResponseParser {
 
     protected JSONObject getJSONObjectFromArray(JSONArray array, int index) throws QGException {
         try {
-            if (array.length() == 0) {
-                JSONObject returnObject = new JSONObject();
-                returnObject.put("dt", "2000-01-01T12:00:00+0100");
-                returnObject.put("n", "Green");
-                return returnObject;
-            } else
                 return array.getJSONObject(index);
         } catch (JSONException e) {
             throw new QGException("The request returned an empty array", e);
