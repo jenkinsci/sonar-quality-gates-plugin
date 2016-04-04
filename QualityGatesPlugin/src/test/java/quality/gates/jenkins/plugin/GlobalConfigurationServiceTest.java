@@ -4,7 +4,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
-import net.sf.json.util.JSONTokener;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,7 +23,6 @@ public class GlobalConfigurationServiceTest {
     @Mock
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
     private JSONObject jsonObjectNotNull;
-    private String jsonStr;
     private JSON globalDataConfigs;
     private JSONArray jsonArray;
 
@@ -39,43 +37,6 @@ public class GlobalConfigurationServiceTest {
         jsonObjectNotNull.put("url", "http://localhost:9000");
         jsonObjectNotNull.put("account", "admin");
         jsonObjectNotNull.put("password", "admin");
-        jsonStr = "{\n" +
-                  "listOfGlobalConfigData:"+
-                        "[{\n" +
-                        "name: \"Sonar1\",\n" +
-                        "url: \"\",\n" +
-                        "account:\"\",\n" +
-                        "password:\"\"},\n" +
-                        "{\n" +
-                        "name:\"Sonar2\",\n" +
-                        "url:\"\",\n" +
-                        "account:\"\",\n" +
-                        "password:\"\"" +
-                        "}]}";
-
-    }
-
-    @Test
-    public void testIsNotNullJsonWhenJsonIsNotNull(){
-        assertTrue(globalConfigurationService.isNotNullJson(jsonObjectNotNull));
-    }
-
-    @Test
-    public void testIsNotNullJsonWhenJsonIsNull(){
-        JSONObject jsonObject = null;
-        assertFalse(globalConfigurationService.isNotNullJson(jsonObject));
-    }
-
-    @Test
-    public void testIsNotEmptyOrNullWhenNotNull(){
-        JSON json = (JSON) new JSONTokener(jsonStr).nextValue();
-        assertTrue(globalConfigurationService.isNotEmptyOrNull(json));
-    }
-
-    @Test
-    public void testIsNotEmptyOrNullWhenNull(){
-        JSON json = null;
-        assertFalse(globalConfigurationService.isNotEmptyOrNull(json));
     }
 
     @Test
@@ -105,32 +66,39 @@ public class GlobalConfigurationServiceTest {
 
     @Test
     public void testInstantiateGlobalConfigData(){
-        doNothing().when(spyGlobalConfigurationService).setGlobalDataConfigWhenNotNull(any(JSONObject.class));
-        assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(JSONObject.fromObject(jsonStr)));
-    }
-
-    @Test
-    public void testInstantiateGlobalConfigData2(){
-        doNothing().when(spyGlobalConfigurationService).setGlobalDataConfigWhenNotNull(null);
-        assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(null));
-    }
-
-    @Test
-    public void testSetGlobalDataConfigWhenNotNull(){
         JSONObject json = new JSONObject();
         json.put("listOfGlobalConfigData", JSONArray.fromObject("[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]"));
         JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
         doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(globalDataConfigs);
-        spyGlobalConfigurationService.setGlobalDataConfigWhenNotNull(json);
-        verify(spyGlobalConfigurationService, times(1)).initGlobalDataConfig(globalDataConfigs);
+        assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(json));
     }
 
     @Test
-    public void testSetGlobalDataConfigWhenNotNullWhenNull(){
+    public void testInstantiateGlobalConfigDataWhenJsonIsNull(){
         JSONObject json = new JSONObject();
-        doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(null);
-        spyGlobalConfigurationService.setGlobalDataConfigWhenNotNull(json);
-        verify(spyGlobalConfigurationService, times(0)).initGlobalDataConfig(null);
+        JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
+        doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(globalDataConfigs);
+        assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(json));
+    }
+
+    @Test
+    public void testContainsGlobalConfigWithNameTrue(){
+        String name = "Ime";
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        globalConfigDataForSonarInstance.setName("Ime");
+        listOfGlobalConfigData.add(globalConfigDataForSonarInstance);
+        spyGlobalConfigurationService.setListOfGlobalConfigInstances(listOfGlobalConfigData);
+        assertTrue(spyGlobalConfigurationService.containsGlobalConfigWithName(name));
+    }
+
+    @Test
+    public void testContainsGlobalConfigWithNameFalse(){
+        String name = "Ime";
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        globalConfigDataForSonarInstance.setName("Ime3");
+        listOfGlobalConfigData.add(globalConfigDataForSonarInstance);
+        spyGlobalConfigurationService.setListOfGlobalConfigInstances(listOfGlobalConfigData);
+        assertFalse(spyGlobalConfigurationService.containsGlobalConfigWithName(name));
     }
 
     @Test
@@ -141,5 +109,4 @@ public class GlobalConfigurationServiceTest {
         spyGlobalConfigurationService.initGlobalDataConfig(any(JSON.class));
         verify(spyGlobalConfigurationService, times(1)).initGlobalDataConfig(any(JSON.class));
     }
-
 }
