@@ -90,18 +90,6 @@ public class QualityGateResponseParserTest {
         assertEquals(new QualityGatesStatus("ERROR"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArrayString));
     }
 
-    @Test
-    public void testParseData() {
-        String expected = "Thu Mar 24 18:28:40 CET 2016";
-        String str = "2016-03-24T16:28:40+0100";
-        assertEquals(expected, qualityGateResponseParser.parseDate(str).toString());
-    }
-
-    @Test(expected = QGException.class)
-    public void testParseDataThrowsException(){
-        String str = "2016-03-24T8:40-0100";
-        qualityGateResponseParser.parseDate(str);
-    }
 
     @Test
     public void testGetLatestEventResultWhenFirstObjectIsntWithLatestDate() throws JSONException {
@@ -167,9 +155,10 @@ public class QualityGateResponseParserTest {
     public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException{
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString("[]");
         JSONObject expectedObject = new JSONObject();
+        expectedObject.put("id", "1");
         expectedObject.put("dt", "2000-01-01T12:00:00+0100");
         expectedObject.put("n", "Green");
-        JSONObject actual = qualityGateResponseParser.createObjectWithStatusGreen(array);
+        JSONObject actual = qualityGateResponseParser.createObjectWithStatusGreen();
         assertEquals(expectedObject.toString(), actual.toString());
     }
 
