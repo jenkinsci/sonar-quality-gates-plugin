@@ -1,7 +1,5 @@
 package quality.gates.jenkins.plugin;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import quality.gates.sonar.api.QualityGatesProvider;
 import org.json.JSONException;
 

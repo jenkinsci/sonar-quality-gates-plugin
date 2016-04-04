@@ -6,12 +6,9 @@ import hudson.model.BuildListener;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class QGBuilder extends Builder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(QGBuilder.class);
 
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
