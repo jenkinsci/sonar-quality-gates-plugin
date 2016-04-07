@@ -110,7 +110,6 @@ public class QualityGateResponseParserTest {
 
     @Test
     public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException{
-        JSONArray array = qualityGateResponseParser.createJSONArrayFromString("[]");
         JSONObject expectedObject = new JSONObject();
         expectedObject.put("id", "1");
         expectedObject.put(DT, "2000-01-01T12:00:00+0100");
