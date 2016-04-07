@@ -24,7 +24,7 @@
                                            <f:entry field="username" title="SonarQube account login" description="Default value is 'admin'" >
                                                  <f:textbox name="account" value="${globalConfigData.username}" />
                                            </f:entry>
-                                         <f:entry field="pass" title="SonarQube account pass" description="Default value is 'admin'" >
+                                         <f:entry field="pass" title="SonarQube account password" description="Default value is 'admin'" >
                                                <f:password name="pass" value="${globalConfigData.pass}" />
                                          </f:entry>
                                     </f:entry>
