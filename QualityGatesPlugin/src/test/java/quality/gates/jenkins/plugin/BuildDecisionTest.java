@@ -36,21 +36,21 @@ public class BuildDecisionTest {
     }
 
     @Test
-    public void testGetStatusTrue() throws Exception {
+    public void testGetStatusTrue() throws JSONException {
         doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class));
         doReturn(true).when(qualityGatesStatus).hasStatusGreen();
         assertTrue(buildDecision.getStatus(jobConfigData));
     }
 
     @Test
-    public void testGetStatusFalse() throws Exception {
+    public void testGetStatusFalse() throws JSONException {
         doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class));
         doReturn(false).when(qualityGatesStatus).hasStatusGreen();
         assertFalse(buildDecision.getStatus(jobConfigData));
     }
 
     @Test(expected = QGException.class)
-    public void testGetStatusThrowJSONException() throws Exception {
+    public void testGetStatusThrowJSONException() throws JSONException {
         JSONException jsonException = Mockito.mock(JSONException.class);
         when(qualityGatesProvider.getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class))).thenThrow(jsonException);
         buildDecision.getStatus(jobConfigData);

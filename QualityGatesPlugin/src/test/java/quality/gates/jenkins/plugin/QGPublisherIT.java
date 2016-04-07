@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 
 public class QGPublisherIT {
 
+    public static final String TEST_NAME = "TestName";
     private QGPublisher publisher;
 
     private QGBuilder builder;
@@ -41,7 +42,7 @@ public class QGPublisherIT {
     public JenkinsRule jenkinsRule = new JenkinsRule();
 
     @Before
-    public void setUp() throws IOException, ExecutionException, InterruptedException {
+    public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
         jobConfigData = new JobConfigData();
         jobExecutionService = new JobExecutionService();
@@ -56,8 +57,8 @@ public class QGPublisherIT {
     }
 
     @Test
-    public void testPrebuildShouldFailBuildNoGlobalConfigWithSameName() throws Exception{
-        create2InstancesOfGlobalConfigDataAndSetTheirNames("TestName","DifferentName");
+    public void testPrebuildShouldFailBuildNoGlobalConfigWithSameName() throws Exception {
+        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME,"DifferentName");
         doReturn(true).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
@@ -66,7 +67,7 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldFailBecauseOfPreviousSteps() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames("TestName", "TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
         doReturn(false).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
@@ -75,7 +76,7 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldSucceedWithNoWarning() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames("TestName", "TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
         doReturn(true).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
         Run lastRun = freeStyleProject._getRuns().newestValue();
@@ -94,7 +95,7 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldFail() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames("TestName","TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
         doReturn(true).doReturn(false).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
@@ -103,7 +104,7 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldCatchQGException() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames("TestName","TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
         QGException exception = new QGException("TestException");
         doReturn(true).doThrow(exception).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));

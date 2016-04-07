@@ -14,6 +14,11 @@ import static org.junit.Assert.*;
 
 public class QualityGateResponseParserTest {
 
+    public static final String COM_OPENSOURCE_QUALITY_GATES = "com.opensource:quality-gates";
+    public static final String GREEN_WAS_RED = "Green (was Red)";
+    public static final String ALERT = "Alert";
+    public static final String T12_01_31_0100 = "2016-03-25T12:01:31+0100";
+    public static final String DT = "dt";
     private QualityGateResponseParser qualityGateResponseParser;
 
     private String jsonArrayString;
@@ -21,37 +26,13 @@ public class QualityGateResponseParserTest {
     @Before
     public void init() {
         qualityGateResponseParser = new QualityGateResponseParser();
-        jsonArrayString = "[\n" +
-                "{\n" +
-                "id: \"455\",\n" +
-                "rk: \"com.opensource:quality-gates\",\n" +
-                "n: \"Green (was Red)\",\n" +
-                "c: \"Alert\",\n" +
-                "dt: \"2016-03-25T12:01:31+0100\",\n" +
-                "ds: \"\"\n" +
-                "},\n" +
-                "{\n" +
-                "id: \"430\",\n" +
-                "rk: \"com.opensource:quality-gates\",\n" +
-                "n: \"Red (was Green)\",\n" +
-                "c: \"Alert\",\n" +
-                "dt: \"2016-03-24T16:28:40+0100\",\n" +
-                "ds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n" +
-                "}]";
+        jsonArrayString = "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
     }
 
 
     @Test
     public void testGetQualityGateResultFromJSONWithOneObjectShouldReturnStatusError() {
-        String jsonArray = "[\n" +
-                "{\n" +
-                "id: \"430\",\n" +
-                "rk: \"com.opensource:quality-gates\",\n" +
-                "n: \"Red (was Green)\",\n" +
-                "c: \"Alert\",\n" +
-                "dt: \"2016-03-24T16:28:40+0100\",\n" +
-                "ds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n" +
-                "}]";
+        String jsonArray = "[\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
         assertEquals(new QualityGatesStatus("ERROR"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArray));
     }
 
@@ -62,31 +43,7 @@ public class QualityGateResponseParserTest {
 
     @Test
     public void testGetQualityGateResultFromJSONWithMultipleObjectsShouldReturnStatusError() {
-        jsonArrayString = "[\n" +
-                "{\n" +
-                "id: \"455\",\n" +
-                "rk: \"com.opensource:quality-gates\",\n" +
-                "n: \"Red (was Red)\",\n" +
-                "c: \"Alert\",\n" +
-                "dt: \"2016-03-26T12:01:31+0100\",\n" +
-                "ds: \"\"\n" +
-                "},\n" +
-                "{\n" +
-                "id: \"455\",\n" +
-                "rk: \"com.opensource:quality-gates\",\n" +
-                "n: \"Green (was Red)\",\n" +
-                "c: \"Alert\",\n" +
-                "dt: \"2016-03-25T12:01:31+0100\",\n" +
-                "ds: \"\"\n" +
-                "},\n" +
-                "{\n" +
-                "id: \"430\",\n" +
-                "rk: \"com.opensource:quality-gates\",\n" +
-                "n: \"Red (was Green)\",\n" +
-                "c: \"Alert\",\n" +
-                "dt: \"2016-03-24T16:28:40+0100\",\n" +
-                "ds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n" +
-                "}]";
+        jsonArrayString = "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-26T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
         assertEquals(new QualityGatesStatus("ERROR"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArrayString));
     }
 
@@ -96,17 +53,17 @@ public class QualityGateResponseParserTest {
         JSONArray array = new JSONArray();
         JSONObject firstJsonObject = new JSONObject();
         firstJsonObject.put("id", "455");
-        firstJsonObject.put("rk", "com.opensource:quality-gates");
-        firstJsonObject.put("n", "Green (was Red)");
-        firstJsonObject.put("c", "Alert");
-        firstJsonObject.put("dt", "2016-03-25T12:01:31+0100");
+        firstJsonObject.put("rk", COM_OPENSOURCE_QUALITY_GATES);
+        firstJsonObject.put("n", GREEN_WAS_RED);
+        firstJsonObject.put("c", ALERT);
+        firstJsonObject.put(DT, T12_01_31_0100);
         firstJsonObject.put("ds", "");
         JSONObject secondJsonObject = new JSONObject();
         secondJsonObject.put("id", "456");
-        secondJsonObject.put("rk", "com.opensource:quality-gates");
-        secondJsonObject.put("n", "Green (was Red)");
-        secondJsonObject.put("c", "Alert");
-        secondJsonObject.put("dt", "2016-03-26T12:01:31+0100");
+        secondJsonObject.put("rk", COM_OPENSOURCE_QUALITY_GATES);
+        secondJsonObject.put("n", GREEN_WAS_RED);
+        secondJsonObject.put("c", ALERT);
+        secondJsonObject.put(DT,  "2016-03-26T12:01:31+0100");
         secondJsonObject.put("ds", "");
         array.put(firstJsonObject);
         array.put(secondJsonObject);
@@ -137,10 +94,10 @@ public class QualityGateResponseParserTest {
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString(jsonArrayString);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", "455");
-        jsonObject.put("rk", "com.opensource:quality-gates");
-        jsonObject.put("n", "Green (was Red)");
-        jsonObject.put("c", "Alert");
-        jsonObject.put("dt", "2016-03-25T12:01:31+0100");
+        jsonObject.put("rk", COM_OPENSOURCE_QUALITY_GATES);
+        jsonObject.put("n", GREEN_WAS_RED);
+        jsonObject.put("c", ALERT);
+        jsonObject.put(DT, T12_01_31_0100);
         jsonObject.put("ds", "");
         assertEquals(jsonObject.toString(), qualityGateResponseParser.getJSONObjectFromArray(array, 0).toString());
     }
@@ -156,7 +113,7 @@ public class QualityGateResponseParserTest {
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString("[]");
         JSONObject expectedObject = new JSONObject();
         expectedObject.put("id", "1");
-        expectedObject.put("dt", "2000-01-01T12:00:00+0100");
+        expectedObject.put(DT, "2000-01-01T12:00:00+0100");
         expectedObject.put("n", "Green");
         JSONObject actual = qualityGateResponseParser.createObjectWithStatusGreen();
         assertEquals(expectedObject.toString(), actual.toString());
@@ -166,19 +123,19 @@ public class QualityGateResponseParserTest {
     public void testGetValueForJSONKeyGivenArrayAndIndex() throws JSONException {
         List<JSONObject> list = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dt", "2016-03-25T12:01:31+0100");
+        jsonObject.put(DT, T12_01_31_0100);
         list.add(jsonObject);
-        String expected = "2016-03-25T12:01:31+0100";
-        assertEquals(expected, qualityGateResponseParser.getValueForJSONKey(list, 0, "dt"));
+        String expected = T12_01_31_0100;
+        assertEquals(expected, qualityGateResponseParser.getValueForJSONKey(list, 0, DT));
     }
 
     @Test(expected = QGException.class)
     public void testGetValueForJSONKeyGivenArrayAndIndexNonExistentKey() throws JSONException {
         List<JSONObject> list = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dt", "2016-03-25T12:01:31+0100");
+        jsonObject.put(DT, T12_01_31_0100);
         list.add(jsonObject);
-        String expected = "2016-03-25T12:01:31+0100";
+        String expected = T12_01_31_0100;
         String actual = qualityGateResponseParser.getValueForJSONKey(list, 0, "dateeee");
         assertEquals(expected, actual);
     }
@@ -186,16 +143,16 @@ public class QualityGateResponseParserTest {
     @Test
     public void testGetValueForJSONKeyGivenJSONObject() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dt", "2016-03-25T12:01:31+0100");
-        String expected = "2016-03-25T12:01:31+0100";
-        assertEquals(expected, qualityGateResponseParser.getValueForJSONKey(jsonObject, "dt"));
+        jsonObject.put(DT, T12_01_31_0100);
+        String expected = T12_01_31_0100;
+        assertEquals(expected, qualityGateResponseParser.getValueForJSONKey(jsonObject, DT));
     }
 
     @Test(expected = QGException.class)
     public void testGetValueForJSONKeyNonExistentKeyGivenJSONObject() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dt", "2016-03-25T12:01:31+0100");
-        String expected = "2016-03-25T12:01:31+0100";
+        jsonObject.put(DT, T12_01_31_0100);
+        String expected = T12_01_31_0100;
         String actual = qualityGateResponseParser.getValueForJSONKey(jsonObject, "dateeee");
         assertEquals(expected, actual);
     }

@@ -45,7 +45,7 @@ public class QualityGatesProviderTest {
     }
 
     @Test
-    public void testGetAPIResultsForQualityGates() throws JSONException, QGException {
+    public void testGetAPIResultsForQualityGates() throws JSONException {
         QualityGatesStatus qualityGatesStatus = new QualityGatesStatus("OK");
         doReturn("").when(globalConfigDataForSonarInstance).getName();
         doReturn("").when(globalConfigDataForSonarInstance).getUsername();

@@ -27,10 +27,10 @@ public class SonarHttpRequesterIT {
     }
 
     @Test
-    public void testPerformGetAPIInfo() throws Exception {
+    public void testPerformGetAPIInfo() {
         int status = 200;
         String result = getResponse(status);
-        assertTrue(result.equals("OK"));
+        assertTrue("OK".equals(result));
     }
 
     private String getResponse(int status) {
