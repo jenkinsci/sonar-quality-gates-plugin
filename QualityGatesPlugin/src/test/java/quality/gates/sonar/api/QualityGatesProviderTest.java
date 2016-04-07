@@ -49,7 +49,7 @@ public class QualityGatesProviderTest {
         QualityGatesStatus qualityGatesStatus = new QualityGatesStatus("OK");
         doReturn("").when(globalConfigDataForSonarInstance).getName();
         doReturn("").when(globalConfigDataForSonarInstance).getUsername();
-        doReturn("").when(globalConfigDataForSonarInstance).getPassword();
+        doReturn("").when(globalConfigDataForSonarInstance).getPass();
         doReturn("").when(globalConfigDataForSonarInstance).getSonarUrl();
         doReturn("").when(jobConfigData).getProjectKey();
         doReturn("").when(sonarHttpRequester).getAPIInfo(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class));

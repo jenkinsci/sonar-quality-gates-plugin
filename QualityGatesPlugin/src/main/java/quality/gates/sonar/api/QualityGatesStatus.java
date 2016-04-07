@@ -21,8 +21,12 @@ public class QualityGatesStatus {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
         QualityGatesStatus that = (QualityGatesStatus) o;
         return status != null ? status.equals(that.status) : that.status == null;
     }
