@@ -22,4 +22,4 @@ SonarQualityGatesJenkinsPlugin/SonarQualityGatesJenkinsPlugin.iml
 .idea/sonar-quality-gates-jenkins-plugin.iml
 .idea/vcs.xml
 .idea/workspace.xml
-QualityGatesPlugin/.sonar/report-task.txt
+/.sonar

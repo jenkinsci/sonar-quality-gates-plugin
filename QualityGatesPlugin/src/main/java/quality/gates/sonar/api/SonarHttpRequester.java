@@ -50,7 +50,7 @@ public class SonarHttpRequester {
 
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
         try {
-            CloseableHttpResponse response = client.execute(request);
+            CloseableHttpResponse response = client.execute(request, context);
 
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();

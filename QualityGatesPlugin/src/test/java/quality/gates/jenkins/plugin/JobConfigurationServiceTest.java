@@ -99,8 +99,7 @@ public class JobConfigurationServiceTest {
     @Test
     public void testNewInstanceSizeZero() {
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).getListOfGlobalConfigData();
-        int lessOrZero = 0;
-        doReturn(lessOrZero).when(globalConfigDataForSonarInstances).size();
+        doReturn(true).when(globalConfigDataForSonarInstances).isEmpty();
         JobConfigData returnedJobConfigData = jobConfigurationService.createJobConfigData(formData, globalConfig);
         assertEquals("", returnedJobConfigData.getGlobalConfigDataForSonarInstance().getName());
     }

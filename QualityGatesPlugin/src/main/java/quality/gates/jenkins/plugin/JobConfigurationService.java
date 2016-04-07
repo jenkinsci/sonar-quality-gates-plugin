@@ -26,7 +26,7 @@ public class JobConfigurationService {
         }
         firstInstanceJobConfigData.setProjectKey(projectKey);
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
-        if(globalConfig.getListOfGlobalConfigData().size() > 0) {
+        if(!globalConfig.getListOfGlobalConfigData().isEmpty()) {
             globalConfigDataForSonarInstance = hasFormDataKey(formData, globalConfig);
         }
         else
