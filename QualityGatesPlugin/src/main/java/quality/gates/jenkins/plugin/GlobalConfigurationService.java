@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GlobalConfigurationService {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(QGBuilderDescriptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QGBuilderDescriptor.class);
 
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigInstances;
 

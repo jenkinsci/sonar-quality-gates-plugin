@@ -32,12 +32,18 @@ public class JobConfigData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         JobConfigData that = (JobConfigData) o;
 
-        if (projectKey != null ? !projectKey.equals(that.projectKey) : that.projectKey != null) return false;
+        if (projectKey != null ? !projectKey.equals(that.projectKey) : that.projectKey != null) {
+            return false;
+        }
         return globalConfigDataForSonarInstance != null ? globalConfigDataForSonarInstance.equals(that.globalConfigDataForSonarInstance) : that.globalConfigDataForSonarInstance == null;
 
     }

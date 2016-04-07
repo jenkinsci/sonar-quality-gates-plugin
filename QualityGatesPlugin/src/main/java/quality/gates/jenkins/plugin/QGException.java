@@ -3,6 +3,7 @@ package quality.gates.jenkins.plugin;
 public class QGException extends RuntimeException {
 
     public QGException() {
+        //default
     }
 
     public QGException(String message) {

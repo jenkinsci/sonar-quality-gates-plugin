@@ -14,10 +14,6 @@ public class QGBuilder extends Builder {
     private BuildDecision buildDecision;
     private JobExecutionService jobExecutionService;
 
-    public JobConfigData getJobConfigData() {
-        return jobConfigData;
-    }
-
     @DataBoundConstructor
     public QGBuilder(JobConfigData jobConfigData) {
         this.jobConfigData = jobConfigData;
@@ -31,6 +27,10 @@ public class QGBuilder extends Builder {
         this.jobExecutionService = jobExecutionService;
     }
 
+    public JobConfigData getJobConfigData() {
+        return jobConfigData;
+    }
+
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
         QGBuilderDescriptor buildDescriptor;
@@ -38,7 +38,7 @@ public class QGBuilder extends Builder {
             buildDescriptor = jobExecutionService.getBuilderDescriptor();
             GlobalConfig globalConfig = buildDescriptor.getGlobalConfig();
             boolean hasGlobalConfigWithSameName = jobExecutionService.hasGlobalConfigDataWithSameName(jobConfigData, globalConfig);
-            if(!hasGlobalConfigWithSameName && globalConfig.getListOfGlobalConfigData().size() > 0) {
+            if(!hasGlobalConfigWithSameName && !globalConfig.getListOfGlobalConfigData().isEmpty()) {
                 listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getGlobalConfigDataForSonarInstance().getName());
                 return false;
             }
@@ -59,7 +59,7 @@ public class QGBuilder extends Builder {
         boolean buildPassed;
         try {
             buildPassed = buildDecision.getStatus(jobConfigData);
-            if(jobConfigData.getGlobalConfigDataForSonarInstance().getName().equals(""))
+            if("".equals(jobConfigData.getGlobalConfigDataForSonarInstance().getName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildPassed).toUpperCase());
             return buildPassed;
