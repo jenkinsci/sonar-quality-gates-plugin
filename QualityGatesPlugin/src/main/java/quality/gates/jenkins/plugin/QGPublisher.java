@@ -61,6 +61,11 @@ public class QGPublisher extends Recorder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace(listener.getLogger());
+        }
         Result result = build.getResult();
         if (Result.SUCCESS != result) {
             listener.getLogger().println("Previous steps failed the build.\nResult is: " + result);
