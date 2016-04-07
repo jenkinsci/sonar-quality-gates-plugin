@@ -72,7 +72,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test
-    public void testNewInstanceSizeGreaterThanZeroAndDoesNotContainKey() throws Exception {
+    public void testNewInstanceSizeGreaterThanZeroAndDoesNotContainKey() {
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).getListOfGlobalConfigData();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
@@ -84,7 +84,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test
-    public void testNewInstanceSizeGreaterThanZeroAndContainsKey() throws Exception {
+    public void testNewInstanceSizeGreaterThanZeroAndContainsKey() {
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).getListOfGlobalConfigData();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
@@ -97,8 +97,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test
-    public void testNewInstanceSizeZero() throws Exception
-    {
+    public void testNewInstanceSizeZero() {
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).getListOfGlobalConfigData();
         int lessOrZero = 0;
         doReturn(lessOrZero).when(globalConfigDataForSonarInstances).size();

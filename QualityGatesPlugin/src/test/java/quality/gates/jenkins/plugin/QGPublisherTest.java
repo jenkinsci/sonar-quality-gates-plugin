@@ -106,7 +106,7 @@ public class QGPublisherTest {
     }
 
     @Test
-    public void testPerformBuildResultFail() throws Exception {
+    public void testPerformBuildResultFail() {
         setBuildResult(Result.FAILURE);
         buildDecisionShouldBe(false);
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));

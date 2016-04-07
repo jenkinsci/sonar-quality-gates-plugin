@@ -1,5 +1,6 @@
 package quality.gates.jenkins.plugin;
 
+import hudson.model.Descriptor;
 import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testConfigure() throws Exception {
+    public void testConfigure() throws Descriptor.FormException {
         doNothing().when(spyGlobalConfig).save();
         doReturn(globalConfigDataForSonarInstances).when(globalConfigurationService).instantiateGlobalConfigData(any(JSONObject.class));
         assertTrue(spyGlobalConfig.configure(staplerRequest, jsonObject));

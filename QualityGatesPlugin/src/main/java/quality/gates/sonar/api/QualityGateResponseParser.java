@@ -61,7 +61,7 @@ public class QualityGateResponseParser {
 
     protected JSONObject getJSONObjectFromArray(JSONArray array, int index) throws QGException {
         try {
-                return array.getJSONObject(index);
+            return array.getJSONObject(index);
         } catch (JSONException e) {
             throw new QGException("The request returned an empty array", e);
         }

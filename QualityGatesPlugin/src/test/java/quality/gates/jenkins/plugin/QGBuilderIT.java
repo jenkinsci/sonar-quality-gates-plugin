@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 
 public class QGBuilderIT {
 
+    public static final String TEST_NAME = "TestName";
     private QGBuilder qgBuilder;
 
     private JobConfigData jobConfigData;
@@ -39,7 +40,7 @@ public class QGBuilderIT {
     public JenkinsRule jenkinsRule = new JenkinsRule();
 
     @Before
-    public void setUp() throws IOException, ExecutionException, InterruptedException {
+    public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
         jobConfigData = new JobConfigData();
         jobExecutionService = new JobExecutionService();
@@ -53,7 +54,7 @@ public class QGBuilderIT {
 
     @Test
     public void testPrebuildShouldFailBuildNoGlobalConfigWithSameName() throws Exception{
-        create2InstancesOfGlobalConfigDataAndSetTheirName("TestName","DifferentName");
+        create2InstancesOfGlobalConfigDataAndSetTheirName(TEST_NAME,"DifferentName");
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("'TestName' no longer exists.", lastRun);
@@ -61,7 +62,7 @@ public class QGBuilderIT {
 
     @Test
     public void testPerformShouldSucceedWithNoWarning() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirName("TestName", "TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirName(TEST_NAME, TEST_NAME);
         doReturn(true).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
         Run lastRun = freeStyleProject._getRuns().newestValue();
@@ -80,7 +81,7 @@ public class QGBuilderIT {
 
     @Test
     public void testPerformShouldFail() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirName("TestName","TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirName(TEST_NAME, TEST_NAME);
         doReturn(false).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
@@ -89,7 +90,7 @@ public class QGBuilderIT {
 
     @Test
     public void testPerformShouldCatchQGException() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirName("TestName","TestName");
+        create2InstancesOfGlobalConfigDataAndSetTheirName(TEST_NAME, TEST_NAME);
         QGException exception = new QGException("TestException");
         doThrow(exception).when(buildDecision).getStatus(jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));

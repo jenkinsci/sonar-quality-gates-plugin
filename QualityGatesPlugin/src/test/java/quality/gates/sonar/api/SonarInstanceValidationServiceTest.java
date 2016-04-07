@@ -8,6 +8,9 @@ import static org.junit.Assert.*;
 
 public class SonarInstanceValidationServiceTest {
 
+    public static final String HTTP_MY_URL_COM_9000 = "http://myUrl.com:9000";
+    public static final String ADMIN = "admin";
+    public static final String MY_PASS = "myPass";
     SonarInstanceValidationService sonarInstanceValidationService;
 
     @Before
@@ -23,20 +26,20 @@ public class SonarInstanceValidationServiceTest {
 
     @Test
     public void testValidateUrlNormalUrlShouldReturnGivenUrl(){
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://myUrl.com:9000", "", "");
-        assertEquals("http://myUrl.com:9000", sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("",  HTTP_MY_URL_COM_9000, "", "");
+        assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
     }
 
     @Test
     public void testValidateUrlNormalUrlWithSlashInTheEndShouldStripTheSlash(){
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://myUrl.com:9000/", "", "");
-        assertEquals("http://myUrl.com:9000", sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
     }
 
     @Test
     public void testValidateUsernameEmptyUsernameShouldReturnDefaultUsername(){
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", "");
-        assertEquals("admin", sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
+        assertEquals(ADMIN, sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
     }
 
     @Test
@@ -48,19 +51,19 @@ public class SonarInstanceValidationServiceTest {
     @Test
     public void testValidatePasswordEmptyUsernameShouldReturnDefaultPassword(){
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", "");
-        assertEquals("admin", sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
+        assertEquals(ADMIN, sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
     }
 
     @Test
     public void testValidatePasswordGivenUsernameShouldReturnGivenPassword(){
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", "myPass");
-        assertEquals("myPass", sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", MY_PASS);
+        assertEquals(MY_PASS, sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
     }
 
     @Test
     public void testValidateData(){
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://google.com", "", "");
-        assertEquals(new GlobalConfigDataForSonarInstance("", "http://google.com", "admin", "admin"), sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance));
+        assertEquals(new GlobalConfigDataForSonarInstance("", "http://google.com", ADMIN, ADMIN), sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance));
     }
 
 }

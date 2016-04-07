@@ -36,7 +36,7 @@ public class GlobalConfigurationServiceTest {
         jsonObjectNotNull.put("name", "Sonar");
         jsonObjectNotNull.put("url", "http://localhost:9000");
         jsonObjectNotNull.put("account", "admin");
-        jsonObjectNotNull.put("password", "admin");
+        jsonObjectNotNull.put("pass", "admin");
     }
 
     @Test
@@ -59,7 +59,7 @@ public class GlobalConfigurationServiceTest {
 
     @Test
     public void testCreateJsonArrayFromObject(){
-        String array = "[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]";
+        String array = "[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"pass\":\"admin\"}]";
         JSONArray jsonArray =  JSONArray.fromObject(array);
         assertEquals(jsonArray, globalConfigurationService.createJsonArrayFromObject(jsonObjectNotNull));
     }
