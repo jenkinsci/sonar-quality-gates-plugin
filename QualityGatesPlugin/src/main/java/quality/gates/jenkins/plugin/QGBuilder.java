@@ -51,6 +51,11 @@ public class QGBuilder extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace(listener.getLogger());
+        }
         boolean buildPassed;
         try {
             buildPassed = buildDecision.getStatus(jobConfigData);
