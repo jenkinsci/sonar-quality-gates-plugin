@@ -27,10 +27,10 @@ public class SonarInstanceValidationService {
 
     public String validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         String sonarPassword;
-        if(globalConfigDataForSonarInstance.getPassword().isEmpty())
-            sonarPassword = GlobalConfigDataForSonarInstance.DEFAULT_PASSWORD;
+        if(globalConfigDataForSonarInstance.getPass().isEmpty())
+            sonarPassword = GlobalConfigDataForSonarInstance.DEFAULT_PASS;
         else
-            sonarPassword = globalConfigDataForSonarInstance.getPassword();
+            sonarPassword = globalConfigDataForSonarInstance.getPass();
         return sonarPassword;
     }
 

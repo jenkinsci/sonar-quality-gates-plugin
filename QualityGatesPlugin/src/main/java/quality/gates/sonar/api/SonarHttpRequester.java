@@ -38,7 +38,7 @@ public class SonarHttpRequester {
         HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + "/sessions/login");
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("login", globalConfigDataForSonarInstance.getUsername()));
-        nvps.add(new BasicNameValuePair("password", globalConfigDataForSonarInstance.getPassword()));
+        nvps.add(new BasicNameValuePair("password", globalConfigDataForSonarInstance.getPass()));
         nvps.add(new BasicNameValuePair("remember_me", "1"));
         loginHttpPost.setEntity(createEntity(nvps));
         loginHttpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
