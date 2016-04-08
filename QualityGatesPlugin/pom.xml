@@ -35,10 +35,21 @@
 
     <groupId>com.opensource</groupId>
     <artifactId>quality-gates</artifactId>
-    <name>Quality Gates Plugin</name>
+    <name>Quality Gates Plugin Module</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
     <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
+	
+	<distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <licenses>
         <license>
@@ -137,8 +148,8 @@
     </build>
 
     <scm>
-        <connection>scm:git:https://github.com/jenkinsci/quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:https://github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
+        <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
     </scm>
 
