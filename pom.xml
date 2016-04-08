@@ -19,13 +19,13 @@
         </license>
     </licenses>
 	
-	<scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
+    <scm>
+        <connection>scm:git:https://github.com/jenkinsci/quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:https://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
     </scm>
 	
-	<developers>
+    <developers>
         <developer>
             <id>ivanash</id>
             <name>Ivana Shekerova</name>
