@@ -60,24 +60,22 @@ public class GlobalConfigurationServiceTest {
     @Test
     public void testCreateJsonArrayFromObject(){
         String array = "[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"pass\":\"admin\"}]";
-        JSONArray jsonArray =  JSONArray.fromObject(array);
-        assertEquals(jsonArray, globalConfigurationService.createJsonArrayFromObject(jsonObjectNotNull));
+        assertEquals(JSONArray.fromObject(array), globalConfigurationService.createJsonArrayFromObject(jsonObjectNotNull));
     }
 
     @Test
     public void testInstantiateGlobalConfigData(){
         JSONObject json = new JSONObject();
         json.put("listOfGlobalConfigData", JSONArray.fromObject("[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]"));
-        JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
-        doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(globalDataConfigs);
+        JSON globalDataConfig = (JSON) json.opt("listOfGlobalConfigData");
+        doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(globalDataConfig);
         assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(json));
     }
 
     @Test
     public void testInstantiateGlobalConfigDataWhenJsonIsNull(){
         JSONObject json = new JSONObject();
-        JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
-        doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(globalDataConfigs);
+        doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(any(JSON.class));
         assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(json));
     }
 
