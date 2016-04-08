@@ -57,7 +57,7 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     @Override
-    public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws FormException, QGException {
+    public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws QGException {
         JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, globalConfig);
         return new QGBuilder(firstInstanceJobConfigData);
     }

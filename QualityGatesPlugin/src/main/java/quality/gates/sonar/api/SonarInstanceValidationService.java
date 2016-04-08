@@ -35,11 +35,10 @@ public class SonarInstanceValidationService {
     }
 
     public GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-        GlobalConfigDataForSonarInstance newGlobalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
+        return new GlobalConfigDataForSonarInstance(
                 globalConfigDataForSonarInstance.getName(),
                 validateUrl(globalConfigDataForSonarInstance),
                 validateUsername(globalConfigDataForSonarInstance),
                 validatePassword(globalConfigDataForSonarInstance));
-        return newGlobalConfigDataForSonarInstance;
     }
 }

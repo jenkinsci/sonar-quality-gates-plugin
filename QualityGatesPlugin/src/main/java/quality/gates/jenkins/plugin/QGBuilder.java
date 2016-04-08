@@ -4,7 +4,6 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 
@@ -56,13 +55,13 @@ public class QGBuilder extends Builder {
         } catch (InterruptedException e) {
             e.printStackTrace(listener.getLogger());
         }
-        boolean buildPassed;
+        boolean buildHasPassed;
         try {
-            buildPassed = buildDecision.getStatus(jobConfigData);
+            buildHasPassed = buildDecision.getStatus(jobConfigData);
             if("".equals(jobConfigData.getGlobalConfigDataForSonarInstance().getName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
-            listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildPassed).toUpperCase());
-            return buildPassed;
+            listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildHasPassed).toUpperCase());
+            return buildHasPassed;
         }
         catch (QGException e){
             e.printStackTrace(listener.getLogger());
