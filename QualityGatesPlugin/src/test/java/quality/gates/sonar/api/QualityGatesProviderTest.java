@@ -2,7 +2,6 @@ package quality.gates.sonar.api;
 
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
-import quality.gates.jenkins.plugin.QGException;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
 
 public class QualityGatesProviderTest {
