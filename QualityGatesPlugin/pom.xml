@@ -138,7 +138,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/jenkinsci/quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:https://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
     </scm>
 
