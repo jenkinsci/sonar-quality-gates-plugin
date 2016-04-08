@@ -54,7 +54,7 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     }
 
     @Override
-    public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws FormException,QGException {
+    public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws QGException {
         JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, globalConfig);
         return new QGPublisher(firstInstanceJobConfigData);
     }

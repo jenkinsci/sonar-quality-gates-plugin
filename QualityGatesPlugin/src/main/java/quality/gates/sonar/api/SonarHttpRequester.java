@@ -44,8 +44,7 @@ public class SonarHttpRequester {
         loginHttpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
         executePostRequest(client, loginHttpPost);
         HttpGet request = new HttpGet(String.format(sonarApiGate, projectKey.getProjectKey()));
-        String responseFromGet = executeGetRequest(client, request);
-        return responseFromGet;
+        return executeGetRequest(client, request);
     }
 
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
