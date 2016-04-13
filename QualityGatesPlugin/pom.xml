@@ -38,6 +38,17 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
+    <distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -138,6 +149,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
+    <tag>HEAD</tag>
   </scm>
 
     <developers>
