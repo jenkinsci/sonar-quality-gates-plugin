@@ -33,9 +33,10 @@
 
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>quality-gates</artifactId>
-    <name>Quality Gates Plugin Module</name>
+    <name>Quality Gates Plugin</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.3-SNAPSHOT</version>
+    <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project Quality Gates status is different than "Passed")</description>
     <packaging>hpi</packaging>
 
     <distributionManagement>
