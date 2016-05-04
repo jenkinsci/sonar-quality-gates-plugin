@@ -29,6 +29,7 @@ public class GlobalConfig extends GlobalConfiguration {
     }
 
     public List<GlobalConfigDataForSonarInstance> getListOfGlobalConfigData() {
+        load();
         return listOfGlobalConfigData;
     }
 
