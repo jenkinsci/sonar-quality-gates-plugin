@@ -20,7 +20,6 @@ public class GlobalConfigurationService {
     }
 
     protected List<GlobalConfigDataForSonarInstance> instantiateGlobalConfigData(JSONObject json) {
-        LOGGER.info(String.format("JSON in the GlobalConfig: %s", json));
         listOfGlobalConfigInstances = new ArrayList<>();
 
         JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
@@ -28,7 +27,6 @@ public class GlobalConfigurationService {
             globalDataConfigs = new JSONArray();
         }
         initGlobalDataConfig(globalDataConfigs);
-        LOGGER.info(String.format("JSON in the GlobalConfig after: %s", json));
         return listOfGlobalConfigInstances;
     }
 
