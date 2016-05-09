@@ -11,19 +11,25 @@ public class QGPublisher extends Recorder {
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
     private JobExecutionService jobExecutionService;
+    private QGPublisherDescriptor publisherDescriptor;
+    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
     public QGPublisher(JobConfigData jobConfigData) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision();
         this.jobExecutionService = new JobExecutionService();
+        this.publisherDescriptor = jobExecutionService.getPublisherDescriptor();
+        this.globalConfigDataForSonarInstance = null;
 
     }
 
-    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService) {
+    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGPublisherDescriptor publisherDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
+        this.publisherDescriptor = publisherDescriptor;
+        this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
     public JobConfigData getJobConfigData() {
@@ -42,18 +48,13 @@ public class QGPublisher extends Recorder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        QGPublisherDescriptor buildDescriptor;
-        try {
-            buildDescriptor = jobExecutionService.getPublisherDescriptor();
-            GlobalConfig globalConfig = buildDescriptor.getGlobalConfig();
-            boolean hasGlobalConfigWithSameName = jobExecutionService.hasGlobalConfigDataWithSameName(jobConfigData, globalConfig);
-            if(!hasGlobalConfigWithSameName && !globalConfig.getListOfGlobalConfigData().isEmpty()) {
-                listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getGlobalConfigDataForSonarInstance().getName());
-                return false;
-            }
-        }
-        catch (QGException e){
-            e.printStackTrace(listener.getLogger());
+        publisherDescriptor = jobExecutionService.getPublisherDescriptor();
+        GlobalConfig globalConfig = publisherDescriptor.getGlobalConfig();
+        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+
+        if(globalConfigDataForSonarInstance == null) {
+            listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
+            return false;
         }
         return true;
     }
@@ -72,8 +73,8 @@ public class QGPublisher extends Recorder {
         }
         boolean buildPassed;
         try {
-            buildPassed = buildDecision.getStatus(jobConfigData);
-            if("".equals(jobConfigData.getGlobalConfigDataForSonarInstance().getName()))
+            buildPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
+            if("".equals(jobConfigData.getSonarInstanceName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             listener.getLogger().println("PostBuild-Step: Quality Gates plugin build passed: " + String.valueOf(buildPassed).toUpperCase());
             return buildPassed;

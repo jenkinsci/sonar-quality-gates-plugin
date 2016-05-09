@@ -39,7 +39,7 @@
     <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() >= 2}">
         <f:section>
              <f:entry field="listOfGlobalConfigData" title="Sonar instance 'Name'" description="Choose sonar instance">
-                 <f:select name="sonarInstancesNames" value="${instance.jobConfigData.globalConfigDataForSonarInstance.name}"/>
+                 <f:select name="sonarInstancesName" value="${instance.jobConfigData.sonarInstanceName}"/>
              </f:entry>
 
              <f:entry field="jobConfigData" description="Enter your project key.">

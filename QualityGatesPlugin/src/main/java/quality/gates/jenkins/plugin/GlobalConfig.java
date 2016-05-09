@@ -18,7 +18,6 @@ public class GlobalConfig extends GlobalConfiguration {
 
     public GlobalConfig() {
         load();
-        listOfGlobalConfigData = new ArrayList<>();
         globalConfigurationService = new GlobalConfigurationService();
     }
 
@@ -30,6 +29,10 @@ public class GlobalConfig extends GlobalConfiguration {
 
     public List<GlobalConfigDataForSonarInstance> getListOfGlobalConfigData() {
         load();
+        return listOfGlobalConfigData;
+    }
+
+    public List<GlobalConfigDataForSonarInstance> fetchListOfGlobalConfigData() {
         return listOfGlobalConfigData;
     }
 

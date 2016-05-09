@@ -11,7 +11,6 @@ import java.util.List;
 
 public class GlobalConfigurationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QGBuilderDescriptor.class);
 
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigInstances;
 
@@ -20,15 +19,12 @@ public class GlobalConfigurationService {
     }
 
     protected List<GlobalConfigDataForSonarInstance> instantiateGlobalConfigData(JSONObject json) {
-        LOGGER.info(String.format("JSON in the GlobalConfig: %s", json));
         listOfGlobalConfigInstances = new ArrayList<>();
-
         JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
         if(globalDataConfigs == null){
             globalDataConfigs = new JSONArray();
         }
         initGlobalDataConfig(globalDataConfigs);
-        LOGGER.info(String.format("JSON in the GlobalConfig after: %s", json));
         return listOfGlobalConfigInstances;
     }
 
