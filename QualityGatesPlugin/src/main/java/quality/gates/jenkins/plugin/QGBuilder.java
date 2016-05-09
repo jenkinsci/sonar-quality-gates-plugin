@@ -5,6 +5,8 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class QGBuilder extends Builder {
@@ -12,18 +14,24 @@ public class QGBuilder extends Builder {
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
     private JobExecutionService jobExecutionService;
+    private QGBuilderDescriptor builderDescriptor;
+    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
     public QGBuilder(JobConfigData jobConfigData) {
         this.jobConfigData = jobConfigData;
         this.jobExecutionService = new JobExecutionService();
         this.buildDecision = new BuildDecision();
+        this.builderDescriptor = jobExecutionService.getBuilderDescriptor();
+        this.globalConfigDataForSonarInstance = null;
     }
 
-    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService) {
+    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGBuilderDescriptor builderDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
+        this.builderDescriptor = builderDescriptor;
+        this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
     public JobConfigData getJobConfigData() {
@@ -32,18 +40,13 @@ public class QGBuilder extends Builder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        QGBuilderDescriptor buildDescriptor;
-        try {
-            buildDescriptor = jobExecutionService.getBuilderDescriptor();
-            GlobalConfig globalConfig = buildDescriptor.getGlobalConfig();
-            boolean hasGlobalConfigWithSameName = jobExecutionService.hasGlobalConfigDataWithSameName(jobConfigData, globalConfig);
-            if(!hasGlobalConfigWithSameName && !globalConfig.getListOfGlobalConfigData().isEmpty()) {
-                listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getGlobalConfigDataForSonarInstance().getName());
-                return false;
-            }
-        }
-        catch (QGException e){
-            e.printStackTrace(listener.getLogger());
+        builderDescriptor = jobExecutionService.getBuilderDescriptor();
+        GlobalConfig globalConfig = builderDescriptor.getGlobalConfig();
+        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+
+        if(globalConfigDataForSonarInstance == null) {
+            listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
+            return false;
         }
         return true;
     }
@@ -57,8 +60,8 @@ public class QGBuilder extends Builder {
         }
         boolean buildHasPassed;
         try {
-            buildHasPassed = buildDecision.getStatus(jobConfigData);
-            if("".equals(jobConfigData.getGlobalConfigDataForSonarInstance().getName()))
+            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
+            if("".equals(jobConfigData.getSonarInstanceName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildHasPassed).toUpperCase());
             return buildHasPassed;

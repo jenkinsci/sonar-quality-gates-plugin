@@ -32,11 +32,18 @@ public class QGPublisherIT {
     @Mock
     private BuildDecision buildDecision;
 
+    @Mock
+    JobConfigurationService jobConfigurationService;
+
     private JobExecutionService jobExecutionService;
 
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList;
+
+    private QGBuilderDescriptor builderDescriptor;
+
+    private QGPublisherDescriptor publisherDescriptor;
 
     @Rule
     public JenkinsRule jenkinsRule = new JenkinsRule();
@@ -47,8 +54,10 @@ public class QGPublisherIT {
         jobConfigData = new JobConfigData();
         jobExecutionService = new JobExecutionService();
         globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
-        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService);
-        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService);
+        builderDescriptor = new QGBuilderDescriptor(globalConfig, jobConfigurationService);
+        publisherDescriptor = new QGPublisherDescriptor(globalConfig, jobConfigurationService);
+        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, publisherDescriptor, globalConfigDataForSonarInstance);
+        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, builderDescriptor, globalConfigDataForSonarInstance);
         globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
         freeStyleProject = jenkinsRule.createFreeStyleProject("freeStyleProject");
         freeStyleProject.getBuildersList().add(builder);
@@ -58,8 +67,8 @@ public class QGPublisherIT {
 
     @Test
     public void testPrebuildShouldFailBuildNoGlobalConfigWithSameName() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME,"DifferentName");
-        doReturn(true).when(buildDecision).getStatus(jobConfigData);
+        jobConfigData.setSonarInstanceName(TEST_NAME);
+        doReturn(null).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("'TestName' no longer exists.", lastRun);
@@ -67,8 +76,9 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldFailBecauseOfPreviousSteps() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
-        doReturn(false).when(buildDecision).getStatus(jobConfigData);
+        setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
+        doReturn(null).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+        doReturn(false).when(buildDecision).getStatus(globalConfigDataForSonarInstance, jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("Previous steps failed the build", lastRun);
@@ -76,8 +86,9 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldSucceedWithNoWarning() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
-        doReturn(true).when(buildDecision).getStatus(jobConfigData);
+        setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance,jobConfigData)).thenReturn(true, true);
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("build passed: TRUE", lastRun);
@@ -85,8 +96,9 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldSucceedWithWarning() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames("","");
-        doReturn(true).when(buildDecision).getStatus(jobConfigData);
+        setGlobalConfigDataAndJobConfigDataNames("","");
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance,jobConfigData)).thenReturn(true, true);
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains(JobExecutionService.DEFAULT_CONFIGURATION_WARNING, lastRun);
@@ -95,8 +107,9 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldFail() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
-        doReturn(true).doReturn(false).when(buildDecision).getStatus(jobConfigData);
+        setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance,jobConfigData)).thenReturn(true, false);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("build passed: FALSE", lastRun);
@@ -104,20 +117,18 @@ public class QGPublisherIT {
 
     @Test
     public void testPerformShouldCatchQGException() throws Exception {
-        create2InstancesOfGlobalConfigDataAndSetTheirNames(TEST_NAME, TEST_NAME);
+        setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         QGException exception = new QGException("TestException");
-        doReturn(true).doThrow(exception).when(buildDecision).getStatus(jobConfigData);
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
+        doReturn(true).doThrow(exception).when(buildDecision).getStatus(globalConfigDataForSonarInstance, jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("QGException", lastRun);
     }
 
-    private void create2InstancesOfGlobalConfigDataAndSetTheirNames(String firstInstanceName, String secondInstanceName) {
+    private void setGlobalConfigDataAndJobConfigDataNames(String firstInstanceName, String secondInstanceName) {
         globalConfigDataForSonarInstance.setName(firstInstanceName);
-        GlobalConfigDataForSonarInstance newInstance = new GlobalConfigDataForSonarInstance();
-        jobConfigData.setGlobalConfigDataForSonarInstance(globalConfigDataForSonarInstance);
-        newInstance.setName(secondInstanceName);
-        globalConfigDataForSonarInstanceList.add(newInstance);
+        jobConfigData.setSonarInstanceName(secondInstanceName);
         globalConfig.setGlobalConfigDataForSonarInstances(globalConfigDataForSonarInstanceList);
     }
 

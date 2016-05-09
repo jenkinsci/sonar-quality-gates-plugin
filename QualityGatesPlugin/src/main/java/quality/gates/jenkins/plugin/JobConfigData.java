@@ -3,7 +3,7 @@ package quality.gates.jenkins.plugin;
 public class JobConfigData {
 
     private String projectKey;
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private String sonarInstanceName;
 
 
     public String getProjectKey() {
@@ -14,44 +14,38 @@ public class JobConfigData {
         this.projectKey = projectKey;
     }
 
-    public GlobalConfigDataForSonarInstance getGlobalConfigDataForSonarInstance() {
-        return globalConfigDataForSonarInstance;
+    public String getSonarInstanceName() {
+        return sonarInstanceName;
     }
 
-    public void setGlobalConfigDataForSonarInstance(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-        this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
+    public void setSonarInstanceName(String sonarInstanceName) {
+        this.sonarInstanceName = sonarInstanceName;
     }
 
     @Override
     public String toString() {
         return "JobConfigData{" +
                 "projectKey='" + projectKey + '\'' +
-                ", globalConfigDataForSonarInstance=" + globalConfigDataForSonarInstance +
+                ", sonarInstanceName='" + sonarInstanceName + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         JobConfigData that = (JobConfigData) o;
 
-        if (projectKey != null ? !projectKey.equals(that.projectKey) : that.projectKey != null) {
-            return false;
-        }
-        return globalConfigDataForSonarInstance != null ? globalConfigDataForSonarInstance.equals(that.globalConfigDataForSonarInstance) : that.globalConfigDataForSonarInstance == null;
+        if (!projectKey.equals(that.projectKey)) return false;
+        return sonarInstanceName.equals(that.sonarInstanceName);
 
     }
 
     @Override
     public int hashCode() {
-        int result = projectKey != null ? projectKey.hashCode() : 0;
-        result = 31 * result + (globalConfigDataForSonarInstance != null ? globalConfigDataForSonarInstance.hashCode() : 0);
+        int result = projectKey.hashCode();
+        result = 31 * result + sonarInstanceName.hashCode();
         return result;
     }
 }
