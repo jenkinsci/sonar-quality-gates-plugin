@@ -7,7 +7,6 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Extension
