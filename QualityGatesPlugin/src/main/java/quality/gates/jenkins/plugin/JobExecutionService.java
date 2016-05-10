@@ -9,16 +9,6 @@ public class JobExecutionService {
     public static final String DEFAULT_CONFIGURATION_WARNING = "WARNING: Quality Gates is running with default Sonar Instance.\nURL='http//localhost:9000'\nUsername='admin'\nPassword='admin'";
     public static final String GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR = "Global configuration with name '%s' no longer exists.\n";
 
-    public boolean hasGlobalConfigDataWithSameName(JobConfigData jobConfigData, GlobalConfig globalConfig) {
-        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances = globalConfig.getListOfGlobalConfigData();
-        String name = jobConfigData.getGlobalConfigDataForSonarInstance().getName();
-        for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance : globalConfigDataForSonarInstances) {
-            if(name.equals(globalConfigDataForSonarInstance.getName()))
-                return true;
-        }
-        return false;
-    }
-
     public QGBuilderDescriptor getBuilderDescriptor() throws QGException {
         Jenkins instance = Jenkins.getInstance();
         if (instance != null) {
