@@ -5,7 +5,7 @@
   <artifactId>quality-gates-main</artifactId>
   <name>Quality Gates Plugin Main</name>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
-  <version>2.3-SNAPSHOT</version>
+  <version>\</version>
   <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project Quality Gates status is different than "Passed")</description>
   <packaging>pom</packaging>
   
@@ -32,6 +32,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
+    <tag>HEAD</tag>
   </scm>
 	
     <developers>
