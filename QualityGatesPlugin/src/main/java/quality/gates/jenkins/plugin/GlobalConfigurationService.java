@@ -1,5 +1,7 @@
 package quality.gates.jenkins.plugin;
 
+import hudson.Util;
+import hudson.util.Secret;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -56,7 +58,7 @@ public class GlobalConfigurationService {
         String name = globalConfigData.optString("name");
         if (!"".equals(name)) {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name,
-                    globalConfigData.optString("url"), globalConfigData.optString("account"), globalConfigData.optString("password"));
+                    globalConfigData.optString("url"), globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))));
             if(!containsGlobalConfigWithName(name)) {
                 listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
             }

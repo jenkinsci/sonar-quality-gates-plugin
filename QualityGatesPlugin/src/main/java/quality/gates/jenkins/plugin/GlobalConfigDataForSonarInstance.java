@@ -1,5 +1,8 @@
 package quality.gates.jenkins.plugin;
 
+import hudson.Util;
+import hudson.util.Secret;
+
 public class GlobalConfigDataForSonarInstance {
 
     public static final String DEFAULT_URL = "http://localhost:9000";
@@ -10,6 +13,7 @@ public class GlobalConfigDataForSonarInstance {
     private String username;
     private String pass;
     private String sonarUrl;
+    private Secret secretPass;
 
     public GlobalConfigDataForSonarInstance() {
         this.name = "";
@@ -18,6 +22,14 @@ public class GlobalConfigDataForSonarInstance {
         this.pass = "";
     }
 
+    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass) {
+        this.name = name;
+        this.sonarUrl = sonarUrl;
+        this.username = username;
+        this.secretPass = secretPass;
+    }
+
+    //for test use only
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, String pass) {
         this.name = name;
         this.sonarUrl = sonarUrl;
@@ -42,11 +54,11 @@ public class GlobalConfigDataForSonarInstance {
     }
 
     public String getPass() {
-        return pass;
+        return Secret.toString(secretPass);
     }
 
     public void setPass(String pass) {
-        this.pass = pass;
+        this.secretPass = Secret.fromString(Util.fixEmptyAndTrim(pass));
     }
 
     public String getSonarUrl() {
@@ -93,7 +105,6 @@ public class GlobalConfigDataForSonarInstance {
         return "GlobalConfigDataForSonarInstance{" +
                 "name='" + name + '\'' +
                 ", username='" + username + '\'' +
-                ", pass='" + pass + '\'' +
                 ", sonarUrl='" + sonarUrl + '\'' +
                 '}';
     }

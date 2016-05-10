@@ -1,5 +1,6 @@
 package quality.gates.sonar.api;
 
+import hudson.util.Secret;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 
 public class SonarInstanceValidationService {
@@ -25,13 +26,13 @@ public class SonarInstanceValidationService {
         return sonarUsername;
     }
 
-    public String validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    public Secret validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         String sonarPassword;
         if(globalConfigDataForSonarInstance.getPass().isEmpty())
             sonarPassword = GlobalConfigDataForSonarInstance.DEFAULT_PASS;
         else
             sonarPassword = globalConfigDataForSonarInstance.getPass();
-        return sonarPassword;
+        return Secret.fromString(sonarPassword);
     }
 
     public GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {

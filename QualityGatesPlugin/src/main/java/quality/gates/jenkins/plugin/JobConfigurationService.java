@@ -1,6 +1,7 @@
 package quality.gates.jenkins.plugin;
 
 import hudson.util.ListBoxModel;
+import hudson.util.Secret;
 import net.sf.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
