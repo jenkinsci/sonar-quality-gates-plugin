@@ -26,11 +26,12 @@ public class QGBuilder extends Builder {
         this.globalConfigDataForSonarInstance = null;
     }
 
-    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGBuilderDescriptor builderDescriptor) {
+    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGBuilderDescriptor builderDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
         this.builderDescriptor = builderDescriptor;
+        this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
     public JobConfigData getJobConfigData() {

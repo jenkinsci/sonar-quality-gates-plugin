@@ -24,11 +24,12 @@ public class QGPublisher extends Recorder {
 
     }
 
-    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGPublisherDescriptor publisherDescriptor) {
+    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGPublisherDescriptor publisherDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
         this.publisherDescriptor = publisherDescriptor;
+        this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
     public JobConfigData getJobConfigData() {
