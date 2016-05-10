@@ -1,6 +1,7 @@
 package quality.gates.jenkins.plugin;
 
 import hudson.util.ListBoxModel;
+import hudson.util.Secret;
 import net.sf.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -30,7 +31,7 @@ public class JobConfigurationService {
             globalConfigDataForSonarInstance = hasFormDataKey(formData, globalConfig);
         }
         else
-            globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://localhost:9000", "admin", "admin");
+            globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://localhost:9000", "admin", Secret.fromString("admin"));
         firstInstanceJobConfigData.setGlobalConfigDataForSonarInstance(globalConfigDataForSonarInstance);
         return firstInstanceJobConfigData;
     }

@@ -48,22 +48,22 @@ public class SonarInstanceValidationServiceTest {
         assertEquals("myUser", sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
     }
 
-    @Test
-    public void testValidatePasswordEmptyUsernameShouldReturnDefaultPassword(){
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", "");
-        assertEquals(ADMIN, sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
-    }
-
-    @Test
-    public void testValidatePasswordGivenUsernameShouldReturnGivenPassword(){
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", MY_PASS);
-        assertEquals(MY_PASS, sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
-    }
-
-    @Test
-    public void testValidateData(){
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://google.com", "", "");
-        assertEquals(new GlobalConfigDataForSonarInstance("", "http://google.com", ADMIN, ADMIN), sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance));
-    }
+//    @Test
+//    public void testValidatePasswordEmptyUsernameShouldReturnDefaultPassword(){
+//        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", "");
+//        assertEquals(ADMIN, sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
+//    }
+//
+//    @Test
+//    public void testValidatePasswordGivenUsernameShouldReturnGivenPassword(){
+//        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "", "", MY_PASS);
+//        assertEquals(MY_PASS, sonarInstanceValidationService.validatePassword(globalConfigDataForSonarInstance));
+//    }
+//
+//    @Test
+//    public void testValidateData(){
+//        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("", "http://google.com", "", "");
+//        assertEquals(new GlobalConfigDataForSonarInstance("", "http://google.com", ADMIN, ADMIN), sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance));
+//    }
 
 }

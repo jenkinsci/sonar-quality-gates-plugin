@@ -1,6 +1,8 @@
 package quality.gates.sonar.api;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import hudson.util.Secret;
+import org.jvnet.hudson.test.JenkinsRule;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
 import org.junit.Before;
@@ -19,10 +21,12 @@ public class SonarHttpRequesterIT {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9876);
+    @Rule
+    public JenkinsRule jenkinsRule = new JenkinsRule();
 
     @Before
     public void init() {
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("name","http://localhost:9876", "admin", "admin");
+        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("name","http://localhost:9876", "admin", Secret.fromString("admin"));
         sonarHttpRequester = new SonarHttpRequester();
     }
 
