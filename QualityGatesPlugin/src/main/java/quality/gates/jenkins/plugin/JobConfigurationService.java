@@ -1,6 +1,7 @@
 package quality.gates.jenkins.plugin;
 
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -19,12 +20,24 @@ public class JobConfigurationService {
     public JobConfigData createJobConfigData(JSONObject formData, GlobalConfig globalConfig) {
         JobConfigData firstInstanceJobConfigData = new JobConfigData();
         String projectKey = formData.getString("projectKey");
-        String name;
-        try {
-            projectKey = URLDecoder.decode(projectKey, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new QGException("Error while decoding the project key. UTF-8 not supported.", e);
+        if(projectKey.startsWith("$"))
+        {
+            String systemVariableName = projectKey;
+            String getEnvVariable = systemVariableName.substring(2, systemVariableName.length()-1);
+            projectKey = System.getenv(getEnvVariable);
+            if(projectKey == null) {
+                throw new QGException("Environment variable with name '" + getEnvVariable + "' does not exist.");
+            }
         }
+        else {
+            try {
+                projectKey = URLDecoder.decode(projectKey, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new QGException("Error while decoding the project key. UTF-8 not supported.", e);
+            }
+        }
+        String name;
+
         if(!globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
             name = hasFormDataKey(formData, globalConfig);
         }
