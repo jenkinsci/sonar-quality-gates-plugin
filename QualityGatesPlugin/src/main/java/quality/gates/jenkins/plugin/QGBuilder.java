@@ -6,10 +6,6 @@ import hudson.model.BuildListener;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 public class QGBuilder extends Builder {
 

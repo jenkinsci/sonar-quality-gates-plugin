@@ -2,8 +2,6 @@ package quality.gates.jenkins.plugin;
 
 import jenkins.model.Jenkins;
 
-import java.util.List;
-
 public class JobExecutionService {
 
     public static final String DEFAULT_CONFIGURATION_WARNING = "WARNING: Quality Gates is running with default Sonar Instance.\nURL='http//localhost:9000'\nUsername='admin'\nPassword='admin'";
@@ -36,4 +34,6 @@ public class JobExecutionService {
             throw new QGException("Jenkins instance is null. No instance is found.");
         }
     }
+
+
 }
