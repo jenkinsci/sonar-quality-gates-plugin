@@ -62,56 +62,57 @@ public class BuildDecisionTest {
         buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
     }
 
-//    @Test
-//    public void testChooseSonarInstanceIfListIsEmpty() {
-//        String emptyString = "";
-//        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
-//        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
-//        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, emptyString);
-//        assertTrue(returnedInstance.getName().equals(emptyString));
-//        assertTrue(returnedInstance.getPass().equals(emptyString));
-//        assertTrue(returnedInstance.getSonarUrl().equals(emptyString));
-//        assertTrue(returnedInstance.getUsername().equals(emptyString));
-//    }
-//
-//    @Test
-//    public void testChooseSonarInstanceIfListHasOneInstance() {
-//        String emptyString = "";
-//        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
-//        GlobalConfigDataForSonarInstance singleInstance = new GlobalConfigDataForSonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
-//        globalConfigDataForSonarInstanceList.add(singleInstance);
-//        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
-//        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, emptyString);
-//        assertTrue(returnedInstance.getName().equals("TestName"));
-//        assertTrue(returnedInstance.getSonarUrl().equals("TestUrl"));
-//        assertTrue(returnedInstance.getUsername().equals("TestUsername"));
-//    }
+    @Test
+    public void testChooseSonarInstanceIfListIsEmpty() {
+        String emptyString = "";
+        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
+        assertTrue(returnedInstance.getName().equals(emptyString));
+        assertTrue(returnedInstance.getPass().equals(emptyString));
+        assertTrue(returnedInstance.getSonarUrl().equals(emptyString));
+        assertTrue(returnedInstance.getUsername().equals(emptyString));
+    }
 
-//    @Test
-//    public void testChooseSonarInstanceIfListHasMultipleInstancesAndNameMatches() {
-//        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
-//        GlobalConfigDataForSonarInstance firstInstance = new GlobalConfigDataForSonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
-//        GlobalConfigDataForSonarInstance secondInstance = new GlobalConfigDataForSonarInstance("TestName1", "TestUrl1", "TestUsername1", "TestPass1");
-//        globalConfigDataForSonarInstanceList.add(firstInstance);
-//        globalConfigDataForSonarInstanceList.add(secondInstance);
-//        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
-//        doReturn(secondInstance).when(globalConfig).getSonarInstanceByName("TestName1");
-//        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, "TestName1");
-//        assertTrue(returnedInstance.getName().equals("TestName1"));
-//        assertTrue(returnedInstance.getSonarUrl().equals("TestUrl1"));
-//        assertTrue(returnedInstance.getUsername().equals("TestUsername1"));
-//    }
-//
-//    @Test
-//    public void testChooseSonarInstanceIfListHasMultipleInstancesAndNameDoesNotMatch() {
-//        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
-//        GlobalConfigDataForSonarInstance firstInstance = new GlobalConfigDataForSonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
-//        GlobalConfigDataForSonarInstance secondInstance = new GlobalConfigDataForSonarInstance("TestName1", "TestUrl1", "TestUsername1", "TestPass1");
-//        globalConfigDataForSonarInstanceList.add(firstInstance);
-//        globalConfigDataForSonarInstanceList.add(secondInstance);
-//        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
-//        doReturn(null).when(globalConfig).getSonarInstanceByName("RandomName");
-//        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, "RandomName");
-//        assertTrue(returnedInstance == null);
-//    }
+    @Test
+    public void testChooseSonarInstanceIfListHasOneInstance() {
+        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
+        GlobalConfigDataForSonarInstance singleInstance = new GlobalConfigDataForSonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
+        globalConfigDataForSonarInstanceList.add(singleInstance);
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
+        assertTrue(returnedInstance.getName().equals("TestName"));
+        assertTrue(returnedInstance.getSonarUrl().equals("TestUrl"));
+        assertTrue(returnedInstance.getUsername().equals("TestUsername"));
+    }
+
+    @Test
+    public void testChooseSonarInstanceIfListHasMultipleInstancesAndNameMatches() {
+        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
+        GlobalConfigDataForSonarInstance firstInstance = new GlobalConfigDataForSonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
+        GlobalConfigDataForSonarInstance secondInstance = new GlobalConfigDataForSonarInstance("TestName1", "TestUrl1", "TestUsername1", "TestPass1");
+        globalConfigDataForSonarInstanceList.add(firstInstance);
+        globalConfigDataForSonarInstanceList.add(secondInstance);
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(secondInstance).when(globalConfig).getSonarInstanceByName("TestName1");
+        doReturn("TestName1").when(jobConfigData).getSonarInstanceName();
+        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
+        assertTrue(returnedInstance.getName().equals("TestName1"));
+        assertTrue(returnedInstance.getSonarUrl().equals("TestUrl1"));
+        assertTrue(returnedInstance.getUsername().equals("TestUsername1"));
+    }
+
+    @Test
+    public void testChooseSonarInstanceIfListHasMultipleInstancesAndNameDoesNotMatch() {
+        List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
+        GlobalConfigDataForSonarInstance firstInstance = new GlobalConfigDataForSonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
+        GlobalConfigDataForSonarInstance secondInstance = new GlobalConfigDataForSonarInstance("TestName1", "TestUrl1", "TestUsername1", "TestPass1");
+        globalConfigDataForSonarInstanceList.add(firstInstance);
+        globalConfigDataForSonarInstanceList.add(secondInstance);
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(null).when(globalConfig).getSonarInstanceByName("RandomName");
+        jobConfigData.setSonarInstanceName("RandomName");
+        GlobalConfigDataForSonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
+        assertTrue(returnedInstance == null);
+    }
 }

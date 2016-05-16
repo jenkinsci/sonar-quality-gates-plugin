@@ -1,7 +1,7 @@
 package quality.gates.jenkins.plugin;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSON;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import org.junit.Before;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.times;
 
 public class GlobalConfigurationServiceTest {
-
     private GlobalConfigurationService globalConfigurationService;
     private GlobalConfigurationService spyGlobalConfigurationService;
     @Mock
