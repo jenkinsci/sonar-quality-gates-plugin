@@ -10,6 +10,7 @@ public class QGPublisher extends Recorder {
 
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
+    private JobConfigurationService jobConfigurationService;
     private JobExecutionService jobExecutionService;
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
@@ -18,12 +19,14 @@ public class QGPublisher extends Recorder {
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision();
         this.jobExecutionService = new JobExecutionService();
+        this.jobConfigurationService = new JobConfigurationService();
         this.globalConfigDataForSonarInstance = null;
     }
 
-    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService,JobConfigurationService jobConfigurationService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
+        this.jobConfigurationService = jobConfigurationService;
         this.jobExecutionService = jobExecutionService;
         this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
@@ -66,7 +69,8 @@ public class QGPublisher extends Recorder {
         }
         boolean buildPassed;
         try {
-            buildPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
+            JobConfigData checkedJobConfigData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+            buildPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData);
             if("".equals(jobConfigData.getSonarInstanceName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             listener.getLogger().println("PostBuild-Step: Quality Gates plugin build passed: " + String.valueOf(buildPassed).toUpperCase());

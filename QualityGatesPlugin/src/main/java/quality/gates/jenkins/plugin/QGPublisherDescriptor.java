@@ -4,8 +4,10 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.inject.Inject;
@@ -36,6 +38,13 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
 
     public ListBoxModel doFillListOfGlobalConfigDataItems() {
         return jobConfigurationService.getListOfSonarInstanceNames(jobExecutionService.getGlobalConfigData());
+    }
+
+    public FormValidation doCheckProjectKey(@QueryParameter String projectKey) {
+        if(projectKey.isEmpty()) {
+            return FormValidation.error("Please insert project key.");
+        }
+        return FormValidation.ok();
     }
 
     @Override

@@ -7,26 +7,28 @@ import hudson.tasks.Builder;
 import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-
 public class QGBuilder extends Builder {
 
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private JobConfigurationService jobConfigurationService;
     private JobExecutionService jobExecutionService;
+	private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
     public QGBuilder(JobConfigData jobConfigData) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision();
         this.jobExecutionService = new JobExecutionService();
+        this.jobConfigurationService = new JobConfigurationService();
         this.globalConfigDataForSonarInstance = null;
     }
 
-    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
+        this.jobConfigurationService = jobConfigurationService;
         this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
@@ -53,7 +55,8 @@ public class QGBuilder extends Builder {
         }
         boolean buildHasPassed;
         try {
-            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
+            JobConfigData checkedJobConfigData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData);
             if("".equals(jobConfigData.getSonarInstanceName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildHasPassed).toUpperCase());
