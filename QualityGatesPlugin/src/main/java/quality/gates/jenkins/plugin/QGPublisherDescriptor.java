@@ -14,27 +14,28 @@ import javax.inject.Inject;
 public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> {
 
     @Inject
-    private GlobalConfig globalConfig;
-    @Inject
     private JobConfigurationService jobConfigurationService;
+
+    @Inject
+    private JobExecutionService jobExecutionService;
 
     public QGPublisherDescriptor() {
         super(QGPublisher.class);
         load();
     }
 
-    public QGPublisherDescriptor(GlobalConfig globalConfig, JobConfigurationService jobConfigurationService) {
+    public QGPublisherDescriptor(JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
         super(QGPublisher.class);
-        this.globalConfig = globalConfig;
+        this.jobExecutionService = jobExecutionService;
         this.jobConfigurationService = jobConfigurationService;
     }
 
-    public GlobalConfig getGlobalConfig() {
-        return globalConfig;
+    public JobExecutionService getJobExecutionService() {
+        return jobExecutionService;
     }
 
     public ListBoxModel doFillListOfGlobalConfigDataItems() {
-        return jobConfigurationService.getListOfSonarInstanceNames(globalConfig);
+        return jobConfigurationService.getListOfSonarInstanceNames(jobExecutionService.getGlobalConfigData());
     }
 
     @Override
@@ -55,7 +56,7 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
 
     @Override
     public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws QGException {
-        JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, globalConfig);
+        JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
         return new QGPublisher(firstInstanceJobConfigData);
     }
 }

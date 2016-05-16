@@ -3,6 +3,7 @@ package quality.gates.jenkins.plugin;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import org.apache.tools.ant.taskdefs.optional.jsp.compilers.JasperC;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -47,30 +47,17 @@ public class QGBuilderTest {
     @Mock
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
-    @Mock
-    private GlobalConfig globalConfig;
-
-    private QGBuilderDescriptor builderDescriptor;
-
-    @Mock
-    JobConfigurationService jobConfigurationService;
-
-    @Mock
-    List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
-
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        builderDescriptor = new QGBuilderDescriptor(globalConfig, jobConfigurationService);
-        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, builderDescriptor, globalConfigDataForSonarInstance);
+        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
         doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
     }
 
     @Test
     public void testPrebuildShouldFailGlobalConfigDataInstanceIsNull() {
-        doReturn(builderDescriptor).when(jobExecutionService).getBuilderDescriptor();
-        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         doReturn("TestInstanceName").when(jobConfigData).getSonarInstanceName();
         assertFalse(builder.prebuild(abstractBuild, buildListener));
         verify(buildListener).error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, "TestInstanceName");
@@ -78,8 +65,7 @@ public class QGBuilderTest {
 
     @Test
     public void testPrebuildShouldPassBecauseGlobalConfigDataIsFound() {
-        doReturn(builderDescriptor).when(jobExecutionService).getBuilderDescriptor();
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         assertTrue(builder.prebuild(abstractBuild, buildListener));
         verifyZeroInteractions(buildListener);
     }

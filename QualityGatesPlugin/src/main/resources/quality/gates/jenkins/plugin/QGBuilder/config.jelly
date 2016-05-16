@@ -10,7 +10,7 @@
         }
     </style>
 
-    <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() == 0}">
+    <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() == 0}">
         <f:section>
             <f:entry>
               <ul class="errorUL">
@@ -27,7 +27,7 @@
             </f:entry>
         </f:section>
     </j:if>
-    <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() == 1}">
+    <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() == 1}">
                 <f:section>
                      <f:entry field="jobConfigData" description="Enter your project key.">
                           <f:entry title="Project Key" field="projectKey">
@@ -36,7 +36,7 @@
                      </f:entry>
                 </f:section>
     </j:if>
-    <j:if test="${descriptor.globalConfig.listOfGlobalConfigData.size() >= 2}">
+    <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() >= 2}">
         <f:section>
              <f:entry field="listOfGlobalConfigData" title="Sonar instance 'Name'" description="Choose sonar instance">
                  <f:select name="sonarInstancesName" value="${instance.jobConfigData.sonarInstanceName}"/>

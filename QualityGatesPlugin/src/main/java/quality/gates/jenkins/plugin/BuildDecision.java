@@ -23,26 +23,29 @@ public class BuildDecision {
         }
     }
 
-    public GlobalConfigDataForSonarInstance chooseSonarInstance (GlobalConfig globalConfig, String instanceName) {
+    public GlobalConfigDataForSonarInstance chooseSonarInstance (GlobalConfig globalConfig, JobConfigData jobConfigData) {
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
         if (globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
-            globalConfigDataForSonarInstance = noSonarInstance();
+            globalConfigDataForSonarInstance = noSonarInstance(jobConfigData);
         }
         else if (globalConfig.fetchListOfGlobalConfigData().size() == 1) {
-            globalConfigDataForSonarInstance = singleSonarInstance(globalConfig);
+            globalConfigDataForSonarInstance = singleSonarInstance(globalConfig, jobConfigData);
         }
         else {
-            globalConfigDataForSonarInstance = multipleSonarInstances(instanceName, globalConfig);
+            globalConfigDataForSonarInstance = multipleSonarInstances(jobConfigData.getSonarInstanceName(), globalConfig);
         }
         return globalConfigDataForSonarInstance;
     }
 
-    public GlobalConfigDataForSonarInstance noSonarInstance() {
+    public GlobalConfigDataForSonarInstance noSonarInstance(JobConfigData jobConfigData) {
+        jobConfigData.setSonarInstanceName("");
         return new GlobalConfigDataForSonarInstance();
     }
 
-    public GlobalConfigDataForSonarInstance singleSonarInstance(GlobalConfig globalConfig) {
-        return globalConfig.fetchListOfGlobalConfigData().get(0);
+    public GlobalConfigDataForSonarInstance singleSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = globalConfig.fetchListOfGlobalConfigData().get(0);
+        jobConfigData.setSonarInstanceName(globalConfigDataForSonarInstance.getName());
+        return globalConfigDataForSonarInstance;
     }
 
     public GlobalConfigDataForSonarInstance multipleSonarInstances(String instanceName, GlobalConfig globalConfig) {
