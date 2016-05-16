@@ -11,7 +11,6 @@ public class QGPublisher extends Recorder {
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
     private JobExecutionService jobExecutionService;
-    private QGPublisherDescriptor publisherDescriptor;
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
@@ -19,16 +18,13 @@ public class QGPublisher extends Recorder {
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision();
         this.jobExecutionService = new JobExecutionService();
-        this.publisherDescriptor = jobExecutionService.getPublisherDescriptor();
         this.globalConfigDataForSonarInstance = null;
-
     }
 
-    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGPublisherDescriptor publisherDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    public QGPublisher(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
-        this.publisherDescriptor = publisherDescriptor;
         this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
@@ -48,10 +44,7 @@ public class QGPublisher extends Recorder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        publisherDescriptor = jobExecutionService.getPublisherDescriptor();
-        GlobalConfig globalConfig = publisherDescriptor.getGlobalConfig();
-        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
-
+        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
         if(globalConfigDataForSonarInstance == null) {
             listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
             return false;

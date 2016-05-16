@@ -25,15 +25,15 @@ public class SonarHttpRequester {
 
     private static final String SONAR_API_GATE = "/api/events?resource=%s&format=json&categories=Alert";
 
-    private final HttpClientContext context;
+    private HttpClientContext context;
 
     public SonarHttpRequester() {
-        context = HttpClientContext.create();
     }
 
     public String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
         String sonarApiGate = globalConfigDataForSonarInstance.getSonarUrl() + String.format(SONAR_API_GATE, projectKey.getProjectKey());
 
+        context = HttpClientContext.create();
         CloseableHttpClient client = HttpClientBuilder.create().build();
         HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + "/sessions/login");
         List<NameValuePair> nvps = new ArrayList<>();
@@ -48,9 +48,9 @@ public class SonarHttpRequester {
     }
 
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
+        CloseableHttpResponse response = null;
         try {
-            CloseableHttpResponse response = client.execute(request, context);
-
+            response =  client.execute(request, context);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             String returnResponse = EntityUtils.toString(entity);
@@ -59,11 +59,16 @@ public class SonarHttpRequester {
                 throw new QGException("Expected status 200, got: " + statusCode + ". Response: " + returnResponse);
             }
             return returnResponse;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new QGException("GET execution error", e);
+        } finally {
+            try {
+                if (response != null)
+                    response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     private void executePostRequest(CloseableHttpClient client, HttpPost loginHttpPost) throws QGException {
@@ -83,5 +88,4 @@ public class SonarHttpRequester {
             throw new QGException("Encoding error", e);
         }
     }
-
 }

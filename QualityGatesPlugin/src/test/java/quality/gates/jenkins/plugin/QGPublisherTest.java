@@ -49,11 +49,6 @@ public class QGPublisherTest {
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @Mock
-    private GlobalConfig globalConfig;
-
-    private QGPublisherDescriptor publisherDescriptor;
-
-    @Mock
     JobConfigurationService jobConfigurationService;
 
     @Mock
@@ -62,16 +57,14 @@ public class QGPublisherTest {
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        publisherDescriptor = new QGPublisherDescriptor(globalConfig, jobConfigurationService);
-        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, publisherDescriptor, globalConfigDataForSonarInstance);
+        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
         doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
     }
 
     @Test
     public void testPrebuildShouldFail() {
-        doReturn(publisherDescriptor).when(jobExecutionService).getPublisherDescriptor();
-        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         doReturn("TestInstanceName").when(jobConfigData).getSonarInstanceName();
         assertFalse(publisher.prebuild(abstractBuild, buildListener));
         verify(buildListener).error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, "TestInstanceName");
@@ -79,8 +72,7 @@ public class QGPublisherTest {
 
     @Test
     public void testPrebuildShouldPassBecauseGlobalConfigDataIsFound() {
-        doReturn(publisherDescriptor).when(jobExecutionService).getPublisherDescriptor();
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         assertTrue(publisher.prebuild(abstractBuild, buildListener));
         verifyZeroInteractions(buildListener);
     }

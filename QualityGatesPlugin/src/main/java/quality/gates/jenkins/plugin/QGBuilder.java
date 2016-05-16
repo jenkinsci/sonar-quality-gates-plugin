@@ -4,6 +4,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
+import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 
@@ -11,24 +12,21 @@ public class QGBuilder extends Builder {
 
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
-    private JobExecutionService jobExecutionService;
-    private QGBuilderDescriptor builderDescriptor;
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private JobExecutionService jobExecutionService;
 
     @DataBoundConstructor
     public QGBuilder(JobConfigData jobConfigData) {
         this.jobConfigData = jobConfigData;
-        this.jobExecutionService = new JobExecutionService();
         this.buildDecision = new BuildDecision();
-        this.builderDescriptor = jobExecutionService.getBuilderDescriptor();
+        this.jobExecutionService = new JobExecutionService();
         this.globalConfigDataForSonarInstance = null;
     }
 
-    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGBuilderDescriptor builderDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
-        this.builderDescriptor = builderDescriptor;
         this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
@@ -38,10 +36,7 @@ public class QGBuilder extends Builder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        builderDescriptor = jobExecutionService.getBuilderDescriptor();
-        GlobalConfig globalConfig = builderDescriptor.getGlobalConfig();
-        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
-
+        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
         if(globalConfigDataForSonarInstance == null) {
             listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
             return false;
