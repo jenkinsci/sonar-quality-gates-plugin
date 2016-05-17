@@ -49,11 +49,6 @@ public class QGPublisherTest {
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @Mock
-    private GlobalConfig globalConfig;
-
-    private QGPublisherDescriptor publisherDescriptor;
-
-    @Mock
     JobConfigurationService jobConfigurationService;
 
     @Mock
@@ -62,16 +57,14 @@ public class QGPublisherTest {
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        publisherDescriptor = new QGPublisherDescriptor(globalConfig, jobConfigurationService);
-        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, publisherDescriptor, globalConfigDataForSonarInstance);
+        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
         doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
     }
 
     @Test
     public void testPrebuildShouldFail() {
-        doReturn(publisherDescriptor).when(jobExecutionService).getPublisherDescriptor();
-        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         doReturn("TestInstanceName").when(jobConfigData).getSonarInstanceName();
         assertFalse(publisher.prebuild(abstractBuild, buildListener));
         verify(buildListener).error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, "TestInstanceName");
@@ -79,8 +72,7 @@ public class QGPublisherTest {
 
     @Test
     public void testPrebuildShouldPassBecauseGlobalConfigDataIsFound() {
-        doReturn(publisherDescriptor).when(jobExecutionService).getPublisherDescriptor();
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         assertTrue(publisher.prebuild(abstractBuild, buildListener));
         verifyZeroInteractions(buildListener);
     }
@@ -97,7 +89,8 @@ public class QGPublisherTest {
     public void testPerformBuildResultSuccessWithWarningForDefaultInstance() throws QGException {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(true);
-        when(jobConfigData.getSonarInstanceName()).thenReturn("");
+        doReturn("").when(jobConfigData).getSonarInstanceName();
+        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class));
         assertTrue(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -110,6 +103,8 @@ public class QGPublisherTest {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(true);
         doReturn("SomeName").when(globalConfigDataForSonarInstance).getName();
+        doReturn("someName").when(jobConfigData).getSonarInstanceName();
+        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class));
         assertTrue(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -143,7 +138,7 @@ public class QGPublisherTest {
     public void testPerformThrowsException() throws QGException {
         setBuildResult(Result.SUCCESS);
         QGException exception = mock(QGException.class);
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenThrow(exception);
+        doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class));
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }

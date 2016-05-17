@@ -39,7 +39,6 @@ public class JobConfigData {
 
         if (!projectKey.equals(that.projectKey)) return false;
         return sonarInstanceName.equals(that.sonarInstanceName);
-
     }
 
     @Override

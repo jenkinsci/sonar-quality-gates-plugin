@@ -10,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -48,29 +47,19 @@ public class QGBuilderTest {
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @Mock
-    private GlobalConfig globalConfig;
-
-    private QGBuilderDescriptor builderDescriptor;
-
-    @Mock
-    JobConfigurationService jobConfigurationService;
-
-    @Mock
-    List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private JobConfigurationService jobConfigurationService;
 
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        builderDescriptor = new QGBuilderDescriptor(globalConfig, jobConfigurationService);
-        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, builderDescriptor, globalConfigDataForSonarInstance);
+        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
         doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
     }
 
     @Test
     public void testPrebuildShouldFailGlobalConfigDataInstanceIsNull() {
-        doReturn(builderDescriptor).when(jobExecutionService).getBuilderDescriptor();
-        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         doReturn("TestInstanceName").when(jobConfigData).getSonarInstanceName();
         assertFalse(builder.prebuild(abstractBuild, buildListener));
         verify(buildListener).error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, "TestInstanceName");
@@ -78,8 +67,7 @@ public class QGBuilderTest {
 
     @Test
     public void testPrebuildShouldPassBecauseGlobalConfigDataIsFound() {
-        doReturn(builderDescriptor).when(jobExecutionService).getBuilderDescriptor();
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), anyString());
+        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
         assertTrue(builder.prebuild(abstractBuild, buildListener));
         verifyZeroInteractions(buildListener);
     }
@@ -87,7 +75,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
@@ -98,7 +86,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
@@ -133,7 +121,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformThrowsException() throws QGException {
         QGException exception = mock(QGException.class);
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenThrow(exception);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenThrow(exception);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }

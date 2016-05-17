@@ -4,31 +4,31 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
+import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundConstructor;
-
 
 public class QGBuilder extends Builder {
 
     private JobConfigData jobConfigData;
     private BuildDecision buildDecision;
+    private JobConfigurationService jobConfigurationService;
     private JobExecutionService jobExecutionService;
-    private QGBuilderDescriptor builderDescriptor;
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+	private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
     public QGBuilder(JobConfigData jobConfigData) {
         this.jobConfigData = jobConfigData;
-        this.jobExecutionService = new JobExecutionService();
         this.buildDecision = new BuildDecision();
-        this.builderDescriptor = jobExecutionService.getBuilderDescriptor();
+        this.jobExecutionService = new JobExecutionService();
+        this.jobConfigurationService = new JobConfigurationService();
         this.globalConfigDataForSonarInstance = null;
     }
 
-    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, QGBuilderDescriptor builderDescriptor, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
-        this.builderDescriptor = builderDescriptor;
+        this.jobConfigurationService = jobConfigurationService;
         this.globalConfigDataForSonarInstance = globalConfigDataForSonarInstance;
     }
 
@@ -38,10 +38,7 @@ public class QGBuilder extends Builder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        builderDescriptor = jobExecutionService.getBuilderDescriptor();
-        GlobalConfig globalConfig = builderDescriptor.getGlobalConfig();
-        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData.getSonarInstanceName());
-
+        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
         if(globalConfigDataForSonarInstance == null) {
             listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
             return false;
@@ -58,7 +55,8 @@ public class QGBuilder extends Builder {
         }
         boolean buildHasPassed;
         try {
-            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
+            JobConfigData checkedJobConfigData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData);
             if("".equals(jobConfigData.getSonarInstanceName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildHasPassed).toUpperCase());

@@ -1,5 +1,8 @@
 package quality.gates.jenkins.plugin;
 
+import hudson.EnvVars;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 import org.junit.Before;
@@ -7,6 +10,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,19 +31,23 @@ public class JobConfigurationServiceTest {
     @Mock
     GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
+    private JSONObject formData;
+
+    @Mock
     private JobConfigData jobConfigData;
 
-    private JSONObject formData;
+    @Mock
+    private AbstractBuild build;
+
+    @Mock
+    private BuildListener listener;
 
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
         jobConfigurationService = new JobConfigurationService();
         formData = new JSONObject();
-        jobConfigData = new JobConfigData();
         formData.put("projectKey", "TestKey");
-        jobConfigData.setProjectKey("TestKey");
-        jobConfigData.setSonarInstanceName("TestName");
     }
 
     @Test
@@ -73,6 +82,9 @@ public class JobConfigurationServiceTest {
 
     @Test
     public void testNewInstanceSizeGreaterThanZeroAndDoesNotContainKey() {
+        jobConfigData = new JobConfigData();
+        jobConfigData.setProjectKey("TestKey");
+        jobConfigData.setSonarInstanceName("TestName");
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
@@ -86,6 +98,9 @@ public class JobConfigurationServiceTest {
 
     @Test
     public void testNewInstanceSizeGreaterThanZeroAndContainsKey() {
+        jobConfigData = new JobConfigData();
+        jobConfigData.setProjectKey("TestKey");
+        jobConfigData.setSonarInstanceName("TestName");
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
@@ -98,5 +113,80 @@ public class JobConfigurationServiceTest {
     protected void createGlobalConfigData() {
         globalConfigDataForSonarInstances = new ArrayList<>();
         globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+    }
+
+    @Test
+    public void testIfProjectKeyEmpty() throws Exception {
+        String key = "";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        try {
+            jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+        }
+        catch (QGException e) {
+            assertTrue(e.toString().contains("Empty project key."));
+        }
+    }
+
+    @Test
+    public void testIfProjectKeyStartsWithDolarSignAndVarIsFound() throws Exception {
+        String key = "$";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        EnvVars envVars = mock(EnvVars.class);
+        doReturn(envVars).when(build).getEnvironment(listener);
+        doReturn("EnvVariable").when(envVars).get(anyString());
+        JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+        assertTrue(returnedData.getProjectKey().equals("EnvVariable"));
+    }
+
+    @Test
+    public void testIfProjectKeyStartsWithDolarSignAndVarIsNotFound() throws Exception {
+        String key = "$";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        EnvVars envVars = mock(EnvVars.class);
+        doReturn(envVars).when(build).getEnvironment(listener);
+        doReturn(null).when(envVars).get(anyString());
+        try {
+            jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+        }
+        catch (QGException e) {
+            assertTrue(e.toString().contains("Environment variable with name '' was not found."));
+        }
+    }
+
+    @Test
+    public void testIfProjectKeyStartsWithDolarSignAndHasBracketsVarIsFound() throws Exception {
+        String key = "${}";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        EnvVars envVars = mock(EnvVars.class);
+        doReturn(envVars).when(build).getEnvironment(listener);
+        doReturn("EnvVariable").when(envVars).get(anyString());
+        JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+        assertTrue(returnedData.getProjectKey().equals("EnvVariable"));
+    }
+
+    @Test
+    public void testNotEnvironmentVariable () {
+        String key = "NormalString";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+        assertTrue(returnedData.getProjectKey().equals("NormalString"));
+    }
+
+    @Test(expected = QGException.class)
+    public void testEnvironmentThrowsIOException () throws Exception {
+        String key = "$";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        IOException exception = mock(IOException.class);
+        doThrow(exception).when(build).getEnvironment(listener);
+        jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+    }
+
+    @Test(expected = QGException.class)
+    public void testEnvironmentThrowsInterruptedException () throws Exception {
+        String key = "$";
+        doReturn(key).when(jobConfigData).getProjectKey();
+        InterruptedIOException exception = mock(InterruptedIOException.class);
+        doThrow(exception).when(build).getEnvironment(listener);
+        jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
     }
 }
