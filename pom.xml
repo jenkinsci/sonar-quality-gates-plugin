@@ -32,6 +32,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
+    <tag>quality-gates-main-2.4</tag>
   </scm>
 	
     <developers>
