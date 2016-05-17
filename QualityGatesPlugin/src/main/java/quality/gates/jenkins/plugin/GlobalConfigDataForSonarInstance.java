@@ -29,7 +29,6 @@ public class GlobalConfigDataForSonarInstance {
         this.secretPass = secretPass;
     }
 
-    //for test use only
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, String pass) {
         this.name = name;
         this.sonarUrl = sonarUrl;

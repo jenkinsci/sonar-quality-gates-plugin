@@ -3,7 +3,6 @@ package quality.gates.jenkins.plugin;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import org.apache.tools.ant.taskdefs.optional.jsp.compilers.JasperC;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -47,10 +46,13 @@ public class QGBuilderTest {
     @Mock
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
+    @Mock
+    private JobConfigurationService jobConfigurationService;
+
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, globalConfigDataForSonarInstance);
+        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
         doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
     }
@@ -73,7 +75,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
@@ -84,7 +86,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
@@ -119,7 +121,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformThrowsException() throws QGException {
         QGException exception = mock(QGException.class);
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenThrow(exception);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenThrow(exception);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }
