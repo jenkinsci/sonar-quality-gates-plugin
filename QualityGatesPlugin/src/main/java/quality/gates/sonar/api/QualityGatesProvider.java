@@ -1,10 +1,10 @@
 package quality.gates.sonar.api;
 
 
+import org.json.JSONException;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.jenkins.plugin.QGException;
-import org.json.JSONException;
 
 public class QualityGatesProvider {
 

@@ -1,39 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
- 
-  <groupId>org.jenkins-ci.plugins</groupId>
-  <artifactId>quality-gates-main</artifactId>
-  <name>Quality Gates Plugin Main</name>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
-  <version>2.5-SNAPSHOT</version>
-  <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project Quality Gates status is different than "Passed")</description>
-  <packaging>pom</packaging>
-  
-  <licenses>
-	<license>
-		<name>MIT License</name>
-		<url>http://www.opensource.org/licenses/mit-license.php</url>
-		<distribution>repo</distribution>
-	</license>
-  </licenses>
-	
-  <distributionManagement>
-	<repository>
-		<id>maven.jenkins-ci.org</id>
-		<url>http://maven.jenkins-ci.org:8081/content/repositories/releases</url>
-	</repository>
-	<snapshotRepository>
-		<id>maven.jenkins-ci.org</id>
-		<url>http://maven.jenkins-ci.org:8081/content/repositories/snapshots</url>
-	</snapshotRepository>
-   </distributionManagement>
-	
-   <scm>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>quality-gates-main</artifactId>
+    <name>Quality Gates Plugin Main</name>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
+    <version>2.5-SNAPSHOT</version>
+    <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project
+        Quality Gates status is different than "Passed")
+    </description>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
         <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
-  </scm>
-	
+    </scm>
+
     <developers>
         <developer>
             <id>ivanash</id>
@@ -47,9 +50,15 @@
             <id>dpd90</id>
             <name>Dimitar Pop-Dimitrov</name>
         </developer>
+        <developer>
+            <id>arkanjoms</id>
+            <name>Rafael Ramos de Oliveira</name>
+
+        </developer>
     </developers>
- 
-	<modules>
-		<module>QualityGatesPlugin</module>
-	</modules>
+
+    <modules>
+        <module>QualityGatesPlugin</module>
+    </modules>
+
 </project>

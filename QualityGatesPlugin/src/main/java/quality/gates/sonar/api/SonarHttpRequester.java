@@ -1,8 +1,5 @@
 package quality.gates.sonar.api;
 
-import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
-import quality.gates.jenkins.plugin.JobConfigData;
-import quality.gates.jenkins.plugin.QGException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -15,6 +12,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import quality.gates.jenkins.plugin.JobConfigData;
+import quality.gates.jenkins.plugin.QGException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,7 +35,7 @@ public class SonarHttpRequester {
 
         context = HttpClientContext.create();
         CloseableHttpClient client = HttpClientBuilder.create().build();
-        HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + "/sessions/login");
+        HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + "/api/authentication/login");
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("login", globalConfigDataForSonarInstance.getUsername()));
         nvps.add(new BasicNameValuePair("password", globalConfigDataForSonarInstance.getPass()));
@@ -50,7 +50,7 @@ public class SonarHttpRequester {
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
         CloseableHttpResponse response = null;
         try {
-            response =  client.execute(request, context);
+            response = client.execute(request, context);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             String returnResponse = EntityUtils.toString(entity);
@@ -74,8 +74,7 @@ public class SonarHttpRequester {
     private void executePostRequest(CloseableHttpClient client, HttpPost loginHttpPost) throws QGException {
         try {
             client.execute(loginHttpPost);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new QGException("POST execution error", e);
         }
     }
@@ -83,8 +82,7 @@ public class SonarHttpRequester {
     private UrlEncodedFormEntity createEntity(List<NameValuePair> nvps) throws QGException {
         try {
             return new UrlEncodedFormEntity(nvps);
-        }
-        catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             throw new QGException("Encoding error", e);
         }
     }

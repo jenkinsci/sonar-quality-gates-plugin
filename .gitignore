@@ -13,14 +13,7 @@ QualityGatesPlugin/QualityGatesPlugin.iml
 QualityGatesPlugin/quality-gates.iml
 SonarQualityGatesJenkinsPlugin/.idea/workspace.xml
 SonarQualityGatesJenkinsPlugin/SonarQualityGatesJenkinsPlugin.iml
-.idea/.name
-.idea/compiler.xml
-.idea/copyright/profiles_settings.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/sonar-quality-gates-jenkins-plugin.iml
-.idea/vcs.xml
-.idea/workspace.xml
+.idea
 /.sonar
 /*.properties
+quality-gates-main.iml
