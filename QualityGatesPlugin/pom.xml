@@ -22,21 +22,24 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   ~ THE SOFTWARE.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>2.0</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
-    <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>quality-gates</artifactId>
     <name>Quality Gates Plugin</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
     <version>2.5-SNAPSHOT</version>
-    <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project Quality Gates status is different than "Passed")</description>
+    <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project
+        Quality Gates status is different than "Passed")
+    </description>
     <packaging>hpi</packaging>
 
     <distributionManagement>
@@ -170,7 +173,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/quality-gates-plugin</url>
-  </scm>
+    </scm>
 
     <developers>
         <developer>
@@ -184,6 +187,11 @@
         <developer>
             <id>dpd90</id>
             <name>Dimitar Pop-Dimitrov</name>
+        </developer>
+        <developer>
+            <id>arkanjoms</id>
+            <name>Rafael Ramos de Oliveira</name>
+            <email>arkanjo.ms@gmail.com</email>
         </developer>
     </developers>
 
