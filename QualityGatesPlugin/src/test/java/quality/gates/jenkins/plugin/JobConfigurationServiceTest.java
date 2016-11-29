@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,8 @@ public class JobConfigurationServiceTest {
         jobConfigurationService = new JobConfigurationService();
         formData = new JSONObject();
         formData.put("projectKey", "TestKey");
+
+        doReturn(mock(PrintStream.class)).when(listener).getLogger();
     }
 
     @Test
@@ -129,11 +132,11 @@ public class JobConfigurationServiceTest {
 
     @Test
     public void testIfProjectKeyStartsWithDolarSignAndVarIsFound() throws Exception {
-        String key = "$";
+        String key = "${PROJECT_KEY}";
         doReturn(key).when(jobConfigData).getProjectKey();
         EnvVars envVars = mock(EnvVars.class);
         doReturn(envVars).when(build).getEnvironment(listener);
-        doReturn("EnvVariable").when(envVars).get(anyString());
+        doReturn("EnvVariable").when(envVars).get("PROJECT_KEY");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
         assertTrue(returnedData.getProjectKey().equals("EnvVariable"));
     }
@@ -155,11 +158,11 @@ public class JobConfigurationServiceTest {
 
     @Test
     public void testIfProjectKeyStartsWithDolarSignAndHasBracketsVarIsFound() throws Exception {
-        String key = "${}";
+        String key = "${PROJECT_KEY}";
         doReturn(key).when(jobConfigData).getProjectKey();
         EnvVars envVars = mock(EnvVars.class);
         doReturn(envVars).when(build).getEnvironment(listener);
-        doReturn("EnvVariable").when(envVars).get(anyString());
+        doReturn("EnvVariable").when(envVars).get("PROJECT_KEY");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
         assertTrue(returnedData.getProjectKey().equals("EnvVariable"));
     }

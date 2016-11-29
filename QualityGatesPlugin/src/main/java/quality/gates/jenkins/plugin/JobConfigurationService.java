@@ -1,5 +1,7 @@
 package quality.gates.jenkins.plugin;
 
+import hudson.EnvVars;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
@@ -61,31 +63,24 @@ public class JobConfigurationService {
     }
 
     public JobConfigData checkProjectKeyIfVariable(JobConfigData jobConfigData, AbstractBuild build, BuildListener listener) throws QGException {
-        JobConfigData envVariableJobConfigData = new JobConfigData();
-        envVariableJobConfigData.setProjectKey(jobConfigData.getProjectKey());
-        envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
-        if(jobConfigData.getProjectKey().isEmpty()) {
+        String projectKey = jobConfigData.getProjectKey();
+        if(projectKey.isEmpty()) {
             throw new QGException("Empty project key.");
         }
-        if(jobConfigData.getProjectKey().startsWith("$")) {
-            String stripProjectKey = jobConfigData.getProjectKey().substring(1);
-            if(stripProjectKey.startsWith("{") && stripProjectKey.endsWith("}")) {
-                stripProjectKey = stripProjectKey.substring(1, stripProjectKey.length()-1);
-            }
-            try {
-                String getEnvVariable = build.getEnvironment(listener).get(stripProjectKey);
-                if(getEnvVariable != null) {
-                    envVariableJobConfigData.setProjectKey(getEnvVariable);
-                }
-                else {
-                    throw new QGException("Environment variable with name '" + stripProjectKey + "' was not found.");
-                }
-            } catch (IOException e) {
-                throw new QGException(e);
-            } catch (InterruptedException e) {
-                throw new QGException(e);
-            }
+
+        projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
+        try {
+            EnvVars env = build.getEnvironment(listener);
+            projectKey = Util.replaceMacro(projectKey, env);
+        } catch (IOException e) {
+            throw new QGException(e);
+        } catch (InterruptedException e) {
+            throw new QGException(e);
         }
+
+        JobConfigData envVariableJobConfigData = new JobConfigData();
+        envVariableJobConfigData.setProjectKey(projectKey);
+        envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
         return envVariableJobConfigData;
     }
 }
