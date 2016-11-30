@@ -49,8 +49,6 @@ public class JobConfigurationServiceTest {
         jobConfigurationService = new JobConfigurationService();
         formData = new JSONObject();
         formData.put("projectKey", "TestKey");
-
-        doReturn(mock(PrintStream.class)).when(listener).getLogger();
     }
 
     @Test
@@ -132,7 +130,7 @@ public class JobConfigurationServiceTest {
 
     @Test
     public void testIfProjectKeyStartsWithDolarSignAndVarIsFound() throws Exception {
-        String key = "${PROJECT_KEY}";
+        String key = "$PROJECT_KEY";
         doReturn(key).when(jobConfigData).getProjectKey();
         EnvVars envVars = mock(EnvVars.class);
         doReturn(envVars).when(build).getEnvironment(listener);
