@@ -14,8 +14,8 @@ import net.sf.json.JSONObject;
 
 public class JobConfigurationService {
 
-    public static final Pattern ENV_VARIABLE_WITH_BRACES_PATTERN = Pattern.compile( "(\\$\\{[a-zA-Z_]+\\})" );
-    public static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile( "(\\$[a-zA-Z_]+)" );
+    private static final Pattern ENV_VARIABLE_WITH_BRACES_PATTERN = Pattern.compile( "(\\$\\{[a-zA-Z_]+\\})" );
+    private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile( "(\\$[a-zA-Z_]+)" );
     
     public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
         ListBoxModel listBoxModel = new ListBoxModel();
