@@ -12,12 +12,17 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class JobConfigurationServiceTest {
 
@@ -44,7 +49,7 @@ public class JobConfigurationServiceTest {
     private BuildListener listener;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         jobConfigurationService = new JobConfigurationService();
         formData = new JSONObject();
@@ -52,7 +57,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test
-    public void testGetListBoxModelShouldReturnOneInstance(){
+    public void testGetListBoxModelShouldReturnOneInstance() {
         createGlobalConfigData();
         globalConfigDataForSonarInstance.setName("First Instance");
         globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance);
@@ -62,13 +67,13 @@ public class JobConfigurationServiceTest {
     }
 
     @Test
-    public void testGetListBoxModelShouldReturnEmptyListBoxModel(){
+    public void testGetListBoxModelShouldReturnEmptyListBoxModel() {
         ListBoxModel returnList = jobConfigurationService.getListOfSonarInstanceNames(globalConfig);
         assertEquals("[]", returnList.toString());
     }
 
     @Test
-    public void testGetListBoxModelShouldReturnMoreInstance(){
+    public void testGetListBoxModelShouldReturnMoreInstance() {
         createGlobalConfigData();
         globalConfigDataForSonarInstance.setName("First Instance");
         globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance);
@@ -122,8 +127,7 @@ public class JobConfigurationServiceTest {
         doReturn(key).when(jobConfigData).getProjectKey();
         try {
             jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        }
-        catch (QGException e) {
+        } catch (QGException e) {
             assertTrue(e.toString().contains("Empty project key."));
         }
     }
@@ -148,8 +152,7 @@ public class JobConfigurationServiceTest {
         doReturn(null).when(envVars).get(anyString());
         try {
             jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        }
-        catch (QGException e) {
+        } catch (QGException e) {
             assertTrue(e.toString().contains("Environment variable with name '' was not found."));
         }
     }
@@ -166,7 +169,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test
-    public void testNotEnvironmentVariable () {
+    public void testNotEnvironmentVariable() {
         String key = "NormalString";
         doReturn(key).when(jobConfigData).getProjectKey();
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
@@ -174,7 +177,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test(expected = QGException.class)
-    public void testEnvironmentThrowsIOException () throws Exception {
+    public void testEnvironmentThrowsIOException() throws Exception {
         String key = "$";
         doReturn(key).when(jobConfigData).getProjectKey();
         IOException exception = mock(IOException.class);
@@ -183,7 +186,7 @@ public class JobConfigurationServiceTest {
     }
 
     @Test(expected = QGException.class)
-    public void testEnvironmentThrowsInterruptedException () throws Exception {
+    public void testEnvironmentThrowsInterruptedException() throws Exception {
         String key = "$";
         doReturn(key).when(jobConfigData).getProjectKey();
         InterruptedIOException exception = mock(InterruptedIOException.class);

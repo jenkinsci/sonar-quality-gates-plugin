@@ -12,22 +12,33 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class GlobalConfigurationServiceTest {
+
     private GlobalConfigurationService globalConfigurationService;
+
     private GlobalConfigurationService spyGlobalConfigurationService;
+
     @Mock
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
+
     private JSONObject jsonObjectNotNull;
+
     private JSON globalDataConfigs;
+
     private JSONArray jsonArray;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         globalConfigurationService = new GlobalConfigurationService();
         spyGlobalConfigurationService = spy(globalConfigurationService);
@@ -40,7 +51,7 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testGetGlobalConfigsArrayWhenObject(){
+    public void testGetGlobalConfigsArrayWhenObject() {
         jsonArray = new JSONArray();
         doReturn(jsonArray).when(spyGlobalConfigurationService).createJsonArrayFromObject(JSONObject.fromObject(globalDataConfigs));
         String objectString = "{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}";
@@ -50,7 +61,7 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testGetGlobalConfigsArrayWhenArray(){
+    public void testGetGlobalConfigsArrayWhenArray() {
         String arrayString = "[{\"name\":\"Sonar1\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"},{\"name\":\"Sonar2\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]";
         globalDataConfigs = JSONSerializer.toJSON(arrayString);
         jsonArray = JSONArray.class.cast(globalDataConfigs);
@@ -58,13 +69,13 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testCreateJsonArrayFromObject(){
+    public void testCreateJsonArrayFromObject() {
         String array = "[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"pass\":\"admin\"}]";
         assertEquals(JSONArray.fromObject(array), globalConfigurationService.createJsonArrayFromObject(jsonObjectNotNull));
     }
 
     @Test
-    public void testInstantiateGlobalConfigData(){
+    public void testInstantiateGlobalConfigData() {
         JSONObject json = new JSONObject();
         json.put("listOfGlobalConfigData", JSONArray.fromObject("[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]"));
         JSON globalDataConfig = (JSON) json.opt("listOfGlobalConfigData");
@@ -73,14 +84,14 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testInstantiateGlobalConfigDataWhenJsonIsNull(){
+    public void testInstantiateGlobalConfigDataWhenJsonIsNull() {
         JSONObject json = new JSONObject();
         doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(any(JSON.class));
         assertEquals(listOfGlobalConfigData, spyGlobalConfigurationService.instantiateGlobalConfigData(json));
     }
 
     @Test
-    public void testContainsGlobalConfigWithNameTrue(){
+    public void testContainsGlobalConfigWithNameTrue() {
         String name = "Ime";
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
         globalConfigDataForSonarInstance.setName("Ime");
@@ -90,7 +101,7 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testContainsGlobalConfigWithNameFalse(){
+    public void testContainsGlobalConfigWithNameFalse() {
         String name = "Ime";
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
         globalConfigDataForSonarInstance.setName("Ime3");
@@ -100,7 +111,7 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testInitGlobalDataConfig(){
+    public void testInitGlobalDataConfig() {
         JSONArray array = JSONArray.fromObject("[{\"name\":\"Sonar1\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"},{\"name\":\"Sonar2\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]");
         doReturn(JSONArray.fromObject(array)).when(spyGlobalConfigurationService).getGlobalConfigsArray(any(JSON.class));
         doNothing().when(spyGlobalConfigurationService).addGlobalConfigDataForSonarInstance(any(JSONObject.class));

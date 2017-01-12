@@ -1,5 +1,8 @@
 package quality.gates.sonar.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import jdk.nashorn.api.scripting.JSObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,24 +14,30 @@ import java.util.List;
 public class QualityGateResponseParser {
 
     public QualityGatesStatus getQualityGateResultFromJSON(String jsonString) throws QGException {
+
         JSONArray resultArray = createJSONArrayFromString(jsonString);
 
         JSONObject latestEventResult = getLatestEventResult(resultArray);
 
         String gateStatus = getValueForJSONKey(latestEventResult, "n");
-        if (gateStatus.startsWith("Green"))
+
+        if (gateStatus.startsWith("Green")) {
             return new QualityGatesStatus("OK");
+        }
+
         return new QualityGatesStatus("ERROR");
     }
 
     protected JSONObject getLatestEventResult(JSONArray jsonArray) throws QGException {
+
         List<JSONObject> jsonObjects = new ArrayList<>();
         JSONObject returnObject;
+
         int jsonArrayLength = jsonArray.length();
 
-        if(jsonArrayLength == 0){
+        if (jsonArrayLength == 0) {
             jsonObjects.add(createObjectWithStatusGreen());
-        }else {
+        } else {
             for (int i = 0; i < jsonArrayLength; i++) {
                 jsonObjects.add(getJSONObjectFromArray(jsonArray, i));
             }
@@ -48,11 +57,13 @@ public class QualityGateResponseParser {
     }
 
     protected JSONObject createObjectWithStatusGreen() {
+
         try {
             JSONObject returnObject = new JSONObject();
             returnObject.put("id", "1");
             returnObject.put("dt", "2000-01-01T12:00:00+0100");
             returnObject.put("n", "Green");
+
             return returnObject;
         } catch (JSONException e) {
             throw new QGException(e);
@@ -60,6 +71,7 @@ public class QualityGateResponseParser {
     }
 
     protected JSONObject getJSONObjectFromArray(JSONArray array, int index) throws QGException {
+
         try {
             return array.getJSONObject(index);
         } catch (JSONException e) {
@@ -68,6 +80,7 @@ public class QualityGateResponseParser {
     }
 
     protected String getValueForJSONKey(List<JSONObject> array, int index, String key) throws QGException {
+
         try {
             return array.get(index).getString(key);
         } catch (JSONException e) {
@@ -76,6 +89,7 @@ public class QualityGateResponseParser {
     }
 
     protected String getValueForJSONKey(JSONObject jsonObject, String key) throws QGException {
+
         try {
             return jsonObject.getString(key);
         } catch (JSONException e) {
@@ -84,6 +98,7 @@ public class QualityGateResponseParser {
     }
 
     protected JSONArray createJSONArrayFromString(String jsonString) throws QGException {
+
         try {
             return new JSONArray(jsonString);
         } catch (JSONException e) {

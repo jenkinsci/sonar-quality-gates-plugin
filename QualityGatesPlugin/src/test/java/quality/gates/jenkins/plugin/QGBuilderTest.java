@@ -11,8 +11,17 @@ import org.mockito.MockitoAnnotations;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 public class QGBuilderTest {
 
@@ -50,7 +59,7 @@ public class QGBuilderTest {
     private JobConfigurationService jobConfigurationService;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
@@ -75,7 +84,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), buildListener)).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
@@ -86,7 +95,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), buildListener)).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
@@ -98,7 +107,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(false);
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener)).thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
@@ -109,7 +118,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(false);
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener)).thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
@@ -121,7 +130,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformThrowsException() throws QGException {
         QGException exception = mock(QGException.class);
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class))).thenThrow(exception);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), buildListener)).thenThrow(exception);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }

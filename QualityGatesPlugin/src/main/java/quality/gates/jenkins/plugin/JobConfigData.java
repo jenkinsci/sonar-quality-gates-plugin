@@ -3,8 +3,8 @@ package quality.gates.jenkins.plugin;
 public class JobConfigData {
 
     private String projectKey;
-    private String sonarInstanceName;
 
+    private String sonarInstanceName;
 
     public String getProjectKey() {
         return projectKey;
@@ -24,6 +24,7 @@ public class JobConfigData {
 
     @Override
     public String toString() {
+
         return "JobConfigData{" +
                 "projectKey='" + projectKey + '\'' +
                 ", sonarInstanceName='" + sonarInstanceName + '\'' +
@@ -32,19 +33,27 @@ public class JobConfigData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         JobConfigData that = (JobConfigData) o;
 
-        if (!projectKey.equals(that.projectKey)) return false;
+        if (!projectKey.equals(that.projectKey))
+            return false;
+
         return sonarInstanceName.equals(that.sonarInstanceName);
     }
 
     @Override
     public int hashCode() {
+
         int result = projectKey.hashCode();
         result = 31 * result + sonarInstanceName.hashCode();
+
         return result;
     }
 }

@@ -2,16 +2,19 @@ package quality.gates.sonar.api;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import hudson.util.Secret;
-import org.jvnet.hudson.test.JenkinsRule;
-import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
-import quality.gates.jenkins.plugin.JobConfigData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.jvnet.hudson.test.JenkinsRule;
+import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import quality.gates.jenkins.plugin.JobConfigData;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertTrue;
-
 
 public class SonarHttpRequesterIT {
 
@@ -26,7 +29,7 @@ public class SonarHttpRequesterIT {
 
     @Before
     public void init() {
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("name","http://localhost:9876", "admin", Secret.fromString("admin"));
+        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("name", "http://localhost:9876", "admin", Secret.fromString("admin"));
         sonarHttpRequester = new SonarHttpRequester();
     }
 

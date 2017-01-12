@@ -10,15 +10,20 @@ import quality.gates.jenkins.plugin.QGException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class QualityGateResponseParserTest {
 
     public static final String COM_OPENSOURCE_QUALITY_GATES = "com.opensource:quality-gates";
+
     public static final String GREEN_WAS_RED = "Green (was Red)";
+
     public static final String ALERT = "Alert";
+
     public static final String T12_01_31_0100 = "2016-03-25T12:01:31+0100";
+
     public static final String DT = "dt";
+
     private QualityGateResponseParser qualityGateResponseParser;
 
     private String jsonArrayString;
@@ -47,7 +52,6 @@ public class QualityGateResponseParserTest {
         assertEquals(new QualityGatesStatus("ERROR"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArrayString));
     }
 
-
     @Test
     public void testGetLatestEventResultWhenFirstObjectIsntWithLatestDate() throws JSONException {
         JSONArray array = new JSONArray();
@@ -63,7 +67,7 @@ public class QualityGateResponseParserTest {
         secondJsonObject.put("rk", COM_OPENSOURCE_QUALITY_GATES);
         secondJsonObject.put("n", GREEN_WAS_RED);
         secondJsonObject.put("c", ALERT);
-        secondJsonObject.put(DT,  "2016-03-26T12:01:31+0100");
+        secondJsonObject.put(DT, "2016-03-26T12:01:31+0100");
         secondJsonObject.put("ds", "");
         array.put(firstJsonObject);
         array.put(secondJsonObject);
@@ -71,18 +75,18 @@ public class QualityGateResponseParserTest {
     }
 
     @Test
-    public void testCreateJSONArrayFromString(){
-        JSONArray expected= new JSONArray();
+    public void testCreateJSONArrayFromString() {
+        JSONArray expected = new JSONArray();
         assertEquals(expected.toString(), qualityGateResponseParser.createJSONArrayFromString("[]").toString());
     }
 
     @Test(expected = QGException.class)
-    public void testCreateJSONArrayFromStringWhenStringNotInJSONFormatShouldThrowQGException(){
+    public void testCreateJSONArrayFromStringWhenStringNotInJSONFormatShouldThrowQGException() {
         qualityGateResponseParser.createJSONArrayFromString("Random string as a response");
     }
 
     @Test(expected = QGException.class)
-    public void testCreateJSONArrayFromStringThrowsExceptionWhenStringISAJSONObjectShouldThrowQGException(){
+    public void testCreateJSONArrayFromStringThrowsExceptionWhenStringISAJSONObjectShouldThrowQGException() {
         qualityGateResponseParser.createJSONArrayFromString("{\n" +
                 "err_code: 404,\n" +
                 "err_msg: \"Resource not found: wrongProjectKey\"\n" +
@@ -103,13 +107,13 @@ public class QualityGateResponseParserTest {
     }
 
     @Test(expected = QGException.class)
-    public void testGetJSONObjectFromArrayThrowsExceptionDueToArrayOutOfBounds(){
+    public void testGetJSONObjectFromArrayThrowsExceptionDueToArrayOutOfBounds() {
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString(jsonArrayString);
         qualityGateResponseParser.getJSONObjectFromArray(array, 2);
     }
 
     @Test
-    public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException{
+    public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException {
         JSONObject expectedObject = new JSONObject();
         expectedObject.put("id", "1");
         expectedObject.put(DT, "2000-01-01T12:00:00+0100");
@@ -155,5 +159,4 @@ public class QualityGateResponseParserTest {
         String actual = qualityGateResponseParser.getValueForJSONKey(jsonObject, "dateeee");
         assertEquals(expected, actual);
     }
-
 }

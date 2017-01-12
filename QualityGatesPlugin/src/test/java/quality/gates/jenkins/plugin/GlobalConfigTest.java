@@ -12,11 +12,12 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import static org.mockito.Mockito.*;
-
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 public class GlobalConfigTest {
@@ -36,8 +37,6 @@ public class GlobalConfigTest {
 
     private JSONObject jsonObject;
 
-
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -55,7 +54,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testGetSonarInstanceByNameIF(){
+    public void testGetSonarInstanceByNameIF() {
 
         GlobalConfigDataForSonarInstance globalConfig1 = new GlobalConfigDataForSonarInstance();
         globalConfig1.setName("Name");
@@ -66,7 +65,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testGetSonarInstanceByNameELSE(){
+    public void testGetSonarInstanceByNameELSE() {
         GlobalConfigDataForSonarInstance globalConfig1 = new GlobalConfigDataForSonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
@@ -75,8 +74,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testGetSonarInstanceByNameNULL(){
+    public void testGetSonarInstanceByNameNULL() {
         assertNull(globalConfig.getSonarInstanceByName(""));
     }
-
 }

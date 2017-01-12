@@ -15,19 +15,23 @@ public class QualityGatesStatus {
         return status;
     }
 
-    public boolean hasStatusGreen(){
+    public boolean hasStatusGreen() {
         return BUILDS.equals(status);
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()){
+
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         QualityGatesStatus that = (QualityGatesStatus) o;
+
         return status != null ? status.equals(that.status) : that.status == null;
     }
 
@@ -38,6 +42,7 @@ public class QualityGatesStatus {
 
     @Override
     public String toString() {
+
         return "QualityGatesStatus{" +
                 "status='" + status + '\'' +
                 '}';

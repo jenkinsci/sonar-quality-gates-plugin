@@ -13,20 +13,24 @@ import java.util.List;
 public class GlobalConfig extends GlobalConfiguration {
 
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
+
     private GlobalConfigurationService globalConfigurationService;
 
     public GlobalConfig() {
+
         load();
         globalConfigurationService = new GlobalConfigurationService();
     }
 
 
     public GlobalConfig(List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData, GlobalConfigurationService globalConfigurationService) {
+
         this.listOfGlobalConfigData = listOfGlobalConfigData;
         this.globalConfigurationService = globalConfigurationService;
     }
 
     public List<GlobalConfigDataForSonarInstance> getListOfGlobalConfigData() {
+
         load();
         return listOfGlobalConfigData;
     }
@@ -41,22 +45,30 @@ public class GlobalConfig extends GlobalConfiguration {
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+
         listOfGlobalConfigData = globalConfigurationService.instantiateGlobalConfigData(json);
         save();
+
         return true;
     }
 
     public FormValidation doCheckName(@QueryParameter String name) {
-        if(name.isEmpty())
+
+        if (name.isEmpty()) {
             return FormValidation.error("Please insert a name for the instance.");
+        }
+
         return FormValidation.ok();
     }
 
-    public GlobalConfigDataForSonarInstance getSonarInstanceByName(String name){
+    public GlobalConfigDataForSonarInstance getSonarInstanceByName(String name) {
+
         for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance : listOfGlobalConfigData) {
-            if(name.equals(globalConfigDataForSonarInstance.getName()))
+            if (name.equals(globalConfigDataForSonarInstance.getName())) {
                 return globalConfigDataForSonarInstance;
+            }
         }
+
         return null;
     }
 }

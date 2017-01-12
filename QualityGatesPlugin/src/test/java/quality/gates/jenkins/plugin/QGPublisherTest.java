@@ -13,8 +13,18 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 public class QGPublisherTest {
 
@@ -54,8 +64,11 @@ public class QGPublisherTest {
     @Mock
     List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
 
+    @Mock
+    private BuildListener listener;
+
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
         doReturn(printStream).when(buildListener).getLogger();
@@ -90,7 +103,7 @@ public class QGPublisherTest {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(true);
         doReturn("").when(jobConfigData).getSonarInstanceName();
-        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class));
+        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
         assertTrue(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -104,7 +117,7 @@ public class QGPublisherTest {
         buildDecisionShouldBe(true);
         doReturn("SomeName").when(globalConfigDataForSonarInstance).getName();
         doReturn("someName").when(jobConfigData).getSonarInstanceName();
-        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class));
+        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
         assertTrue(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -138,13 +151,13 @@ public class QGPublisherTest {
     public void testPerformThrowsException() throws QGException {
         setBuildResult(Result.SUCCESS);
         QGException exception = mock(QGException.class);
-        doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class));
+        doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }
 
     private void buildDecisionShouldBe(boolean toBeReturned) throws QGException {
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData)).thenReturn(toBeReturned);
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener)).thenReturn(toBeReturned);
     }
 
     private void setBuildResult(Result result) {

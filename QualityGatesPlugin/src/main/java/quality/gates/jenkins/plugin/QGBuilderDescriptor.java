@@ -17,17 +17,20 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
     @Inject
     private JobConfigurationService jobConfigurationService;
+
     @Inject
     private JobExecutionService jobExecutionService;
 
-    public QGBuilderDescriptor()
-    {
+    public QGBuilderDescriptor() {
+
         super(QGBuilder.class);
         load();
     }
 
-    public QGBuilderDescriptor(JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService){
+    public QGBuilderDescriptor(JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
+
         super(QGBuilder.class);
+
         this.jobConfigurationService = jobConfigurationService;
         this.jobExecutionService = jobExecutionService;
     }
@@ -37,9 +40,11 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     public FormValidation doCheckProjectKey(@QueryParameter String projectKey) {
-        if(projectKey.isEmpty()) {
+
+        if (projectKey.isEmpty()) {
             return FormValidation.error("Please insert project key.");
         }
+
         return FormValidation.ok();
     }
 
@@ -55,12 +60,14 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
     @Override
     public boolean configure(StaplerRequest staplerRequest, JSONObject json) throws FormException {
+
         save();
         return true;
     }
 
     @Override
     public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws QGException {
+
         JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
         return new QGBuilder(firstInstanceJobConfigData);
     }

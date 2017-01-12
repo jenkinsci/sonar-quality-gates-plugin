@@ -22,11 +22,13 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     private JobExecutionService jobExecutionService;
 
     public QGPublisherDescriptor() {
+
         super(QGPublisher.class);
         load();
     }
 
     public QGPublisherDescriptor(JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
+
         super(QGPublisher.class);
         this.jobExecutionService = jobExecutionService;
         this.jobConfigurationService = jobConfigurationService;
@@ -41,9 +43,11 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     }
 
     public FormValidation doCheckProjectKey(@QueryParameter String projectKey) {
-        if(projectKey.isEmpty()) {
+
+        if (projectKey.isEmpty()) {
             return FormValidation.error("Please insert project key.");
         }
+
         return FormValidation.ok();
     }
 
@@ -59,12 +63,14 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+
         save();
         return true;
     }
 
     @Override
     public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws QGException {
+
         JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
         return new QGPublisher(firstInstanceJobConfigData);
     }

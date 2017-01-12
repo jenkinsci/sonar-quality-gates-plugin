@@ -1,20 +1,23 @@
 package quality.gates.jenkins.plugin;
 
-import quality.gates.sonar.api.QualityGatesProvider;
+import hudson.model.BuildListener;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import quality.gates.sonar.api.QualityGatesProvider;
 import quality.gates.sonar.api.QualityGatesStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 public class BuildDecisionTest {
 
@@ -35,31 +38,34 @@ public class BuildDecisionTest {
     @Mock
     GlobalConfig globalConfig;
 
+    @Mock
+    private BuildListener listener;
+
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         buildDecision = new BuildDecision(qualityGatesProvider);
     }
 
     @Test
-    public void testGetStatusTrue() throws JSONException {
-        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class));
+    public void testGetStatusTrue() throws JSONException, InterruptedException {
+        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), listener);
         doReturn(true).when(qualityGatesStatus).hasStatusGreen();
-        assertTrue(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData));
+        assertTrue(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener));
     }
 
     @Test
-    public void testGetStatusFalse() throws JSONException {
-        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class));
+    public void testGetStatusFalse() throws JSONException, InterruptedException {
+        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), listener);
         doReturn(false).when(qualityGatesStatus).hasStatusGreen();
-        assertFalse(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData));
+        assertFalse(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener));
     }
 
     @Test(expected = QGException.class)
-    public void testGetStatusThrowJSONException() throws JSONException {
+    public void testGetStatusThrowJSONException() throws JSONException, InterruptedException {
         JSONException jsonException = Mockito.mock(JSONException.class);
-        when(qualityGatesProvider.getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class))).thenThrow(jsonException);
-        buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData);
+        when(qualityGatesProvider.getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), listener)).thenThrow(jsonException);
+        buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener);
     }
 
     @Test
