@@ -1,17 +1,21 @@
 package quality.gates.jenkins.plugin;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import hudson.EnvVars;
-import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 public class JobConfigurationService {
+
+    private static final Pattern ENV_VARIABLE_WITH_BRACES_PATTERN = Pattern.compile( "(\\$\\{[a-zA-Z_]+\\})" );
+    private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile( "(\\$[a-zA-Z_]+)" );
 
     public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
 
@@ -29,15 +33,8 @@ public class JobConfigurationService {
         JobConfigData firstInstanceJobConfigData = new JobConfigData();
         String projectKey = formData.getString("projectKey");
 
-        if (projectKey.startsWith("$")) {
-            String systemVariableName = projectKey;
-            String getEnvVariable = systemVariableName.substring(2, systemVariableName.length() - 1);
-            projectKey = System.getenv(getEnvVariable);
-
-            if (projectKey == null) {
-                throw new QGException("Environment variable with name '" + getEnvVariable + "' does not exist.");
-            }
-        } else {
+        if(!projectKey.startsWith("$"))
+        {
             try {
                 projectKey = URLDecoder.decode(projectKey, "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -76,23 +73,66 @@ public class JobConfigurationService {
 
         String projectKey = jobConfigData.getProjectKey();
 
-        if (projectKey.isEmpty()) {
+        if(projectKey.isEmpty())
+        {
             throw new QGException("Empty project key.");
         }
 
-        projectKey = Util.replaceMacro(projectKey, build.getBuildVariables());
+        final JobConfigData envVariableJobConfigData = new JobConfigData();
+        envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
+
 
         try {
-            EnvVars env = build.getEnvironment(listener);
-            projectKey = Util.replaceMacro(projectKey, env);
-        } catch (IOException | InterruptedException e) {
+            envVariableJobConfigData.setProjectKey(getProjectKey(projectKey, build.getEnvironment(listener)));
+        }
+        catch (IOException e)
+        {
+            throw new QGException(e);
+        }
+        catch (InterruptedException e)
+        {
             throw new QGException(e);
         }
 
-        JobConfigData envVariableJobConfigData = new JobConfigData();
-        envVariableJobConfigData.setProjectKey(projectKey);
         envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
 
         return envVariableJobConfigData;
+    }
+
+    private String getProjectKey(final String projectKey, EnvVars env)
+    {
+        final String projectKeyAfterFirstResolving = resolveEmbeddedEnvVariables(projectKey, env, ENV_VARIABLE_WITH_BRACES_PATTERN, 1);
+
+        return resolveEmbeddedEnvVariables(projectKeyAfterFirstResolving, env, ENV_VARIABLE_WITHOUT_BRACES_PATTERN, 0);
+    }
+
+    private String resolveEmbeddedEnvVariables(final String projectKey, final EnvVars env, final Pattern pattern, final int braceOffset)
+    {
+        final Matcher matcher = pattern.matcher(projectKey);
+        final StringBuilder builder = new StringBuilder(projectKey);
+        boolean matchesFound = false;
+        int offset = 0;
+
+        while(matcher.find())
+        {
+            final String envVariable = projectKey.substring(matcher.start() + braceOffset + 1, matcher.end() - braceOffset);
+            final String envValue = env.get(envVariable);
+
+            if(envValue == null)
+            {
+                throw new QGException("Environment Variable [" + envVariable + "] not found");
+            }
+
+            builder.replace(matcher.start() + offset, matcher.end() + offset, envValue);
+            offset += envValue.length() - matcher.group(1).length();
+            matchesFound = true;
+        }
+
+        if(matchesFound)
+        {
+            return getProjectKey(builder.toString(), env);
+        }
+
+        return builder.toString();
     }
 }
