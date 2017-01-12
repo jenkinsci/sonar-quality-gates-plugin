@@ -1,21 +1,22 @@
 package quality.gates.jenkins.plugin;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import hudson.EnvVars;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class JobConfigurationService {
 
-    private static final Pattern ENV_VARIABLE_WITH_BRACES_PATTERN = Pattern.compile( "(\\$\\{[a-zA-Z_]+\\})" );
-    private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile( "(\\$[a-zA-Z_]+)" );
+    private static final Pattern ENV_VARIABLE_WITH_BRACES_PATTERN = Pattern.compile("(\\$\\{[a-zA-Z_]+\\})");
+
+    private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile("(\\$[a-zA-Z_]+)");
 
     public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
 
@@ -33,8 +34,7 @@ public class JobConfigurationService {
         JobConfigData firstInstanceJobConfigData = new JobConfigData();
         String projectKey = formData.getString("projectKey");
 
-        if(!projectKey.startsWith("$"))
-        {
+        if (!projectKey.startsWith("$")) {
             try {
                 projectKey = URLDecoder.decode(projectKey, "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -73,24 +73,18 @@ public class JobConfigurationService {
 
         String projectKey = jobConfigData.getProjectKey();
 
-        if(projectKey.isEmpty())
-        {
+        if (projectKey.isEmpty()) {
             throw new QGException("Empty project key.");
         }
 
         final JobConfigData envVariableJobConfigData = new JobConfigData();
         envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
 
-
         try {
             envVariableJobConfigData.setProjectKey(getProjectKey(projectKey, build.getEnvironment(listener)));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new QGException(e);
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             throw new QGException(e);
         }
 
@@ -99,27 +93,25 @@ public class JobConfigurationService {
         return envVariableJobConfigData;
     }
 
-    private String getProjectKey(final String projectKey, EnvVars env)
-    {
+    private String getProjectKey(final String projectKey, EnvVars env) {
+
         final String projectKeyAfterFirstResolving = resolveEmbeddedEnvVariables(projectKey, env, ENV_VARIABLE_WITH_BRACES_PATTERN, 1);
 
         return resolveEmbeddedEnvVariables(projectKeyAfterFirstResolving, env, ENV_VARIABLE_WITHOUT_BRACES_PATTERN, 0);
     }
 
-    private String resolveEmbeddedEnvVariables(final String projectKey, final EnvVars env, final Pattern pattern, final int braceOffset)
-    {
+    private String resolveEmbeddedEnvVariables(final String projectKey, final EnvVars env, final Pattern pattern, final int braceOffset) {
+
         final Matcher matcher = pattern.matcher(projectKey);
         final StringBuilder builder = new StringBuilder(projectKey);
         boolean matchesFound = false;
         int offset = 0;
 
-        while(matcher.find())
-        {
+        while (matcher.find()) {
             final String envVariable = projectKey.substring(matcher.start() + braceOffset + 1, matcher.end() - braceOffset);
             final String envValue = env.get(envVariable);
 
-            if(envValue == null)
-            {
+            if (envValue == null) {
                 throw new QGException("Environment Variable [" + envVariable + "] not found");
             }
 
@@ -128,8 +120,7 @@ public class JobConfigurationService {
             matchesFound = true;
         }
 
-        if(matchesFound)
-        {
+        if (matchesFound) {
             return getProjectKey(builder.toString(), env);
         }
 
