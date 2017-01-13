@@ -6,6 +6,8 @@ public class JobConfigData {
 
     private String sonarInstanceName;
 
+    private int attemptsToRepeat;
+
     public String getProjectKey() {
         return projectKey;
     }
@@ -22,13 +24,12 @@ public class JobConfigData {
         this.sonarInstanceName = sonarInstanceName;
     }
 
-    @Override
-    public String toString() {
+    public int getAttemptsToRepeat() {
+        return attemptsToRepeat;
+    }
 
-        return "JobConfigData{" +
-                "projectKey='" + projectKey + '\'' +
-                ", sonarInstanceName='" + sonarInstanceName + '\'' +
-                '}';
+    public void setAttemptsToRepeat(int attemptsToRepeat) {
+        this.attemptsToRepeat = attemptsToRepeat;
     }
 
     @Override
@@ -55,5 +56,14 @@ public class JobConfigData {
         result = 31 * result + sonarInstanceName.hashCode();
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "JobConfigData{" +
+                "projectKey='" + projectKey + '\'' +
+                ", sonarInstanceName='" + sonarInstanceName + '\'' +
+                ", attemptsToRepeat=" + attemptsToRepeat +
+                '}';
     }
 }

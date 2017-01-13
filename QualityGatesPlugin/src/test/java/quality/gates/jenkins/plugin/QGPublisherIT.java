@@ -93,7 +93,7 @@ public class QGPublisherIT {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         jobConfigData.setProjectKey("projectKey");
         doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener)).thenReturn(true, true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class))).thenReturn(true, true);
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("build passed: TRUE", lastRun);
@@ -104,7 +104,7 @@ public class QGPublisherIT {
         setGlobalConfigDataAndJobConfigDataNames("", "");
         jobConfigData.setProjectKey("projectKey");
         doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener)).thenReturn(true, true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class))).thenReturn(true, true);
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains(JobExecutionService.DEFAULT_CONFIGURATION_WARNING, lastRun);
@@ -127,7 +127,7 @@ public class QGPublisherIT {
         QGException exception = new QGException("TestException");
         jobConfigData.setProjectKey("projectKey");
         doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        doReturn(true).doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
+        doReturn(true).doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("QGException", lastRun);

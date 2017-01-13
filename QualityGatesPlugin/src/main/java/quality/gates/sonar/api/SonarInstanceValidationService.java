@@ -5,7 +5,7 @@ import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 
 public class SonarInstanceValidationService {
 
-    public String validateUrl(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    String validateUrl(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         String sonarUrl;
 
@@ -21,7 +21,7 @@ public class SonarInstanceValidationService {
         return sonarUrl;
     }
 
-    public String validateUsername(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    String validateUsername(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         String sonarUsername;
 
@@ -34,7 +34,7 @@ public class SonarInstanceValidationService {
         return sonarUsername;
     }
 
-    public Secret validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    Secret validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         String sonarPassword;
 
@@ -47,7 +47,16 @@ public class SonarInstanceValidationService {
         return Secret.fromString(sonarPassword);
     }
 
-    public GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    int validateTimeToWait(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+
+        if (globalConfigDataForSonarInstance.getTimeToWait() <= 0) {
+            return GlobalConfigDataForSonarInstance.DEFAULT_TIME_TO_WAIT;
+        } else {
+            return globalConfigDataForSonarInstance.getTimeToWait();
+        }
+    }
+
+    GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         return new GlobalConfigDataForSonarInstance(
                 globalConfigDataForSonarInstance.getName(),
