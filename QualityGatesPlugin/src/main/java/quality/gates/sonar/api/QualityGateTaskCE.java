@@ -1,5 +1,7 @@
 package quality.gates.sonar.api;
 
+import org.apache.commons.lang.ArrayUtils;
+
 /**
  * @author arkanjo.ms
  */
@@ -10,11 +12,11 @@ public class QualityGateTaskCE {
     private QualityGateTask current;
 
     public QualityGateTask[] getQueue() {
-        return queue;
+        return (QualityGateTask[]) ArrayUtils.clone(queue);
     }
 
     public void setQueue(QualityGateTask[] queue) {
-        this.queue = queue;
+        this.queue = (QualityGateTask[]) ArrayUtils.clone(queue);
     }
 
     public QualityGateTask getCurrent() {

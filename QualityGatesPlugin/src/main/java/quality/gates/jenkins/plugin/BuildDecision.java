@@ -25,7 +25,7 @@ public class BuildDecision {
         }
     }
 
-    public GlobalConfigDataForSonarInstance chooseSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
+    GlobalConfigDataForSonarInstance chooseSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
 
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
@@ -40,13 +40,13 @@ public class BuildDecision {
         return globalConfigDataForSonarInstance;
     }
 
-    public GlobalConfigDataForSonarInstance noSonarInstance(JobConfigData jobConfigData) {
+    private GlobalConfigDataForSonarInstance noSonarInstance(JobConfigData jobConfigData) {
 
         jobConfigData.setSonarInstanceName("");
         return new GlobalConfigDataForSonarInstance();
     }
 
-    public GlobalConfigDataForSonarInstance singleSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
+    private GlobalConfigDataForSonarInstance singleSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
 
         GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = globalConfig.fetchListOfGlobalConfigData().get(0);
         jobConfigData.setSonarInstanceName(globalConfigDataForSonarInstance.getName());

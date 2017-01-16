@@ -8,7 +8,7 @@
             }
     </style>
 
-    <f:section title="Quality Gates" >
+    <f:section title="Quality Gates - Sonarqube 6.x+" >
                 <f:entry field="listOfGlobalConfigData" >
                     <f:repeatable name="listOfGlobalConfigData" var="globalConfigData" items="${instance.listOfGlobalConfigData}" add="${%Add Sonar instance}">
                         <table class="my-style">
@@ -26,6 +26,9 @@
                                            </f:entry>
                                          <f:entry field="pass" title="SonarQube account password" description="Default value is 'admin'" >
                                                <f:password name="password" value="${globalConfigData.pass}" />
+                                         </f:entry>
+                                         <f:entry field="username" title="Time to wait next check (milliseconds)" description="Default value is '7500'" >
+                                               <f:textbox name="account" value="${globalConfigData.timeToWait}" />
                                          </f:entry>
                                     </f:entry>
                                 </td>

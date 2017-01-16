@@ -103,7 +103,7 @@ public class QGPublisherTest {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(true);
         doReturn("").when(jobConfigData).getSonarInstanceName();
-        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
+        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
         assertTrue(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -117,7 +117,7 @@ public class QGPublisherTest {
         buildDecisionShouldBe(true);
         doReturn("SomeName").when(globalConfigDataForSonarInstance).getName();
         doReturn("someName").when(jobConfigData).getSonarInstanceName();
-        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
+        doReturn(true).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
         assertTrue(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -151,7 +151,7 @@ public class QGPublisherTest {
     public void testPerformThrowsException() throws QGException {
         setBuildResult(Result.SUCCESS);
         QGException exception = mock(QGException.class);
-        doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), listener);
+        doThrow(exception).when(buildDecision).getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }

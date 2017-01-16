@@ -12,6 +12,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.jenkins.plugin.QGException;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SonarHttpRequester {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(SonarHttpRequester.class);
 
     private static final String SONAR_API_LOGIN = "/api/authentication/login";
 
@@ -106,7 +110,7 @@ public class SonarHttpRequester {
                 if (response != null)
                     response.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getLocalizedMessage(), e);
             }
         }
     }

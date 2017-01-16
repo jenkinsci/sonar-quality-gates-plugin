@@ -58,7 +58,7 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
 
     @Override
     public String getDisplayName() {
-        return "Quality Gates";
+        return "Quality Gates - Sonarqube 6.x+";
     }
 
     @Override

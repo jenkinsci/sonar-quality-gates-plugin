@@ -84,7 +84,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), buildListener)).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class))).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
@@ -95,7 +95,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldPassWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), buildListener)).thenReturn(true);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class))).thenReturn(true);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertTrue(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();
@@ -130,7 +130,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformThrowsException() throws QGException {
         QGException exception = mock(QGException.class);
-        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), buildListener)).thenThrow(exception);
+        when(buildDecision.getStatus(any(GlobalConfigDataForSonarInstance.class), any(JobConfigData.class), any(BuildListener.class))).thenThrow(exception);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(exception, times(1)).printStackTrace(printStream);
     }

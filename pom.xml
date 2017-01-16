@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jenkins-ci.plugins</groupId>
-    <artifactId>quality-gates-main</artifactId>
-    <name>Quality Gates Plugin Main</name>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
-    <version>2.5-SNAPSHOT</version>
+    <artifactId>quality-gates-sonar6-main</artifactId>
+    <name>Quality Gates Plugin Main - Sonarqube 6.x+</name>
+    <url>https://github.com/arkanjoms/quality-gates-plugin</url>
+    <version>1.0-SNAPSHOT-1</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
@@ -32,9 +32,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/quality-gates-plugin</url>
+        <connection>scm:git:ssh://github.com/arkanjoms/quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/arkanjoms/quality-gates-plugin.git</developerConnection>
+        <url>https://github.com/arkanjoms/quality-gates-plugin</url>
     </scm>
 
     <developers>

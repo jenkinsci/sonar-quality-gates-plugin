@@ -11,6 +11,8 @@ public class GlobalConfigDataForSonarInstance {
 
     public static final String DEFAULT_PASS = "admin";
 
+    public static final int DEFAULT_TIME_TO_WAIT = 7500;
+
     private String name;
 
     private String username;
@@ -20,6 +22,8 @@ public class GlobalConfigDataForSonarInstance {
     private String sonarUrl;
 
     private Secret secretPass;
+
+    private int timeToWait;
 
     public GlobalConfigDataForSonarInstance() {
 
@@ -77,6 +81,14 @@ public class GlobalConfigDataForSonarInstance {
         this.sonarUrl = sonarUrl;
     }
 
+    public int getTimeToWait() {
+        return timeToWait;
+    }
+
+    public void setTimeToWait(int timeToWait) {
+        this.timeToWait = timeToWait;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -123,6 +135,7 @@ public class GlobalConfigDataForSonarInstance {
                 "name='" + name + '\'' +
                 ", username='" + username + '\'' +
                 ", sonarUrl='" + sonarUrl + '\'' +
+                ", timeToWait=" + timeToWait +
                 '}';
     }
 }

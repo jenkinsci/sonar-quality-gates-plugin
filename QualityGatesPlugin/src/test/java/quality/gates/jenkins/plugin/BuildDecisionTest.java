@@ -49,14 +49,14 @@ public class BuildDecisionTest {
 
     @Test
     public void testGetStatusTrue() throws JSONException, InterruptedException {
-        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), listener);
+        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), any(BuildListener.class));
         doReturn(true).when(qualityGatesStatus).hasStatusGreen();
         assertTrue(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener));
     }
 
     @Test
     public void testGetStatusFalse() throws JSONException, InterruptedException {
-        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), listener);
+        doReturn(qualityGatesStatus).when(qualityGatesProvider).getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), any(BuildListener.class));
         doReturn(false).when(qualityGatesStatus).hasStatusGreen();
         assertFalse(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener));
     }
@@ -64,7 +64,7 @@ public class BuildDecisionTest {
     @Test(expected = QGException.class)
     public void testGetStatusThrowJSONException() throws JSONException, InterruptedException {
         JSONException jsonException = Mockito.mock(JSONException.class);
-        when(qualityGatesProvider.getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), listener)).thenThrow(jsonException);
+        when(qualityGatesProvider.getAPIResultsForQualityGates(any(JobConfigData.class), any(GlobalConfigDataForSonarInstance.class), any(BuildListener.class))).thenThrow(jsonException);
         buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener);
     }
 
