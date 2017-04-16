@@ -1,0 +1,109 @@
+version: '2'
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile-custom-db
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha123
+    volumes:
+      - sonar-mysql-data:/var/jenkins_home
+    networks:
+      - desenvnet
+    mem_limit: 256M
+  myadmin:
+    image: phpmyadmin/phpmyadmin
+    hostname: myadmin
+    ports:
+      - "80:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_ROOT_PASSWORD=senha123
+    depends_on:
+      - mysql
+    networks:
+      - desenvnet
+    mem_limit: 128M
+  sonar-6.0:
+    image: "sonarqube:6.0-alpine"
+    hostname: sonar-6.0
+    ports:
+      - "9100:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_0?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+  sonar-6.1:
+    image: "sonarqube:6.1-alpine"
+    hostname: sonar-6.1
+    privileged: true
+    ports:
+      - "9101:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_1?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+  sonar-6.2:
+    image: "sonarqube:6.2-alpine"
+    hostname: sonar-6.2
+    ports:
+      - "9102:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_2?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+  sonar-6.3:
+    image: "sonarqube:6.3-alpine"
+    hostname: sonar-6.3
+    ports:
+      - "9103:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_3?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile-custom-jenkins
+    hostname: jenkins
+    privileged: true
+    environment:
+      - JAVA_OPTS=-Dhudson.model.ParametersAction.keepUndefinedParameters=true
+    ports:
+      - "8180:8080"
+      - "51000:50000"
+    volumes:
+      - sonar-jenkins-data:/var/jenkins_home
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+
+volumes:
+  sonar-mysql-data:
+  sonar-jenkins-data:
+
+networks:
+  desenvnet:

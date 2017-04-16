@@ -34,7 +34,6 @@
     </parent>
 
     <artifactId>qa-plugin-sonar</artifactId>
-    <name>Quality Gates Plugin - Sonarqube 6.x+</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
     <version>1.0-SNAPSHOT-1</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 6.x+ analysis aren't met (the project
@@ -209,5 +208,75 @@
             <email>arkanjo.ms@gmail.com</email>
         </developer>
     </developers>
+
+    <profiles>
+        <profile>
+            <id>sonar-6.0</id>
+            <properties>
+                <sonar.host.url>http://localhost:9100</sonar.host.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.2</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sonar-6.1</id>
+            <properties>
+                <sonar.host.url>http://localhost:9101</sonar.host.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.2</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sonar-6.2</id>
+            <properties>
+                <sonar.host.url>http://localhost:9102</sonar.host.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.2</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sonar-6.3</id>
+            <properties>
+                <sonar.host.url>http://localhost:9103</sonar.host.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.2</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
