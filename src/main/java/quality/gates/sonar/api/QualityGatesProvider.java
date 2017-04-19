@@ -8,6 +8,7 @@ import org.json.JSONException;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.jenkins.plugin.QGException;
+import quality.gates.sonar.api5x.SonarHttpRequester5x;
 
 public class QualityGatesProvider {
 
@@ -15,14 +16,14 @@ public class QualityGatesProvider {
 
     private QualityGateResponseParser qualityGateResponseParser;
 
-    private SonarHttpRequester sonarHttpRequester;
+    private quality.gates.sonar.api.SonarHttpRequester sonarHttpRequester;
 
     private SonarInstanceValidationService sonarInstanceValidationService;
 
     public QualityGatesProvider() {
 
         this.qualityGateResponseParser = new QualityGateResponseParser();
-        this.sonarHttpRequester = new SonarHttpRequester();
+        this.sonarHttpRequester = new SonarHttpRequester5x();
         this.sonarInstanceValidationService = new SonarInstanceValidationService();
     }
 

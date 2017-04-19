@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
+import quality.gates.sonar.api5x.SonarHttpRequester5x;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -16,7 +17,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertTrue;
 
-public class SonarHttpRequesterIT {
+public class SonarHttpRequester6360IT {
 
     private SonarHttpRequester sonarHttpRequester;
 
@@ -24,13 +25,14 @@ public class SonarHttpRequesterIT {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9876);
+
     @Rule
     public JenkinsRule jenkinsRule = new JenkinsRule();
 
     @Before
     public void init() {
         globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance("name", "http://localhost:9876", "admin", Secret.fromString("admin"));
-        sonarHttpRequester = new SonarHttpRequester();
+        sonarHttpRequester = new SonarHttpRequester5x();
     }
 
     @Test
