@@ -1,8 +1,11 @@
 [![Build Status](https://travis-ci.org/arkanjoms/qa-plugin-sonar.svg?branch=master)](https://travis-ci.org/arkanjoms/qa-plugin-sonar)
 
-# Quality Gates Plugin - Sonarqube 6.1+
+# Quality Gates Plugin - Sonarqube
 Jenkins plugin that fails the build if the predefined sonar quality gates are not green.
 
+#### Sonarqube suportted version
+
+* Sonar 6.1
 
 #### Main difference from fork
 

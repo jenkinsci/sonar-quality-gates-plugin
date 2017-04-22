@@ -35,7 +35,7 @@
 
     <artifactId>qa-plugin-sonar</artifactId>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
-    <version>1.0-SNAPSHOT-3</version>
+    <version>1.0-SNAPSHOT-4</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 6.x+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
@@ -113,6 +113,7 @@
             <version>2.8.0</version>
         </dependency>
 
+
     </dependencies>
 
     <repositories>
@@ -176,10 +177,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
@@ -210,6 +207,13 @@
     </developers>
 
     <profiles>
+        <profile>
+            <id>enable-jacoco</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
         <profile>
             <id>sonar-5</id>
             <properties>
