@@ -8,8 +8,8 @@ public class BuildDecision {
 
     private QualityGatesProvider qualityGatesProvider;
 
-    public BuildDecision() {
-        qualityGatesProvider = new QualityGatesProvider();
+    public BuildDecision(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+        qualityGatesProvider = new QualityGatesProvider(globalConfigDataForSonarInstance);
     }
 
     public BuildDecision(QualityGatesProvider qualityGatesProvider) {

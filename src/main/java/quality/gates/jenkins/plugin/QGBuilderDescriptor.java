@@ -50,7 +50,7 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
     @Override
     public String getDisplayName() {
-        return "Quality Gates - Sonarqube 6.x+";
+        return "Quality Gates Sonarqube Plugin";
     }
 
     @Override
@@ -69,6 +69,7 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws QGException {
 
         JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
-        return new QGBuilder(firstInstanceJobConfigData);
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService.getGlobalConfigData().getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
+        return new QGBuilder(firstInstanceJobConfigData, globalConfigDataForSonarInstance);
     }
 }

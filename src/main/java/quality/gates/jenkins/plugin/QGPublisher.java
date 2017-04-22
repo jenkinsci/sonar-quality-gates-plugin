@@ -21,10 +21,10 @@ public class QGPublisher extends Recorder {
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
-    public QGPublisher(JobConfigData jobConfigData) {
+    public QGPublisher(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         this.jobConfigData = jobConfigData;
-        this.buildDecision = new BuildDecision();
+        this.buildDecision = new BuildDecision(globalConfigDataForSonarInstance);
         this.jobExecutionService = new JobExecutionService();
         this.jobConfigurationService = new JobConfigurationService();
         this.globalConfigDataForSonarInstance = null;

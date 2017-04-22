@@ -108,7 +108,8 @@ public abstract class SonarHttpRequester {
 
         String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), projectKey.getProjectKey());
 
-        HttpGet request = new HttpGet(String.format(sonarApiTaskInfo, projectKey.getProjectKey()));
+        String getUrl = String.format(sonarApiTaskInfo, projectKey.getProjectKey());
+        HttpGet request = new HttpGet(getUrl);
 
         return executeGetRequest(client, request);
     }

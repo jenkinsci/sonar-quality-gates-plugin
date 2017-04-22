@@ -1,62 +1,65 @@
 package quality.gates.sonar.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.sonar.api5x.SonarHttpRequester5x;
 import quality.gates.sonar.api60.SonarHttpRequester60;
 import quality.gates.sonar.api61.SonarHttpRequester61;
 import quality.gates.sonar.api63.SonarHttpRequester63;
 
+import java.io.IOException;
+
 /**
  * @author arkanjoms
  * @since 1.0
  */
-public class SonarHttpRequesterFactory {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(SonarHttpRequesterFactory.class);
+class SonarHttpRequesterFactory {
 
     private static final String SONAR_API_SERVER_VERSION = "/api/server/version";
 
-    private String sonarVersion;
+    static SonarHttpRequester getSonarHttpRequester(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
-    public SonarHttpRequester getSonarHttpRequester(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+        try {
+            HttpGet request = new HttpGet(getSonarApiServerVersion(globalConfigDataForSonarInstance));
 
-        LOGGER.info("getSonarHttpRequester");
+            HttpClientContext context = HttpClientContext.create();
+            CloseableHttpClient client = HttpClientBuilder.create().build();
+            CloseableHttpResponse response = client.execute(request, context);
+            String sonarVersion = EntityUtils.toString(response.getEntity());
 
-        getSonarApiServerVersion(globalConfigDataForSonarInstance);
-
-        if (majorSonarVersion() <= 5) {
-            LOGGER.info("SonarHttpRequester5x");
-            return new SonarHttpRequester5x();
-        } else if (minorSonarVersion() == 0) {
-            LOGGER.info("SonarHttpRequester60");
-            return new SonarHttpRequester60();
-        } else if (minorSonarVersion() <= 2) {
-            LOGGER.info("SonarHttpRequester61");
-            return new SonarHttpRequester61();
-        } else if (minorSonarVersion() == 3) {
-            LOGGER.info("SonarHttpRequester63");
-            return new SonarHttpRequester63();
-        } else {
-            LOGGER.info("UnsuportedVersionException");
-            throw new UnsuportedVersionException("Plugin doesn't suport this version of sonar api! Please contact the developer.");
+            if (majorSonarVersion(sonarVersion) <= 5) {
+                return new SonarHttpRequester5x();
+            } else if (minorSonarVersion(sonarVersion) == 0) {
+                return new SonarHttpRequester60();
+            } else if (minorSonarVersion(sonarVersion) <= 2) {
+                return new SonarHttpRequester61();
+            } else if (minorSonarVersion(sonarVersion) == 3) {
+                return new SonarHttpRequester63();
+            } else {
+                throw new UnsuportedVersionException("Plugin doesn't suport this version of sonar api! Please contact the developer.");
+            }
+        } catch (IOException e) {
+            throw new ApiConnectionException(e.getLocalizedMessage());
         }
     }
 
-    private void getSonarApiServerVersion(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    private static String getSonarApiServerVersion(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
-        sonarVersion = globalConfigDataForSonarInstance.getSonarUrl() + SONAR_API_SERVER_VERSION;
-        LOGGER.info("getSonarApiServerVersion => " + sonarVersion);
+        return globalConfigDataForSonarInstance.getSonarUrl() + SONAR_API_SERVER_VERSION;
     }
 
-    private int majorSonarVersion() {
+    private static int majorSonarVersion(String sonarVersion) {
 
-        return (int) sonarVersion.charAt(0);
+        return Integer.parseInt(sonarVersion.split("\\.")[0]);
     }
 
-    private int minorSonarVersion() {
+    private static int minorSonarVersion(String sonarVersion) {
 
-        return (int) sonarVersion.charAt(2);
+        return Integer.parseInt(sonarVersion.split("\\.")[1]);
     }
 }

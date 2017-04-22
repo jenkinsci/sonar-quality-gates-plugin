@@ -8,22 +8,23 @@ import org.json.JSONException;
 import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.jenkins.plugin.QGException;
-import quality.gates.sonar.api5x.SonarHttpRequester5x;
 
 public class QualityGatesProvider {
 
     private static final int MILLISECONDS_10_MINUTES = 600000;
 
+    private static final int MILLISECONDS_10_SECONDS = 10000;
+
     private QualityGateResponseParser qualityGateResponseParser;
 
-    private quality.gates.sonar.api.SonarHttpRequester sonarHttpRequester;
+    private SonarHttpRequester sonarHttpRequester;
 
     private SonarInstanceValidationService sonarInstanceValidationService;
 
-    public QualityGatesProvider() {
+    public QualityGatesProvider(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         this.qualityGateResponseParser = new QualityGateResponseParser();
-        this.sonarHttpRequester = new SonarHttpRequester5x();
+        this.sonarHttpRequester = SonarHttpRequesterFactory.getSonarHttpRequester(globalConfigDataForSonarInstance);
         this.sonarInstanceValidationService = new SonarInstanceValidationService();
     }
 
@@ -42,9 +43,15 @@ public class QualityGatesProvider {
 
         int attemptsToRepeat = jobConfigData.getAttemptsToRepeat();
         int timeToWait = globalConfigDataForSonarInstance.getTimeToWait();
+        if (timeToWait == 0) {
+            timeToWait = MILLISECONDS_10_SECONDS;
+        }
 
-        // FIXME
-        if (attemptsToRepeat * timeToWait > MILLISECONDS_10_MINUTES) {//10 min
+        if (attemptsToRepeat == 0) {
+            attemptsToRepeat = 1;
+        }
+
+        if (attemptsToRepeat * timeToWait > MILLISECONDS_10_MINUTES) {
             attemptsToRepeat = MILLISECONDS_10_MINUTES / timeToWait;
         }
 
@@ -64,13 +71,15 @@ public class QualityGatesProvider {
 
                 Thread.sleep(timeToWait);
             } else {
+                listener.getLogger().println("Status => " + taskCE.getCurrent().getStatus());
+
                 if ("SUCCESS".equals(taskCE.getCurrent().getStatus())) {
                     taskAnalysisRunning = false;
                 }
             }
 
             if (attemptsToRepeat < timesExecuted++) {
-                taskAnalysisRunning = false; // FIXME throw exception
+                throw new MaxExecutionTimeException("Max time to wait sonar job!");
             }
         } while (taskAnalysisRunning);
 

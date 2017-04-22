@@ -34,24 +34,6 @@ public class QualityGateResponseParserTest {
         jsonArrayString = "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
     }
 
-
-    @Test
-    public void testGetQualityGateResultFromJSONWithOneObjectShouldReturnStatusError() {
-        String jsonArray = "[\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
-        assertEquals(new QualityGatesStatus("ERROR"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArray));
-    }
-
-    @Test
-    public void testGetQualityGateResultFromJSONWithMultipleObjectsShouldReturnStatusOK() {
-        assertEquals(new QualityGatesStatus("OK"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArrayString));
-    }
-
-    @Test
-    public void testGetQualityGateResultFromJSONWithMultipleObjectsShouldReturnStatusError() {
-        jsonArrayString = "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-26T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
-        assertEquals(new QualityGatesStatus("ERROR"), qualityGateResponseParser.getQualityGateResultFromJSON(jsonArrayString));
-    }
-
     @Test
     public void testGetLatestEventResultWhenFirstObjectIsntWithLatestDate() throws JSONException {
         JSONArray array = new JSONArray();
@@ -140,23 +122,6 @@ public class QualityGateResponseParserTest {
         list.add(jsonObject);
         String expected = T12_01_31_0100;
         String actual = qualityGateResponseParser.getValueForJSONKey(list, 0, "dateeee");
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetValueForJSONKeyGivenJSONObject() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(DT, T12_01_31_0100);
-        String expected = T12_01_31_0100;
-        assertEquals(expected, qualityGateResponseParser.getValueForJSONKey(jsonObject, DT));
-    }
-
-    @Test(expected = QGException.class)
-    public void testGetValueForJSONKeyNonExistentKeyGivenJSONObject() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(DT, T12_01_31_0100);
-        String expected = T12_01_31_0100;
-        String actual = qualityGateResponseParser.getValueForJSONKey(jsonObject, "dateeee");
         assertEquals(expected, actual);
     }
 }

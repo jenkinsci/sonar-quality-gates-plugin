@@ -1,8 +1,5 @@
 package quality.gates.sonar.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import jdk.nashorn.api.scripting.JSObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,13 +12,11 @@ public class QualityGateResponseParser {
 
     public QualityGatesStatus getQualityGateResultFromJSON(String jsonString) throws QGException {
 
-        JSONArray resultArray = createJSONArrayFromString(jsonString);
+        JSONObject qualityGatesProjectStatus = createJSONObjectFromString(jsonString);
 
-        JSONObject latestEventResult = getLatestEventResult(resultArray);
+        String qualityGatesStatusResult = getStatusFromJSONObject(qualityGatesProjectStatus);
 
-        String gateStatus = getValueForJSONKey(latestEventResult, "n");
-
-        if (gateStatus.startsWith("Green")) {
+        if (qualityGatesStatusResult.startsWith("OK")) {
             return new QualityGatesStatus("OK");
         }
 
@@ -88,10 +83,10 @@ public class QualityGateResponseParser {
         }
     }
 
-    protected String getValueForJSONKey(JSONObject jsonObject, String key) throws QGException {
+    protected String getStatusFromJSONObject(JSONObject jsonObject) throws QGException {
 
         try {
-            return jsonObject.getString(key);
+            return ((JSONObject) jsonObject.get("projectStatus")).get("status").toString();
         } catch (JSONException e) {
             throw new QGException("JSON Key was not found ", e);
         }
@@ -101,6 +96,15 @@ public class QualityGateResponseParser {
 
         try {
             return new JSONArray(jsonString);
+        } catch (JSONException e) {
+            throw new QGException("There was a problem handling the JSON response " + jsonString, e);
+        }
+    }
+
+    protected JSONObject createJSONObjectFromString(String jsonString) throws QGException {
+
+        try {
+            return new JSONObject(jsonString);
         } catch (JSONException e) {
             throw new QGException("There was a problem handling the JSON response " + jsonString, e);
         }

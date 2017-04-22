@@ -8,7 +8,7 @@ public class SonarHttpRequester61 extends SonarHttpRequester {
 
     private static final String SONAR_API_LOGIN = "/api/authentication/login";
 
-    private static final String SONAR_API_QUALITY_GATES_STATUS = "/api/events?resource=%s&format=json&categories=Alert";
+    private static final String SONAR_API_QUALITY_GATES_STATUS = "/api/qualitygates/project_status?projectKey=%s";
 
     private static final String SONAR_API_TASK_INFO = "/api/ce/component?componentKey=%s";
 

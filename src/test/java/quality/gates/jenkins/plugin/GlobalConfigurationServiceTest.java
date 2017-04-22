@@ -19,8 +19,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class GlobalConfigurationServiceTest {
 
@@ -108,14 +106,5 @@ public class GlobalConfigurationServiceTest {
         listOfGlobalConfigData.add(globalConfigDataForSonarInstance);
         spyGlobalConfigurationService.setListOfGlobalConfigInstances(listOfGlobalConfigData);
         assertFalse(spyGlobalConfigurationService.containsGlobalConfigWithName(name));
-    }
-
-    @Test
-    public void testInitGlobalDataConfig() {
-        JSONArray array = JSONArray.fromObject("[{\"name\":\"Sonar1\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"},{\"name\":\"Sonar2\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]");
-        doReturn(JSONArray.fromObject(array)).when(spyGlobalConfigurationService).getGlobalConfigsArray(any(JSON.class));
-        doNothing().when(spyGlobalConfigurationService).addGlobalConfigDataForSonarInstance(any(JSONObject.class));
-        spyGlobalConfigurationService.initGlobalDataConfig(any(JSON.class));
-        verify(spyGlobalConfigurationService, times(1)).initGlobalDataConfig(any(JSON.class));
     }
 }

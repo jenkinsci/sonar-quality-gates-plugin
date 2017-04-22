@@ -82,9 +82,7 @@ public class JobConfigurationService {
 
         try {
             envVariableJobConfigData.setProjectKey(getProjectKey(projectKey, build.getEnvironment(listener)));
-        } catch (IOException e) {
-            throw new QGException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new QGException(e);
         }
 

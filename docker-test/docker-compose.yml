@@ -14,19 +14,19 @@ services:
     networks:
       - desenvnet
     mem_limit: 256M
-  myadmin:
-    image: phpmyadmin/phpmyadmin
-    hostname: myadmin
-    ports:
-      - "8000:80"
-    environment:
-      - PMA_ARBITRARY=1
-      - MYSQL_ROOT_PASSWORD=senha123
-    depends_on:
-      - mysql
-    networks:
-      - desenvnet
-    mem_limit: 128M
+#  myadmin:
+#    image: phpmyadmin/phpmyadmin
+#    hostname: myadmin
+#    ports:
+#      - "8000:80"
+#    environment:
+#      - PMA_ARBITRARY=1
+#      - MYSQL_ROOT_PASSWORD=senha123
+#    depends_on:
+#      - mysql
+#    networks:
+#      - desenvnet
+#    mem_limit: 128M
   sonar-5:
     image: "sonarqube:5.6.5-alpine"
     hostname: sonar-5
