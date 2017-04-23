@@ -10,7 +10,6 @@ import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import quality.gates.sonar.api5x.SonarHttpRequester5x;
 import quality.gates.sonar.api60.SonarHttpRequester60;
 import quality.gates.sonar.api61.SonarHttpRequester61;
-import quality.gates.sonar.api63.SonarHttpRequester63;
 
 import java.io.IOException;
 
@@ -34,12 +33,10 @@ class SonarHttpRequesterFactory {
 
             if (majorSonarVersion(sonarVersion) <= 5) {
                 return new SonarHttpRequester5x();
-            } else if (minorSonarVersion(sonarVersion) == 0) {
+            } else if (majorSonarVersion(sonarVersion) >= 6 && minorSonarVersion(sonarVersion) == 0) {
                 return new SonarHttpRequester60();
-            } else if (minorSonarVersion(sonarVersion) <= 2) {
+            } else if (majorSonarVersion(sonarVersion) >= 6 && minorSonarVersion(sonarVersion) >= 1) {
                 return new SonarHttpRequester61();
-            } else if (minorSonarVersion(sonarVersion) == 3) {
-                return new SonarHttpRequester63();
             } else {
                 throw new UnsuportedVersionException("Plugin doesn't suport this version of sonar api! Please contact the developer.");
             }
