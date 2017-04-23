@@ -2,6 +2,8 @@ package quality.gates.sonar.api63;
 
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
+import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.sonar.api.SonarHttpRequester;
 
 public class SonarHttpRequester63 extends SonarHttpRequester {
@@ -31,5 +33,11 @@ public class SonarHttpRequester63 extends SonarHttpRequester {
     @Override
     protected String getSonarApiQualityGatesStatusUrl() {
         return SONAR_API_QUALITY_GATES_STATUS;
+    }
+
+    @Override
+    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+
+        return jobConfigData.getProjectKey();
     }
 }
