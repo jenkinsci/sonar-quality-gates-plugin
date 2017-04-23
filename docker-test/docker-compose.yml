@@ -27,49 +27,49 @@ services:
 #    networks:
 #      - desenvnet
 #    mem_limit: 128M
-#  sonar-5:
-#    image: "sonarqube:5.6.6-alpine"
-#    hostname: sonar-5
-#    ports:
-#      - "9500:9000"
-#    environment:
-#      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_5?useUnicode=true&characterEncoding=utf8
-#      - SONARQUBE_JDBC_USERNAME=root
-#      - SONARQUBE_JDBC_PASSWORD=senha123
-#    links:
-#      - mysql:mysql
-#    networks:
-#      - desenvnet
-#    mem_limit: 1024M
-#  sonar-6.0:
-#    image: "sonarqube:6.0-alpine"
-#    hostname: sonar-6.0
-#    ports:
-#      - "9600:9000"
-#    environment:
-#      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_0?useUnicode=true&characterEncoding=utf8
-#      - SONARQUBE_JDBC_USERNAME=root
-#      - SONARQUBE_JDBC_PASSWORD=senha123
-#    links:
-#      - mysql:mysql
-#    networks:
-#      - desenvnet
-#    mem_limit: 1024M
-#  sonar-6.1:
-#    image: "sonarqube:6.1-alpine"
-#    hostname: sonar-6.1
-#    privileged: true
-#    ports:
-#      - "9601:9000"
-#    environment:
-#      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_1?useUnicode=true&characterEncoding=utf8
-#      - SONARQUBE_JDBC_USERNAME=root
-#      - SONARQUBE_JDBC_PASSWORD=senha123
-#    links:
-#      - mysql:mysql
-#    networks:
-#      - desenvnet
-#    mem_limit: 1024M
+  sonar-5:
+    image: "sonarqube:5.6.6-alpine"
+    hostname: sonar-5
+    ports:
+      - "9500:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_5?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+  sonar-6.0:
+    image: "sonarqube:6.0-alpine"
+    hostname: sonar-6.0
+    ports:
+      - "9600:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_0?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
+  sonar-6.1:
+    image: "sonarqube:6.1-alpine"
+    hostname: sonar-6.1
+    privileged: true
+    ports:
+      - "9601:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_1?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
   sonar-6.2:
     image: "sonarqube:6.2-alpine"
     hostname: sonar-6.2
@@ -84,20 +84,20 @@ services:
     networks:
       - desenvnet
     mem_limit: 1024M
-#  sonar-6.3:
-#    image: "sonarqube:6.3-alpine"
-#    hostname: sonar-6.3
-#    ports:
-#      - "9603:9000"
-#    environment:
-#      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_3?useUnicode=true&characterEncoding=utf8
-#      - SONARQUBE_JDBC_USERNAME=root
-#      - SONARQUBE_JDBC_PASSWORD=senha123
-#    links:
-#      - mysql:mysql
-#    networks:
-#      - desenvnet
-#    mem_limit: 1024M
+  sonar-6.3:
+    image: "sonarqube:6.3-alpine"
+    hostname: sonar-6.3
+    ports:
+      - "9603:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar_6_3?useUnicode=true&characterEncoding=utf8
+      - SONARQUBE_JDBC_USERNAME=root
+      - SONARQUBE_JDBC_PASSWORD=senha123
+    links:
+      - mysql:mysql
+    networks:
+      - desenvnet
+    mem_limit: 1024M
 #  jenkins:
 #    build:
 #      context: .
