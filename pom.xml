@@ -208,13 +208,6 @@
 
     <profiles>
         <profile>
-            <id>enable-jacoco</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-
-        <profile>
             <id>sonar-5</id>
             <properties>
                 <sonar.host.url>http://localhost:9500</sonar.host.url>
