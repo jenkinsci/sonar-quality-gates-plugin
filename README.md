@@ -5,6 +5,7 @@ Jenkins plugin that fails the build if the predefined sonar quality gates are no
 
 #### Sonarqube suportted version
 
+* Sonar 5.6
 * Sonar 6.1
 
 #### Main difference from fork

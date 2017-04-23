@@ -1,5 +1,7 @@
 package quality.gates.sonar.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -29,6 +31,8 @@ import java.util.List;
 public abstract class SonarHttpRequester {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SonarHttpRequester.class);
+
+    private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?key=%s";
 
     protected HttpClientContext context;
 
@@ -106,7 +110,7 @@ public abstract class SonarHttpRequester {
             loginApi(projectKey, globalConfigDataForSonarInstance);
         }
 
-        String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), projectKey.getProjectKey());
+        String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), getSonarApiTaskInfoParameter(projectKey, globalConfigDataForSonarInstance));
 
         String getUrl = String.format(sonarApiTaskInfo, projectKey.getProjectKey());
         HttpGet request = new HttpGet(getUrl);
@@ -115,6 +119,8 @@ public abstract class SonarHttpRequester {
     }
 
     protected abstract String getSonarApiTaskInfoUrl();
+
+    protected abstract String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
 
     public String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
 
@@ -130,4 +136,23 @@ public abstract class SonarHttpRequester {
     }
 
     protected abstract String getSonarApiQualityGatesStatusUrl();
+
+    public String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigData) {
+
+        if (!logged) {
+            loginApi(configData, globalConfigData);
+        }
+
+        String sonarApiQualityGates = globalConfigData.getSonarUrl() + String.format(SONAR_API_COMPONENT_SHOW, configData.getProjectKey());
+
+        HttpGet request = new HttpGet(sonarApiQualityGates);
+
+        String result = executeGetRequest(client, request);
+
+        Gson gson = new GsonBuilder().create();
+
+        SonarComponentShow component = gson.fromJson(result, SonarComponentShow.class);
+
+        return component.getComponent().getId();
+    }
 }

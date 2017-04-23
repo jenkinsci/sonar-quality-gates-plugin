@@ -2,9 +2,11 @@ package quality.gates.sonar.api60;
 
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
+import quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import quality.gates.jenkins.plugin.JobConfigData;
 import quality.gates.sonar.api.SonarHttpRequester;
 
-public class    SonarHttpRequester60 extends SonarHttpRequester {
+public class SonarHttpRequester60 extends SonarHttpRequester {
 
     private static final String SONAR_API_LOGIN = "/api/authentication/login";
 
@@ -15,7 +17,7 @@ public class    SonarHttpRequester60 extends SonarHttpRequester {
     public SonarHttpRequester60() {
 
         context = HttpClientContext.create();
-        super.client = HttpClientBuilder.create().build();
+        client = HttpClientBuilder.create().build();
     }
 
     @Override
@@ -31,5 +33,10 @@ public class    SonarHttpRequester60 extends SonarHttpRequester {
     @Override
     protected String getSonarApiQualityGatesStatusUrl() {
         return SONAR_API_QUALITY_GATES_STATUS;
+    }
+
+    @Override
+    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+        return getComponentId(jobConfigData, globalConfigDataForSonarInstance);
     }
 }
