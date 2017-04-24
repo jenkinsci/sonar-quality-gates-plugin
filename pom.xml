@@ -33,10 +33,10 @@
         <relativePath/>
     </parent>
 
-    <artifactId>qa-plugin-sonar</artifactId>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/Quality+Gates+Plugin</url>
-    <version>1.0-SNAPSHOT-4</version>
-    <description>Fails the build whenever the Quality Gates criteria in the Sonar 6.x+ analysis aren't met (the project
+    <artifactId>sonar-quality-gates</artifactId>
+    <name>Sonar Quality Gates Plugin</name>
+    <version>1.0-SNAPSHOT-6</version>
+    <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
     <packaging>hpi</packaging>
@@ -188,6 +188,11 @@
 
     <developers>
         <developer>
+            <id>arkanjoms</id>
+            <name>Rafael Ramos de Oliveira</name>
+            <email>arkanjo.ms@gmail.com</email>
+        </developer>
+        <developer>
             <id>ivanash</id>
             <name>Ivana Shekerova</name>
         </developer>
@@ -198,11 +203,6 @@
         <developer>
             <id>dpd90</id>
             <name>Dimitar Pop-Dimitrov</name>
-        </developer>
-        <developer>
-            <id>arkanjoms</id>
-            <name>Rafael Ramos de Oliveira</name>
-            <email>arkanjo.ms@gmail.com</email>
         </developer>
     </developers>
 
