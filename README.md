@@ -8,10 +8,15 @@ Jenkins plugin that fails the build if the predefined sonar quality gates are no
 * Sonar 5.6
 * Sonar 6.x+
 
-#### Main difference from fork
+#### Usage 
 
-* Expects completion of background task to check quality gate status.
-* Adding parameters to limit the number of repetitions while waiting for the quality gate check.
+1. In `Manage Jenkins -> Configure System -> Quality Gates - Sonarqube` add yours sonar configuration.
 
+![Plugin Configuration](docs/img/sonar-config.png)
 
-Fork from https://github.com/jenkinsci/quality-gates-plugin
+2. In jenkins job add a `Post-build Actions -> Quality Gates Sonarqube Plugin` and set the sonar instance, if you have multiple sonar configurations, and `Project key` .
+
+![Job Configuration](docs/img/post-build.png)
+
+_______
+###### _Forked from https://github.com/jenkinsci/quality-gates-plugin_
