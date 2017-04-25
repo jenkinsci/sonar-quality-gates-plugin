@@ -35,7 +35,7 @@
 
     <artifactId>sonar-quality-gates</artifactId>
     <name>Sonar Quality Gates Plugin</name>
-    <version>1.0-SNAPSHOT-6</version>
+    <version>1.0-SNAPSHOT-7</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
@@ -113,7 +113,6 @@
             <version>2.8.0</version>
         </dependency>
 
-
     </dependencies>
 
     <repositories>
@@ -181,9 +180,9 @@
     </build>
 
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/quality-gates-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/quality-gates-plugin</url>
+        <connection>scm:git:ssh://github.com/arkanjoms/sonar-quality-gates.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/arkanjoms/sonar-quality-gates.git</developerConnection>
+        <url>https://github.com/arkanjoms/sonar-quality-gates</url>
     </scm>
 
     <developers>
