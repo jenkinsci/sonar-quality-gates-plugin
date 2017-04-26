@@ -180,9 +180,9 @@
     </build>
 
     <scm>
-        <connection>scm:git:ssh://github.com/arkanjoms/sonar-quality-gates.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/arkanjoms/sonar-quality-gates.git</developerConnection>
-        <url>https://github.com/arkanjoms/sonar-quality-gates</url>
+        <connection>scm:git:ssh://github.com/arkanjoms/sonar-quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/arkanjoms/sonar-quality-gates-plugin.git</developerConnection>
+        <url>https://github.com/arkanjoms/sonar-quality-gates-plugin</url>
     </scm>
 
     <developers>
