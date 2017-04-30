@@ -47,15 +47,6 @@ public class SonarInstanceValidationService {
         return Secret.fromString(sonarPassword);
     }
 
-    int validateTimeToWait(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
-        if (globalConfigDataForSonarInstance.getTimeToWait() <= 0) {
-            return GlobalConfigDataForSonarInstance.DEFAULT_TIME_TO_WAIT;
-        } else {
-            return globalConfigDataForSonarInstance.getTimeToWait();
-        }
-    }
-
     GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         return new GlobalConfigDataForSonarInstance(

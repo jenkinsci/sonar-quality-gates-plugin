@@ -6,12 +6,12 @@ import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.sonar.api.SonarHttpRequester;
 
+/**
+ * @author arkanjoms
+ * @since 1.0.1
+ */
 public class SonarHttpRequester5x extends SonarHttpRequester {
-    //    http://localhost:9500/api/ce/component?componentId=AVuHVFu-IMCcK-xt18YB
-//
-//
-//
-//    http://localhost:9500/api/components/show?key=org.jenkins-ci.plugins:qa-plugin-sonar
+
     private static final String SONAR_API_LOGIN = "/sessions/login";
 
     private static final String SONAR_API_QUALITY_GATES_STATUS = "/api/qualitygates/project_status?projectKey=%s";
@@ -40,12 +40,7 @@ public class SonarHttpRequester5x extends SonarHttpRequester {
     }
 
     @Override
-    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData,GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
-//        if (!isNeedSearchId()) {
-//            parameterValue = projectKey.getProjectKey();
-//        } else {
-            return getComponentId(jobConfigData, globalConfigDataForSonarInstance);
-//        }
+    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+        return getComponentId(jobConfigData, globalConfigDataForSonarInstance);
     }
 }

@@ -1,6 +1,5 @@
 package org.quality.gates.sonar.api;
 
-
 public class QualityGatesStatus {
 
     public static final String BUILDS = "OK";

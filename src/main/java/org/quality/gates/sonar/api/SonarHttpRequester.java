@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * @author arkanjoms
- * @since 1.0
+ * @since 1.0.1
  */
 public abstract class SonarHttpRequester {
 
