@@ -2,9 +2,6 @@ package org.quality.gates.sonar.api;
 
 import java.util.List;
 
-/**
- * Created by arkanjo on 22/04/17.
- */
 public class SonarComponentShow {
 
     private SonarProjectInfoEntity component;

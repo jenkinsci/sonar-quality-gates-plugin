@@ -3,7 +3,8 @@ package org.quality.gates.sonar.api;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * @author arkanjo.ms
+ * @author arkanjoms
+ * @since 1.0.1
  */
 public class QualityGateTaskCE {
 

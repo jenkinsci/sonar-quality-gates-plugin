@@ -1,15 +1,8 @@
 package org.quality.gates.sonar.api;
 
 /**
- * "id": "AVmLTzD-30JeYeWRwb-W",
- * "type": "REPORT",
- * "componentId": "AVQ0HTEMy6i7tgjiPW9U",
- * "componentKey": "br.com.azi:efcaz-api",
- * "componentName": "efcaz-api",
- * "componentQualifier": "TRK",
- * "status": "IN_PROGRESS",
- *
- * @author arkanjo.ms
+ * @author arkanjoms
+ * @since 1.0.1
  */
 public class QualityGateTask {
 

@@ -1,7 +1,8 @@
 package org.quality.gates.sonar.api;
 
 /**
- * Created by arkanjo on 22/04/17.
+ * @author arkanjoms
+ * @since 1.0.1
  */
 public class SonarProjectInfoEntity {
 

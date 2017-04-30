@@ -27,7 +27,7 @@
                                          <f:entry field="pass" title="SonarQube account password" description="Default value is 'admin'" >
                                                <f:password name="password" value="${globalConfigData.pass}" />
                                          </f:entry>
-                                         <f:entry field="timeToWait" title="Time to wait next check (milliseconds)" description="Default value is '7500'" >
+                                         <f:entry field="timeToWait" title="Time to wait next check (milliseconds)" description="Default value is '10000'" >
                                                <f:textbox name="timeToWait" value="${globalConfigData.timeToWait}" />
                                          </f:entry>
                                     </f:entry>

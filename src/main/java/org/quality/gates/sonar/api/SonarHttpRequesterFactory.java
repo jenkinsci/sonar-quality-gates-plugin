@@ -15,7 +15,7 @@ import java.io.IOException;
 
 /**
  * @author arkanjoms
- * @since 1.0
+ * @since 1.0.1
  */
 class SonarHttpRequesterFactory {
 

@@ -11,8 +11,6 @@ public class GlobalConfigDataForSonarInstance {
 
     public static final String DEFAULT_PASS = "admin";
 
-    public static final int DEFAULT_TIME_TO_WAIT = 7500;
-
     private String name;
 
     private String username;
