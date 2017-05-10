@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/arkanjoms/sonar-quality-gates-plugin.svg?branch=master)](https://travis-ci.org/arkanjoms/sonar-quality-gates-plugin)
-
 # Sonar Quality Gates Plugin
 Jenkins plugin that fails the build if the predefined sonar quality gates are not green.
 
