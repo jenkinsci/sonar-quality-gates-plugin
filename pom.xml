@@ -39,7 +39,7 @@
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
-    <url>https://github.com/arkanjoms/sonar-quality-gates-plugin</url>
+    <url>https://github.com/jenkinsci/sonar-quality-gates-plugin</url>
     <packaging>hpi</packaging>
 
     <properties>
