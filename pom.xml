@@ -35,27 +35,17 @@
 
     <artifactId>sonar-quality-gates</artifactId>
     <name>Sonar Quality Gates Plugin</name>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
+    <url>https://github.com/jenkinsci/sonar-quality-gates-plugin</url>
     <packaging>hpi</packaging>
 
     <properties>
         <java.version>1.8</java.version>
         <jenkins.version>2.46.2</jenkins.version>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org:8081/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <licenses>
         <license>
@@ -64,6 +54,20 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinci/sonar-quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinci/sonar-quality-gates-plugin.git</developerConnection>
+        <url>https://github.com/jenkinci/sonar-quality-gates-plugin</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>arkanjoms</id>
+            <name>Rafael Ramos de Oliveira</name>
+            <email>arkanjo.ms@gmail.com</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -113,34 +117,7 @@
             <artifactId>gson</artifactId>
             <version>2.8.0</version>
         </dependency>
-
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
@@ -180,30 +157,17 @@
         </plugins>
     </build>
 
-    <scm>
-        <connection>scm:git:ssh://github.com/arkanjoms/sonar-quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/arkanjoms/sonar-quality-gates-plugin.git</developerConnection>
-        <url>https://github.com/arkanjoms/sonar-quality-gates-plugin</url>
-    </scm>
-
-    <developers>
-        <developer>
-            <id>arkanjoms</id>
-            <name>Rafael Ramos de Oliveira</name>
-            <email>arkanjo.ms@gmail.com</email>
-        </developer>
-        <developer>
-            <id>ivanash</id>
-            <name>Ivana Shekerova</name>
-        </developer>
-        <developer>
-            <id>egrozdani</id>
-            <name>Eleni Grozdani</name>
-        </developer>
-        <developer>
-            <id>dpd90</id>
-            <name>Dimitar Pop-Dimitrov</name>
-        </developer>
-    </developers>
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
