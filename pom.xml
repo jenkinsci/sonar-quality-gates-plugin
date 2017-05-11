@@ -56,8 +56,8 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinci/sonar-quality-gates-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/jenkinci/sonar-quality-gates-plugin.git</developerConnection>
+        <connection>scm:git:ssh://github.com/jenkinsci/sonar-quality-gates-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/sonar-quality-gates-plugin.git</developerConnection>
         <url>https://github.com/jenkinci/sonar-quality-gates-plugin</url>
     </scm>
 
