@@ -34,7 +34,7 @@
 
     <artifactId>sonar-quality-gates</artifactId>
     <name>Sonar Quality Gates Plugin</name>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
