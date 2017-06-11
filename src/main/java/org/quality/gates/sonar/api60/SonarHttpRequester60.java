@@ -19,9 +19,6 @@ public class SonarHttpRequester60 extends SonarHttpRequester {
     private static final String SONAR_API_TASK_INFO = "/api/ce/component?componentId=%s";
 
     public SonarHttpRequester60() {
-
-        context = HttpClientContext.create();
-        client = HttpClientBuilder.create().build();
     }
 
     @Override

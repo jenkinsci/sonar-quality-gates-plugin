@@ -1,5 +1,0 @@
-FROM jenkinsci/jenkins:alpine
-
-USER root
-RUN apk update apk add openjdk8 maven git
-USER jenkins

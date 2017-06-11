@@ -11,13 +11,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -34,13 +35,16 @@ public abstract class SonarHttpRequester {
 
     private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?key=%s";
 
-    protected HttpClientContext context;
+    private HttpClientContext context;
 
-    protected CloseableHttpClient client;
+    private CloseableHttpClient client;
 
-    protected boolean logged = false;
+    private boolean logged = false;
 
-    protected void loginApi(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    private void loginApi(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+
+        context = HttpClientContext.create();
+        client = HttpClientBuilder.create().build();
 
         HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + getSonarApiLogin());
 
@@ -58,7 +62,7 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiLogin();
 
-    protected void executePostRequest(CloseableHttpClient client, HttpPost loginHttpPost) throws QGException {
+    private void executePostRequest(CloseableHttpClient client, HttpPost loginHttpPost) throws QGException {
 
         try {
             client.execute(loginHttpPost);
@@ -67,7 +71,7 @@ public abstract class SonarHttpRequester {
         }
     }
 
-    protected UrlEncodedFormEntity createEntity(List<NameValuePair> nvps) throws QGException {
+    private UrlEncodedFormEntity createEntity(List<NameValuePair> nvps) throws QGException {
 
         try {
             return new UrlEncodedFormEntity(nvps);
@@ -122,7 +126,7 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
 
-    public String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+    String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
 
         if (!logged) {
             loginApi(projectKey, globalConfigDataForSonarInstance);
@@ -137,7 +141,7 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiQualityGatesStatusUrl();
 
-    public String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigData) {
+    protected String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigData) {
 
         if (!logged) {
             loginApi(configData, globalConfigData);
