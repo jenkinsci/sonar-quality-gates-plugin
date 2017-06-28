@@ -10,6 +10,8 @@ public class GlobalConfigDataForSonarInstance {
     public static final String DEFAULT_USERNAME = "admin";
 
     public static final String DEFAULT_PASS = "admin";
+    
+    public static final String DEFAULT_TOKEN = null;
 
     private String name;
 
@@ -18,6 +20,8 @@ public class GlobalConfigDataForSonarInstance {
     private String pass;
 
     private String sonarUrl;
+    
+    private String token;
 
     private Secret secretPass;
 
@@ -29,6 +33,7 @@ public class GlobalConfigDataForSonarInstance {
         this.sonarUrl = "";
         this.username = "";
         this.pass = "";
+        this.token = "";
     }
 
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass) {
@@ -45,6 +50,12 @@ public class GlobalConfigDataForSonarInstance {
         this.sonarUrl = sonarUrl;
         this.username = username;
         this.pass = pass;
+    }
+    
+    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String token) {
+    	this.name = name; 
+    	this.sonarUrl = sonarUrl;
+    	this.token = token;
     }
 
     public String getName() {
@@ -69,6 +80,14 @@ public class GlobalConfigDataForSonarInstance {
 
     public void setPass(String pass) {
         this.secretPass = Secret.fromString(Util.fixEmptyAndTrim(pass));
+    }
+    
+    public String getToken() {
+    	return token;
+    }
+    
+    public void setToken(String token) {
+    	this.token = token;
     }
 
     public String getSonarUrl() {
@@ -111,6 +130,10 @@ public class GlobalConfigDataForSonarInstance {
         if (pass != null ? !pass.equals(that.pass) : that.pass != null) {
             return false;
         }
+        
+        if (token != null ? !token.equals(that.token) : that.token != null) {
+            return false;
+        }
 
         return sonarUrl != null ? sonarUrl.equals(that.sonarUrl) : that.sonarUrl == null;
     }
@@ -121,6 +144,7 @@ public class GlobalConfigDataForSonarInstance {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (pass != null ? pass.hashCode() : 0);
+        result = 31 * result + (token != null ? token.hashCode() : 0);
         result = 31 * result + (sonarUrl != null ? sonarUrl.hashCode() : 0);
 
         return result;
@@ -136,4 +160,5 @@ public class GlobalConfigDataForSonarInstance {
                 ", timeToWait=" + timeToWait +
                 '}';
     }
+
 }

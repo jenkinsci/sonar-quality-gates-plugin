@@ -3,3 +3,6 @@ target
 *.iml
 work
 release.properties
+.classpath
+.project
+.settings

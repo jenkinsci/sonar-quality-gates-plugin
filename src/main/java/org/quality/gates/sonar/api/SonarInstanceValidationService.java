@@ -46,13 +46,25 @@ public class SonarInstanceValidationService {
 
         return Secret.fromString(sonarPassword);
     }
+    
+    String validateToken(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+
+        String sonarToken;
+
+        if (globalConfigDataForSonarInstance.getToken().isEmpty()) {
+        	sonarToken = GlobalConfigDataForSonarInstance.DEFAULT_TOKEN;
+        } else {
+        	sonarToken = globalConfigDataForSonarInstance.getToken();
+        }
+
+        return sonarToken;
+    }
 
     GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         return new GlobalConfigDataForSonarInstance(
                 globalConfigDataForSonarInstance.getName(),
                 validateUrl(globalConfigDataForSonarInstance),
-                validateUsername(globalConfigDataForSonarInstance),
-                validatePassword(globalConfigDataForSonarInstance));
+                validateToken(globalConfigDataForSonarInstance));
     }
 }

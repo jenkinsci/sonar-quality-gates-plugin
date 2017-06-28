@@ -1,3 +1,7 @@
+# FORK/HACK for SonarQube tokens
+The original plugin doesn't work with SonarQube tokens. This "fixes" it by hacking everything around to use GET requests with tokens instead of a POST login request.
+This shouldn't be used in production. It just shows that it is possible and should be properly integrated into the original plugin.
+
 # Sonar Quality Gates Plugin
 Jenkins plugin that fails the build if the predefined sonar quality gates are not green.
 

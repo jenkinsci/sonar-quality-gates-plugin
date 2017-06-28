@@ -68,7 +68,7 @@ public class GlobalConfigurationService {
 
         if (!"".equals(name)) {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                    new GlobalConfigDataForSonarInstance(name, globalConfigData.optString("url"), globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))));
+                    new GlobalConfigDataForSonarInstance(name, globalConfigData.optString("url"), globalConfigData.optString("token"));
 
             if (!containsGlobalConfigWithName(name)) {
                 listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
