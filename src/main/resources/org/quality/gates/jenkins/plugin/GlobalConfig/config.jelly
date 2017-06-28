@@ -21,11 +21,8 @@
                                           <f:entry field="sonarUrl" title="SonarQube Server URL" description="Default value is 'http://localhost:9000'" >
                                                 <f:textbox name="url" value="${globalConfigData.sonarUrl}" />
                                           </f:entry>
-                                           <f:entry field="username" title="SonarQube account login" description="Default value is 'admin'" >
-                                                 <f:textbox name="account" value="${globalConfigData.username}" />
-                                           </f:entry>
-                                         <f:entry field="pass" title="SonarQube account password" description="Default value is 'admin'" >
-                                               <f:password name="password" value="${globalConfigData.pass}" />
+                                         <f:entry field="token" title="SonarQube token" description="Use token instead of user and password" >
+                                               <f:password name="token" value="${globalConfigData.token}" />
                                          </f:entry>
                                          <f:entry field="timeToWait" title="Time to wait next check (milliseconds)" description="Default value is '10000'" >
                                                <f:textbox name="timeToWait" value="${globalConfigData.timeToWait}" />

@@ -2,17 +2,15 @@ package org.quality.gates.sonar.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.BasicScheme;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
@@ -21,142 +19,96 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author arkanjoms
+ * @author friesoft
  * @since 1.0.1
  */
 public abstract class SonarHttpRequester {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(SonarHttpRequester.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(SonarHttpRequester.class);
 
-    private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?key=%s";
+	private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?key=%s";
 
-    private HttpClientContext context;
+	protected abstract String getSonarApiLogin();
 
-    private CloseableHttpClient client;
+	private String executeGetRequest(HttpGet request, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
+			throws QGException {
 
-    private boolean logged = false;
+		CloseableHttpResponse response = null;
 
-    private void loginApi(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+		try {
+			HttpClientContext context = HttpClientContext.create();
+			CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        context = HttpClientContext.create();
-        client = HttpClientBuilder.create().build();
+			String token = globalConfigDataForSonarInstance.getToken();
+			if (token == null || token.equals("")) {
+				throw new QGException("No token specified");
+			}
+			request.addHeader("Authorization", BasicScheme.authenticate(new UsernamePasswordCredentials(token, ""), "UTF-8"));
 
-        HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + getSonarApiLogin());
+			response = client.execute(request, context);
+			int statusCode = response.getStatusLine().getStatusCode();
+			HttpEntity entity = response.getEntity();
+			String returnResponse = EntityUtils.toString(entity);
+			EntityUtils.consume(entity);
 
-        List<NameValuePair> nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("login", globalConfigDataForSonarInstance.getUsername()));
-        nvps.add(new BasicNameValuePair("password", globalConfigDataForSonarInstance.getPass()));
-        nvps.add(new BasicNameValuePair("remember_me", "1"));
-        loginHttpPost.setEntity(createEntity(nvps));
-        loginHttpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+			if (statusCode != 200) {
+				throw new QGException("Expected status 200, got: " + statusCode + ". Response: " + returnResponse);
+			}
 
-        executePostRequest(client, loginHttpPost);
+			return returnResponse;
+		} catch (IOException e) {
+			throw new QGException("GET execution error", e);
+		} finally {
+			try {
+				if (response != null)
+					response.close();
+			} catch (IOException e) {
+				LOGGER.error(e.getLocalizedMessage(), e);
+			}
+		}
+	}
 
-        logged = true;
-    }
+	String getAPITaskInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+		String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl()
+				+ String.format(getSonarApiTaskInfoUrl(), getSonarApiTaskInfoParameter(projectKey, globalConfigDataForSonarInstance));
 
-    protected abstract String getSonarApiLogin();
+		String getUrl = String.format(sonarApiTaskInfo, projectKey.getProjectKey());
+		HttpGet request = new HttpGet(getUrl);
 
-    private void executePostRequest(CloseableHttpClient client, HttpPost loginHttpPost) throws QGException {
+		return executeGetRequest(request, globalConfigDataForSonarInstance);
+	}
 
-        try {
-            client.execute(loginHttpPost);
-        } catch (IOException e) {
-            throw new QGException("POST execution error", e);
-        }
-    }
+	protected abstract String getSonarApiTaskInfoUrl();
 
-    private UrlEncodedFormEntity createEntity(List<NameValuePair> nvps) throws QGException {
+	protected abstract String getSonarApiTaskInfoParameter(JobConfigData jobConfigData,
+			GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
 
-        try {
-            return new UrlEncodedFormEntity(nvps);
-        } catch (UnsupportedEncodingException e) {
-            throw new QGException("Encoding error", e);
-        }
-    }
+	String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+		String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl()
+				+ String.format(getSonarApiQualityGatesStatusUrl(), projectKey.getProjectKey());
 
-    private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
+		HttpGet request = new HttpGet(String.format(sonarApiQualityGates, projectKey.getProjectKey()));
 
-        CloseableHttpResponse response = null;
+		return executeGetRequest(request, globalConfigDataForSonarInstance);
+	}
 
-        try {
-            response = client.execute(request, context);
-            int statusCode = response.getStatusLine().getStatusCode();
-            HttpEntity entity = response.getEntity();
-            String returnResponse = EntityUtils.toString(entity);
-            EntityUtils.consume(entity);
+	protected abstract String getSonarApiQualityGatesStatusUrl();
 
-            if (statusCode != 200) {
-                throw new QGException("Expected status 200, got: " + statusCode + ". Response: " + returnResponse);
-            }
+	protected String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigData) {
 
-            return returnResponse;
-        } catch (IOException e) {
-            throw new QGException("GET execution error", e);
-        } finally {
-            try {
-                if (response != null)
-                    response.close();
-            } catch (IOException e) {
-                LOGGER.error(e.getLocalizedMessage(), e);
-            }
-        }
-    }
+		String sonarApiQualityGates = globalConfigData.getSonarUrl() + String.format(SONAR_API_COMPONENT_SHOW, configData.getProjectKey());
 
-    String getAPITaskInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+		HttpGet request = new HttpGet(sonarApiQualityGates);
 
-        if (!logged) {
-            loginApi(projectKey, globalConfigDataForSonarInstance);
-        }
+		String result = executeGetRequest(request, globalConfigData);
 
-        String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), getSonarApiTaskInfoParameter(projectKey, globalConfigDataForSonarInstance));
+		Gson gson = new GsonBuilder().create();
 
-        String getUrl = String.format(sonarApiTaskInfo, projectKey.getProjectKey());
-        HttpGet request = new HttpGet(getUrl);
+		SonarComponentShow component = gson.fromJson(result, SonarComponentShow.class);
 
-        return executeGetRequest(client, request);
-    }
-
-    protected abstract String getSonarApiTaskInfoUrl();
-
-    protected abstract String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
-
-    String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
-
-        if (!logged) {
-            loginApi(projectKey, globalConfigDataForSonarInstance);
-        }
-
-        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiQualityGatesStatusUrl(), projectKey.getProjectKey());
-
-        HttpGet request = new HttpGet(String.format(sonarApiQualityGates, projectKey.getProjectKey()));
-
-        return executeGetRequest(client, request);
-    }
-
-    protected abstract String getSonarApiQualityGatesStatusUrl();
-
-    protected String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigData) {
-
-        if (!logged) {
-            loginApi(configData, globalConfigData);
-        }
-
-        String sonarApiQualityGates = globalConfigData.getSonarUrl() + String.format(SONAR_API_COMPONENT_SHOW, configData.getProjectKey());
-
-        HttpGet request = new HttpGet(sonarApiQualityGates);
-
-        String result = executeGetRequest(client, request);
-
-        Gson gson = new GsonBuilder().create();
-
-        SonarComponentShow component = gson.fromJson(result, SonarComponentShow.class);
-
-        return component.getComponent().getId();
-    }
+		return component.getComponent().getId();
+	}
 }
