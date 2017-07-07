@@ -65,10 +65,11 @@ public class GlobalConfigurationService {
     protected void addGlobalConfigDataForSonarInstance(JSONObject globalConfigData) {
 
         String name = globalConfigData.optString("name");
+        int timeToWait = globalConfigData.optInt("timeToWait");
 
         if (!"".equals(name)) {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                    new GlobalConfigDataForSonarInstance(name, globalConfigData.optString("url"), globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))));
+                    new GlobalConfigDataForSonarInstance(name, globalConfigData.optString("url"), globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))), timeToWait);
 
             if (!containsGlobalConfigWithName(name)) {
                 listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);

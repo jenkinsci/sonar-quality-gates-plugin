@@ -53,6 +53,7 @@ public class SonarInstanceValidationService {
                 globalConfigDataForSonarInstance.getName(),
                 validateUrl(globalConfigDataForSonarInstance),
                 validateUsername(globalConfigDataForSonarInstance),
-                validatePassword(globalConfigDataForSonarInstance));
+                validatePassword(globalConfigDataForSonarInstance),
+                globalConfigDataForSonarInstance.getTimeToWait());
     }
 }

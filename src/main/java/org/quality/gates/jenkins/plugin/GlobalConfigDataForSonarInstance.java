@@ -31,12 +31,13 @@ public class GlobalConfigDataForSonarInstance {
         this.pass = "";
     }
 
-    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass) {
+    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass, int timeToWait) {
 
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.username = username;
         this.secretPass = secretPass;
+        this.timeToWait = timeToWait;
     }
 
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, String pass) {
