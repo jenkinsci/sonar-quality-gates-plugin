@@ -16,5 +16,8 @@ Jenkins plugin that fails the build if the predefined sonar quality gates are no
 
 ![Job Configuration](docs/img/post-build.png)
 
+#### Issues
+
+- [Issues](https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened%2C%20%22In%20Review%22)%20AND%20component%20%3D%20sonar-quality-gates-plugin)
 _______
 ###### _Forked from https://github.com/jenkinsci/quality-gates-plugin_
