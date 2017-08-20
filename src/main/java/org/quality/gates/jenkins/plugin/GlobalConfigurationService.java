@@ -5,6 +5,7 @@ import hudson.util.Secret;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,10 +67,17 @@ public class GlobalConfigurationService {
 
         String name = globalConfigData.optString("name");
         int timeToWait = globalConfigData.optInt("timeToWait");
+        String url = globalConfigData.optString("url");
 
         if (!"".equals(name)) {
-            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                    new GlobalConfigDataForSonarInstance(name, globalConfigData.optString("url"), globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))), timeToWait);
+
+            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+            String token = globalConfigData.optString("token");
+            if (StringUtils.isNotEmpty(token)) {
+                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("token"), timeToWait);
+            } else {
+                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))), timeToWait);
+            }
 
             if (!containsGlobalConfigWithName(name)) {
                 listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);

@@ -59,6 +59,7 @@ public class QualityGatesProvider {
 
         do {
 
+            sonarHttpRequester.setLogged(false);
             String statusResultJson = sonarHttpRequester.getAPITaskInfo(jobConfigData, validatedData);
 
             Gson gson = new GsonBuilder().create();
