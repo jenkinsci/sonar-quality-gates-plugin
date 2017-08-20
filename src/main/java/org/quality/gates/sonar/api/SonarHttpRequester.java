@@ -2,6 +2,9 @@ package org.quality.gates.sonar.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.BasicScheme;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -41,21 +44,35 @@ public abstract class SonarHttpRequester {
 
     private boolean logged = false;
 
-    private void loginApi(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    private String token;
+
+    public boolean isLogged() {
+        return logged;
+    }
+
+    public void setLogged(boolean logged) {
+        this.logged = logged;
+    }
+
+    private void loginApi(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         context = HttpClientContext.create();
         client = HttpClientBuilder.create().build();
 
-        HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + getSonarApiLogin());
+        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
+            token = globalConfigDataForSonarInstance.getToken();
+        } else {
+            HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + getSonarApiLogin());
 
-        List<NameValuePair> nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("login", globalConfigDataForSonarInstance.getUsername()));
-        nvps.add(new BasicNameValuePair("password", globalConfigDataForSonarInstance.getPass()));
-        nvps.add(new BasicNameValuePair("remember_me", "1"));
-        loginHttpPost.setEntity(createEntity(nvps));
-        loginHttpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("login", globalConfigDataForSonarInstance.getUsername()));
+            nvps.add(new BasicNameValuePair("password", globalConfigDataForSonarInstance.getPass()));
+            nvps.add(new BasicNameValuePair("remember_me", "1"));
+            loginHttpPost.setEntity(createEntity(nvps));
+            loginHttpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-        executePostRequest(client, loginHttpPost);
+            executePostRequest(client, loginHttpPost);
+        }
 
         logged = true;
     }
@@ -85,6 +102,9 @@ public abstract class SonarHttpRequester {
         CloseableHttpResponse response = null;
 
         try {
+            if (StringUtils.isNotEmpty(token)) {
+                request.addHeader("Authorization", BasicScheme.authenticate(new UsernamePasswordCredentials(token, ""), "UTF-8"));
+            }
             response = client.execute(request, context);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
@@ -108,15 +128,13 @@ public abstract class SonarHttpRequester {
         }
     }
 
-    String getAPITaskInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+    String getAPITaskInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
 
-        if (!logged) {
-            loginApi(projectKey, globalConfigDataForSonarInstance);
-        }
+        checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), getSonarApiTaskInfoParameter(projectKey, globalConfigDataForSonarInstance));
+        String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), getSonarApiTaskInfoParameter(configData, globalConfigDataForSonarInstance));
 
-        String getUrl = String.format(sonarApiTaskInfo, projectKey.getProjectKey());
+        String getUrl = String.format(sonarApiTaskInfo, configData.getProjectKey());
         HttpGet request = new HttpGet(getUrl);
 
         return executeGetRequest(client, request);
@@ -126,28 +144,24 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
 
-    String getAPIInfo(JobConfigData projectKey, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+    String getAPIInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
 
-        if (!logged) {
-            loginApi(projectKey, globalConfigDataForSonarInstance);
-        }
+        checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiQualityGatesStatusUrl(), projectKey.getProjectKey());
+        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiQualityGatesStatusUrl(), configData.getProjectKey());
 
-        HttpGet request = new HttpGet(String.format(sonarApiQualityGates, projectKey.getProjectKey()));
+        HttpGet request = new HttpGet(String.format(sonarApiQualityGates, configData.getProjectKey()));
 
         return executeGetRequest(client, request);
     }
 
     protected abstract String getSonarApiQualityGatesStatusUrl();
 
-    protected String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigData) {
+    protected String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
-        if (!logged) {
-            loginApi(configData, globalConfigData);
-        }
+        checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiQualityGates = globalConfigData.getSonarUrl() + String.format(SONAR_API_COMPONENT_SHOW, configData.getProjectKey());
+        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(SONAR_API_COMPONENT_SHOW, configData.getProjectKey());
 
         HttpGet request = new HttpGet(sonarApiQualityGates);
 
@@ -158,5 +172,12 @@ public abstract class SonarHttpRequester {
         SonarComponentShow component = gson.fromJson(result, SonarComponentShow.class);
 
         return component.getComponent().getId();
+    }
+
+    private void checkLogged(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+
+        if (!isLogged()) {
+            loginApi(globalConfigDataForSonarInstance);
+        }
     }
 }

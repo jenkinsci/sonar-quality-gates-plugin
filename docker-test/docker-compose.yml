@@ -6,19 +6,19 @@ services:
     ports:
       - 9500:9000
     networks:
-      - desenvnet
+      - sonarnet
   sonar-6.0:
     image: sonarqube:6.0-alpine
     ports:
       - 9600:9000
     networks:
-      - desenvnet
-  sonar-6.4:
-    image: sonarqube:6.4-alpine
+      - sonarnet
+  sonar-6.5:
+    image: sonarqube:6.5-alpine
     ports:
-      - 9604:9000
+      - 9605:9000
     networks:
-      - desenvnet
+      - sonarnet
   jenkins-lts:
     image: jenkins/jenkins:lts-alpine
     environment:
@@ -29,7 +29,7 @@ services:
     volumes:
       - jenkins-lts-data:/var/jenkins_home
     networks:
-      - desenvnet
+      - sonarnet
   jenkins:
     image: jenkins/jenkins:alpine
     environment:
@@ -40,12 +40,11 @@ services:
     volumes:
       - jenkins-data:/var/jenkins_home
     networks:
-      - desenvnet
+      - sonarnet
 
 volumes:
-  mysql-data:
   jenkins-lts-data:
   jenkins-data:
 
 networks:
-  desenvnet:
+  sonarnet:

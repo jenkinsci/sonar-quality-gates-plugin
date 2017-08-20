@@ -34,7 +34,7 @@
 
     <artifactId>sonar-quality-gates</artifactId>
     <name>Sonar Quality Gates Plugin</name>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
@@ -43,7 +43,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <jenkins.version>2.60.2</jenkins.version>
+        <jenkins.version>2.60.3</jenkins.version>
     </properties>
 
     <licenses>

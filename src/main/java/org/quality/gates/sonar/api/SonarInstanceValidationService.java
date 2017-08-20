@@ -1,6 +1,7 @@
 package org.quality.gates.sonar.api;
 
 import hudson.util.Secret;
+import org.apache.commons.lang.StringUtils;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 
 public class SonarInstanceValidationService {
@@ -34,7 +35,7 @@ public class SonarInstanceValidationService {
         return sonarUsername;
     }
 
-    Secret validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    private Secret validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         String sonarPassword;
 
@@ -49,11 +50,19 @@ public class SonarInstanceValidationService {
 
     GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
-        return new GlobalConfigDataForSonarInstance(
-                globalConfigDataForSonarInstance.getName(),
-                validateUrl(globalConfigDataForSonarInstance),
-                validateUsername(globalConfigDataForSonarInstance),
-                validatePassword(globalConfigDataForSonarInstance),
-                globalConfigDataForSonarInstance.getTimeToWait());
+        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
+            return new GlobalConfigDataForSonarInstance(
+                    globalConfigDataForSonarInstance.getName(),
+                    validateUrl(globalConfigDataForSonarInstance),
+                    globalConfigDataForSonarInstance.getToken(),
+                    globalConfigDataForSonarInstance.getTimeToWait());
+        } else {
+            return new GlobalConfigDataForSonarInstance(
+                    globalConfigDataForSonarInstance.getName(),
+                    validateUrl(globalConfigDataForSonarInstance),
+                    validateUsername(globalConfigDataForSonarInstance),
+                    validatePassword(globalConfigDataForSonarInstance),
+                    globalConfigDataForSonarInstance.getTimeToWait());
+        }
     }
 }
