@@ -9,6 +9,8 @@ import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
 
+import java.io.UnsupportedEncodingException;
+
 public class QualityGatesProvider {
 
     private static final int MILLISECONDS_10_MINUTES = 600000;
@@ -35,7 +37,7 @@ public class QualityGatesProvider {
         this.sonarInstanceValidationService = sonarInstanceValidationService;
     }
 
-    public QualityGatesStatus getAPIResultsForQualityGates(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance, BuildListener listener) throws JSONException, InterruptedException {
+    public QualityGatesStatus getAPIResultsForQualityGates(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance, BuildListener listener) throws JSONException, InterruptedException{
 
         GlobalConfigDataForSonarInstance validatedData = sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
 
