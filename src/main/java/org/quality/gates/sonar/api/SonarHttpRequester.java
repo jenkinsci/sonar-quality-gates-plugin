@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,12 +133,17 @@ public abstract class SonarHttpRequester {
 
         checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiTaskInfo = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiTaskInfoUrl(), getSonarApiTaskInfoParameter(configData, globalConfigDataForSonarInstance));
+        try {
+            String sonarProjectKey = getSonarApiTaskInfoParameter(configData, globalConfigDataForSonarInstance);
+            String sonarProjectTaskInfoPath = getSonarApiTaskInfoUrl();
+            String sonarHostUrl = globalConfigDataForSonarInstance.getSonarUrl();
+            String taskInfoUri = sonarHostUrl + String.format(sonarProjectTaskInfoPath, URLEncoder.encode(sonarProjectKey, "UTF-8"));
 
-        String getUrl = String.format(sonarApiTaskInfo, configData.getProjectKey());
-        HttpGet request = new HttpGet(getUrl);
-
-        return executeGetRequest(client, request);
+            HttpGet request = new HttpGet(taskInfoUri);
+            return executeGetRequest(client, request);
+        } catch (UnsupportedEncodingException e) {
+            throw new QGException(e);
+        }
     }
 
     protected abstract String getSonarApiTaskInfoUrl();

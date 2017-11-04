@@ -4,6 +4,8 @@ import hudson.model.BuildListener;
 import org.json.JSONException;
 import org.quality.gates.sonar.api.QualityGatesProvider;
 
+import java.io.UnsupportedEncodingException;
+
 public class BuildDecision {
 
     private QualityGatesProvider qualityGatesProvider;
