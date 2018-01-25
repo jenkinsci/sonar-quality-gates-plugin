@@ -39,9 +39,17 @@ public abstract class SonarHttpRequester {
 
     private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?key=%s";
 
-    private HttpClientContext context;
+    /**
+     * Cached client context for lazy login.
+     * @see #loginApi(GlobalConfigDataForSonarInstance)
+     */
+    private transient HttpClientContext httpClientContext;
 
-    private CloseableHttpClient client;
+    /**
+     * Cached client for lazy login.
+     * @see #loginApi(GlobalConfigDataForSonarInstance)
+     */
+    private transient CloseableHttpClient httpClient;
 
     private boolean logged = false;
 
@@ -57,8 +65,8 @@ public abstract class SonarHttpRequester {
 
     private void loginApi(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
-        context = HttpClientContext.create();
-        client = HttpClientBuilder.create().build();
+        httpClientContext = HttpClientContext.create();
+        httpClient = HttpClientBuilder.create().build();
 
         if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
             token = globalConfigDataForSonarInstance.getToken();
@@ -72,7 +80,7 @@ public abstract class SonarHttpRequester {
             loginHttpPost.setEntity(createEntity(nvps));
             loginHttpPost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-            executePostRequest(client, loginHttpPost);
+            executePostRequest(httpClient, loginHttpPost);
         }
 
         logged = true;
@@ -106,7 +114,7 @@ public abstract class SonarHttpRequester {
             if (StringUtils.isNotEmpty(token)) {
                 request.addHeader("Authorization", BasicScheme.authenticate(new UsernamePasswordCredentials(token, ""), "UTF-8"));
             }
-            response = client.execute(request, context);
+            response = client.execute(request, httpClientContext);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             String returnResponse = EntityUtils.toString(entity);
@@ -140,7 +148,7 @@ public abstract class SonarHttpRequester {
             String taskInfoUri = sonarHostUrl + String.format(sonarProjectTaskInfoPath, URLEncoder.encode(sonarProjectKey, "UTF-8"));
 
             HttpGet request = new HttpGet(taskInfoUri);
-            return executeGetRequest(client, request);
+            return executeGetRequest(httpClient, request);
         } catch (UnsupportedEncodingException e) {
             throw new QGException(e);
         }
@@ -158,7 +166,7 @@ public abstract class SonarHttpRequester {
 
         HttpGet request = new HttpGet(String.format(sonarApiQualityGates, configData.getProjectKey()));
 
-        return executeGetRequest(client, request);
+        return executeGetRequest(httpClient, request);
     }
 
     protected abstract String getSonarApiQualityGatesStatusUrl();
@@ -171,7 +179,7 @@ public abstract class SonarHttpRequester {
 
         HttpGet request = new HttpGet(sonarApiQualityGates);
 
-        String result = executeGetRequest(client, request);
+        String result = executeGetRequest(httpClient, request);
 
         Gson gson = new GsonBuilder().create();
 
