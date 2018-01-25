@@ -1,7 +1,5 @@
 package org.quality.gates.sonar.api5x;
 
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.sonar.api.SonarHttpRequester;
