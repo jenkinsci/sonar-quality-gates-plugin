@@ -34,12 +34,12 @@
 
     <artifactId>sonar-quality-gates</artifactId>
     <name>Sonar Quality Gates Plugin</name>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
         Quality Gates status is different than "Passed")
     </description>
     <packaging>hpi</packaging>
-    <url>https://github.com/arkanjoms/sonar-quality-gates-plugin/blob/master/README.md</url>
+    <url>https://github.com/jenkinsci/sonar-quality-gates-plugin/blob/master/README.md</url>
 
     <properties>
         <java.level>8</java.level>
