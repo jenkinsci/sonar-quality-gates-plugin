@@ -1,22 +1,16 @@
 version: '3'
 services:
-  sonar-5:
-    image: sonarqube:5.6.6-alpine
-    hostname: sonar-5
+  sonar-lts:
+    image: sonarqube:lts
+    hostname: sonar-lts
     ports:
       - 9500:9000
     networks:
       - sonarnet
-  sonar-6.0:
-    image: sonarqube:6.0-alpine
+  sonar-7.0:
+    image: sonarqube:7.0
     ports:
       - 9600:9000
-    networks:
-      - sonarnet
-  sonar-6.5:
-    image: sonarqube:6.5-alpine
-    ports:
-      - 9605:9000
     networks:
       - sonarnet
   jenkins-lts:
@@ -30,7 +24,7 @@ services:
       - jenkins-lts-data:/var/jenkins_home
     networks:
       - sonarnet
-  jenkins:
+  jenkins-latest:
     image: jenkins/jenkins:alpine
     environment:
       - JAVA_OPTS=-Dhudson.model.ParametersAction.keepUndefinedParameters=true
@@ -38,13 +32,13 @@ services:
       - 8889:8080
       - 50001:50000
     volumes:
-      - jenkins-data:/var/jenkins_home
+      - jenkins-latest-data:/var/jenkins_home
     networks:
       - sonarnet
 
 volumes:
   jenkins-lts-data:
-  jenkins-data:
+  jenkins-latest-data:
 
 networks:
   sonarnet:
