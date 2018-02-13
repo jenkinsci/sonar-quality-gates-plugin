@@ -1,7 +1,7 @@
 # Sonar Quality Gates Plugin
 Jenkins plugin that fails the build if the predefined sonar quality gates are not green.
 
-#### Sonarqube suportted versions
+#### Sonarqube supported versions
 
 * Sonar 5.6
 * Sonar 6.x+
