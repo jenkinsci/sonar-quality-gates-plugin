@@ -9,8 +9,10 @@ import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 
 @Extension
 public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> {
@@ -49,6 +51,12 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
         }
 
         return FormValidation.ok();
+    }
+
+    public ListBoxModel doFillBuildStatusItems() {
+        ListBoxModel items = new ListBoxModel();
+        Arrays.asList(BuildStatusEnum.values()).forEach(e -> items.add(e.toString()));
+        return items;
     }
 
     @Override

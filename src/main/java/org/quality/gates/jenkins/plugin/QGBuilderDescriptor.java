@@ -9,8 +9,10 @@ import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 
 @Extension
 public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
@@ -37,6 +39,12 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
     public ListBoxModel doFillListOfGlobalConfigDataItems() {
         return jobConfigurationService.getListOfSonarInstanceNames(jobExecutionService.getGlobalConfigData());
+    }
+
+    public ListBoxModel doFillBuildStatusItems() {
+        ListBoxModel items = new ListBoxModel();
+        Arrays.asList(BuildStatusEnum.values()).forEach(e -> items.add(e.toString()));
+        return items;
     }
 
     public FormValidation doCheckProjectKey(@QueryParameter String projectKey) {
