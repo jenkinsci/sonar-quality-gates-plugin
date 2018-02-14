@@ -8,14 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quality.gates.jenkins.plugin.BuildDecision;
-import org.quality.gates.jenkins.plugin.GlobalConfig;
-import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
-import org.quality.gates.jenkins.plugin.JobConfigData;
-import org.quality.gates.jenkins.plugin.JobConfigurationService;
-import org.quality.gates.jenkins.plugin.JobExecutionService;
-import org.quality.gates.jenkins.plugin.QGException;
-import org.quality.gates.jenkins.plugin.QGPublisher;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -23,7 +16,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -76,8 +68,10 @@ public class QGPublisherTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
+        when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any())).thenReturn(jobConfigData);
+        when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
         doReturn(printStream).when(buildListener).getLogger();
-        doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
+        doReturn(printWriter).when(buildListener).error(anyString(), any());
     }
 
     @Test

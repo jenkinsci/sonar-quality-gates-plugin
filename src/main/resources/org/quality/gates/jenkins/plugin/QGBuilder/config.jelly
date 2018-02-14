@@ -28,25 +28,29 @@
         </f:section>
     </j:if>
     <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() == 1}">
-                <f:section>
-                     <f:entry field="jobConfigData" description="Enter your project key.">
-                          <f:entry title="Project Key" field="projectKey">
-                                <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
-                          </f:entry>
-                     </f:entry>
-                </f:section>
+        <f:section>
+            <f:entry title="Project Key" field="projectKey">
+                <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+            </f:entry>
+
+            <f:entry title="Job status when analysis fails" field="buildStatus">
+                <f:select name="buildStatus" value="${instance.jobConfigData.buildStatus}" />
+            </f:entry>
+        </f:section>
     </j:if>
     <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() >= 2}">
         <f:section>
-             <f:entry field="listOfGlobalConfigData" title="Sonar instance 'Name'" description="Choose sonar instance">
-                 <f:select name="sonarInstancesName" value="${instance.jobConfigData.sonarInstanceName}"/>
-             </f:entry>
+            <f:entry field="listOfGlobalConfigData" title="Sonar instance 'Name'">
+                <f:select name="sonarInstancesName" value="${instance.jobConfigData.sonarInstanceName}"/>
+            </f:entry>
 
-             <f:entry field="jobConfigData" description="Enter your project key.">
-                  <f:entry title="Project Key" field="projectKey">
-                        <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
-                  </f:entry>
-             </f:entry>
+            <f:entry title="Project Key" field="projectKey">
+                <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+            </f:entry>
+
+            <f:entry title="Job status when analysis fails" field="buildStatus">
+                <f:select name="buildStatus" value="${instance.jobConfigData.buildStatus}" />
+            </f:entry>
         </f:section>
     </j:if>
 </j:jelly>

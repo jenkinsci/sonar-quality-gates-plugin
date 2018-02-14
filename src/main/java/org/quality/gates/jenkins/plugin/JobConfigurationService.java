@@ -5,6 +5,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -52,6 +53,7 @@ public class JobConfigurationService {
 
         firstInstanceJobConfigData.setProjectKey(projectKey);
         firstInstanceJobConfigData.setSonarInstanceName(name);
+        firstInstanceJobConfigData.setBuildStatus(BuildStatusEnum.valueOf(formData.getString("buildStatus")));
 
         return firstInstanceJobConfigData;
     }
@@ -87,6 +89,7 @@ public class JobConfigurationService {
         }
 
         envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
+        envVariableJobConfigData.setBuildStatus(jobConfigData.getBuildStatus());
 
         return envVariableJobConfigData;
     }

@@ -7,14 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quality.gates.jenkins.plugin.BuildDecision;
-import org.quality.gates.jenkins.plugin.GlobalConfig;
-import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
-import org.quality.gates.jenkins.plugin.JobConfigData;
-import org.quality.gates.jenkins.plugin.JobConfigurationService;
-import org.quality.gates.jenkins.plugin.JobExecutionService;
-import org.quality.gates.jenkins.plugin.QGBuilder;
-import org.quality.gates.jenkins.plugin.QGException;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -67,6 +60,8 @@ public class QGBuilderTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
+        when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any())).thenReturn(jobConfigData);
+        when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
         doReturn(printStream).when(buildListener).getLogger();
         doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
     }

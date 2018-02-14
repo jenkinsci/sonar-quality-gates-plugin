@@ -7,6 +7,7 @@ import hudson.model.Result;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 public class QGPublisher extends Recorder {
 
@@ -77,23 +78,26 @@ public class QGPublisher extends Recorder {
             return false;
         }
 
-        boolean buildPassed;
+        boolean buildHasPassed = false;
 
         try {
             JobConfigData checkedJobConfigData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-            buildPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData, listener);
+            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData, listener);
 
             if ("".equals(jobConfigData.getSonarInstanceName())) {
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
             }
 
-            listener.getLogger().println("PostBuild-Step: Quality Gates plugin build passed: " + String.valueOf(buildPassed).toUpperCase());
+            listener.getLogger().println("PostBuild-Step: Quality Gates plugin build passed: " + String.valueOf(buildHasPassed).toUpperCase());
 
-            return buildPassed;
+            if (!buildHasPassed && BuildStatusEnum.UNSTABLE.equals(checkedJobConfigData.getBuildStatus())) {
+                build.setResult(Result.UNSTABLE);
+                return true;
+            }
         } catch (QGException e) {
             e.printStackTrace(listener.getLogger());
         }
 
-        return false;
+        return buildHasPassed;
     }
 }

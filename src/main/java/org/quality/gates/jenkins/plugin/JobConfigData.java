@@ -1,5 +1,7 @@
 package org.quality.gates.jenkins.plugin;
 
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
+
 public class JobConfigData {
 
     private String projectKey;
@@ -7,6 +9,8 @@ public class JobConfigData {
     private String sonarInstanceName;
 
     private int attemptsToRepeat;
+
+    private BuildStatusEnum buildStatus;
 
     public String getProjectKey() {
         return projectKey;
@@ -30,6 +34,14 @@ public class JobConfigData {
 
     public void setAttemptsToRepeat(int attemptsToRepeat) {
         this.attemptsToRepeat = attemptsToRepeat;
+    }
+
+    public BuildStatusEnum getBuildStatus() {
+        return buildStatus;
+    }
+
+    public void setBuildStatus(BuildStatusEnum buildStatus) {
+        this.buildStatus = buildStatus;
     }
 
     @Override

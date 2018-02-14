@@ -9,11 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quality.gates.jenkins.plugin.GlobalConfig;
-import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
-import org.quality.gates.jenkins.plugin.JobConfigData;
-import org.quality.gates.jenkins.plugin.JobConfigurationService;
-import org.quality.gates.jenkins.plugin.QGException;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -59,6 +55,7 @@ public class JobConfigurationServiceTest {
         jobConfigurationService = new JobConfigurationService();
         formData = new JSONObject();
         formData.put("projectKey", "TestKey");
+        formData.put("buildStatus", BuildStatusEnum.FAILED.toString());
     }
 
     @Test
@@ -100,6 +97,7 @@ public class JobConfigurationServiceTest {
         jobConfigData = new JobConfigData();
         jobConfigData.setProjectKey("TestKey");
         jobConfigData.setSonarInstanceName("TestName");
+        jobConfigData.setBuildStatus(BuildStatusEnum.FAILED);
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
