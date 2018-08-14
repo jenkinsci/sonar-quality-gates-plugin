@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 
 public class QualityGatesProvider {
 
-    private static final int MILLISECONDS_10_MINUTES = 600000;
+    private static final int MILLISECONDS_5_MINUTES = 300000;
 
     private static final int MILLISECONDS_10_SECONDS = 10000;
 
@@ -45,19 +45,17 @@ public class QualityGatesProvider {
 
         int attemptsToRepeat = jobConfigData.getAttemptsToRepeat();
         int timeToWait = globalConfigDataForSonarInstance.getTimeToWait();
+        int maxWaitTime = globalConfigDataForSonarInstance.getMaxWaitTime();
+
         if (timeToWait == 0) {
             timeToWait = MILLISECONDS_10_SECONDS;
         }
 
-        if (attemptsToRepeat == 0) {
-            attemptsToRepeat = 1;
+        if (maxWaitTime == 0) {
+            maxWaitTime = MILLISECONDS_5_MINUTES;
         }
 
-        if (attemptsToRepeat * timeToWait > MILLISECONDS_10_MINUTES) {
-            attemptsToRepeat = MILLISECONDS_10_MINUTES / timeToWait;
-        }
-
-        int timesExecuted = 0;
+        long startTime = System.currentTimeMillis();
 
         do {
 
@@ -70,7 +68,7 @@ public class QualityGatesProvider {
 
             if (ArrayUtils.isNotEmpty(taskCE.getQueue())) {
 
-                listener.getLogger().println("Has build " + taskCE.getQueue()[0].getStatus() + " with id: " + taskCE.getQueue()[0].getId() + " - waiting " + timeToWait + " to execute next check.");
+                listener.getLogger().println("Has build " + taskCE.getQueue()[0].getStatus() + " with id: " + taskCE.getQueue()[0].getId() + " - waiting " + timeToWait + " to execute next check. DEBUG:" + (System.currentTimeMillis()-startTime));
 
                 Thread.sleep(timeToWait);
             } else {
@@ -81,8 +79,8 @@ public class QualityGatesProvider {
                 }
             }
 
-            if (attemptsToRepeat < timesExecuted++) {
-                throw new MaxExecutionTimeException("Max time to wait sonar job!");
+            if ((System.currentTimeMillis()-startTime)>maxWaitTime) {
+                throw new MaxExecutionTimeException("Status => Max time to wait sonar job!");
             }
         } while (taskAnalysisRunning);
 
