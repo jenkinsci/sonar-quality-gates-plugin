@@ -11,7 +11,7 @@ Jenkins plugin that fails the build if the predefined sonar quality gates are no
 1. In `Manage Jenkins -> Configure System -> Quality Gates - Sonarqube` add yours sonar configuration.
     * If token is specified, the parameters account login and account password will be ignored.
 
-    ![Plugin Configuration](docs/img/01-sonar-config.png)
+    ![Plugin Configuration](docs/img/01-sonar-config.PNG)
 
 2. In jenkins job add a `Post-build Actions -> Quality Gates Sonarqube Plugin` and set the sonar instance, if you have multiple sonar configurations, and `Project key` .
 
