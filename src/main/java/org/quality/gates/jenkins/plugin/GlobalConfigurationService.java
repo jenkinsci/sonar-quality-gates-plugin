@@ -67,6 +67,7 @@ public class GlobalConfigurationService {
 
         String name = globalConfigData.optString("name");
         int timeToWait = globalConfigData.optInt("timeToWait");
+		int maxWaitTime = globalConfigData.optInt("maxWaitTime");
         String url = globalConfigData.optString("url");
 
         if (!"".equals(name)) {
@@ -74,9 +75,9 @@ public class GlobalConfigurationService {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
             String token = globalConfigData.optString("token");
             if (StringUtils.isNotEmpty(token)) {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("token"), timeToWait);
+                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("token"), timeToWait, maxWaitTime);
             } else {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))), timeToWait);
+                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))), timeToWait, maxWaitTime);
             }
 
             if (!containsGlobalConfigWithName(name)) {

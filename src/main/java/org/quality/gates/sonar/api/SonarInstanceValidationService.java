@@ -55,14 +55,16 @@ public class SonarInstanceValidationService {
                     globalConfigDataForSonarInstance.getName(),
                     validateUrl(globalConfigDataForSonarInstance),
                     globalConfigDataForSonarInstance.getToken(),
-                    globalConfigDataForSonarInstance.getTimeToWait());
+                    globalConfigDataForSonarInstance.getTimeToWait(),
+					globalConfigDataForSonarInstance.getMaxWaitTime());
         } else {
             return new GlobalConfigDataForSonarInstance(
                     globalConfigDataForSonarInstance.getName(),
                     validateUrl(globalConfigDataForSonarInstance),
                     validateUsername(globalConfigDataForSonarInstance),
                     validatePassword(globalConfigDataForSonarInstance),
-                    globalConfigDataForSonarInstance.getTimeToWait());
+                    globalConfigDataForSonarInstance.getTimeToWait(),
+					globalConfigDataForSonarInstance.getMaxWaitTime());
         }
     }
 }
