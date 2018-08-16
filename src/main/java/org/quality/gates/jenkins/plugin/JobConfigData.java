@@ -8,8 +8,6 @@ public class JobConfigData {
 
     private String sonarInstanceName;
 
-    private int attemptsToRepeat;
-
     private BuildStatusEnum buildStatus;
 
     public String getProjectKey() {
@@ -26,14 +24,6 @@ public class JobConfigData {
 
     public void setSonarInstanceName(String sonarInstanceName) {
         this.sonarInstanceName = sonarInstanceName;
-    }
-
-    public int getAttemptsToRepeat() {
-        return attemptsToRepeat;
-    }
-
-    public void setAttemptsToRepeat(int attemptsToRepeat) {
-        this.attemptsToRepeat = attemptsToRepeat;
     }
 
     public BuildStatusEnum getBuildStatus() {
@@ -74,8 +64,7 @@ public class JobConfigData {
     public String toString() {
         return "JobConfigData{" +
                 "projectKey='" + projectKey + '\'' +
-                ", sonarInstanceName='" + sonarInstanceName + '\'' +
-                ", attemptsToRepeat=" + attemptsToRepeat +
+                ", sonarInstanceName='" + sonarInstanceName +
                 '}';
     }
 }

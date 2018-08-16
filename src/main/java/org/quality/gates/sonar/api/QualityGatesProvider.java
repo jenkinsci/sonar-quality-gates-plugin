@@ -43,7 +43,6 @@ public class QualityGatesProvider {
 
         boolean taskAnalysisRunning = true;
 
-        int attemptsToRepeat = jobConfigData.getAttemptsToRepeat();
         int timeToWait = globalConfigDataForSonarInstance.getTimeToWait();
         int maxWaitTime = globalConfigDataForSonarInstance.getMaxWaitTime();
 
