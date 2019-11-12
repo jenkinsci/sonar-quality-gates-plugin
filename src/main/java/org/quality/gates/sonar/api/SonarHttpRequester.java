@@ -37,7 +37,7 @@ public abstract class SonarHttpRequester {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SonarHttpRequester.class);
 
-    private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?key=%s";
+    private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?component=%s";
 
     /**
      * Cached client context for lazy login.
