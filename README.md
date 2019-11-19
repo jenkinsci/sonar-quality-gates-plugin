@@ -5,6 +5,7 @@ Jenkins plugin that fails the build if the predefined sonar quality gates are no
 
 * Sonar 5.6
 * Sonar 6.x+
+* Sonar 8.0+
 
 #### Usage 
 
