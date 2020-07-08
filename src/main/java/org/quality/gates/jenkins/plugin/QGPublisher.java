@@ -72,7 +72,7 @@ public class QGPublisher extends Recorder {
 
         Result result = build.getResult();
 
-        if (Result.SUCCESS != result) {
+        if (Result.SUCCESS != result && Result.UNSTABLE != result) {
             listener.getLogger().println("Previous steps failed the build.\nResult is: " + result);
 
             return false;
