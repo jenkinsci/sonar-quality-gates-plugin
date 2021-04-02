@@ -11,8 +11,8 @@ import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.sonar.api5x.SonarHttpRequester5x;
 import org.quality.gates.sonar.api60.SonarHttpRequester60;
 import org.quality.gates.sonar.api61.SonarHttpRequester61;
-import org.quality.gates.sonar.api61.SonarHttpRequester88;
 import org.quality.gates.sonar.api80.SonarHttpRequester80;
+import org.quality.gates.sonar.api88.SonarHttpRequester88;
 
 /**
  * @author arkanjoms

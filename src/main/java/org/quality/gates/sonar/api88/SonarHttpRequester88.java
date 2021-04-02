@@ -1,4 +1,4 @@
-package org.quality.gates.sonar.api61;
+package org.quality.gates.sonar.api88;
 
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
