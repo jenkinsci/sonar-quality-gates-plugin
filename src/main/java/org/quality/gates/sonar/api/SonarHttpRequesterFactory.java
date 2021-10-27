@@ -39,7 +39,7 @@ class SonarHttpRequesterFactory {
             } else if ((majorSonarVersion(sonarVersion) == 6 && minorSonarVersion(sonarVersion) >= 1)
                     || majorSonarVersion(sonarVersion) == 7) {
                 return new SonarHttpRequester61();
-            } else if (majorSonarVersion(sonarVersion) >= 8 && minorSonarVersion(sonarVersion) <= 7) {
+            } else if (majorSonarVersion(sonarVersion) == 8 && minorSonarVersion(sonarVersion) <= 7) {
                 return new SonarHttpRequester80();
             } else if (majorSonarVersion(sonarVersion) >= 8) {
                 return new SonarHttpRequester88();
