@@ -55,6 +55,10 @@ public abstract class SonarHttpRequester {
 
     private String token;
 
+    protected String getSonarApiComponentShow() {
+        return SONAR_API_COMPONENT_SHOW;
+    }
+    
     public boolean isLogged() {
         return logged;
     }
@@ -175,7 +179,7 @@ public abstract class SonarHttpRequester {
 
         checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(SONAR_API_COMPONENT_SHOW, configData.getProjectKey());
+        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiComponentShow(), configData.getProjectKey());
 
         HttpGet request = new HttpGet(sonarApiQualityGates);
 
