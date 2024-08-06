@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: demo-$NEXT_MINOR_VERSION
