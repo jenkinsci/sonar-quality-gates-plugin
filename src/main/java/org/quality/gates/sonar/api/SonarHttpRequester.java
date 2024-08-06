@@ -2,21 +2,23 @@ package org.quality.gates.sonar.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.BasicScheme;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.commons.lang.StringUtils;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -58,7 +61,7 @@ public abstract class SonarHttpRequester {
     protected String getSonarApiComponentShow() {
         return SONAR_API_COMPONENT_SHOW;
     }
-    
+
     public boolean isLogged() {
         return logged;
     }
@@ -74,7 +77,20 @@ public abstract class SonarHttpRequester {
 
         if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
             token = globalConfigDataForSonarInstance.getToken();
+            httpClient = HttpClientBuilder.create().build();
         } else {
+            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(
+                    AuthScope.ANY,
+                    new UsernamePasswordCredentials(globalConfigDataForSonarInstance.getUsername(), globalConfigDataForSonarInstance.getPass())
+            );
+
+            httpClient = HttpClientBuilder.create()
+                    .setDefaultCredentialsProvider(credsProvider)
+                    .build();
+
+            httpClientContext.setCredentialsProvider(credsProvider);
+
             HttpPost loginHttpPost = new HttpPost(globalConfigDataForSonarInstance.getSonarUrl() + getSonarApiLogin());
 
             List<NameValuePair> nvps = new ArrayList<>();
@@ -116,7 +132,8 @@ public abstract class SonarHttpRequester {
 
         try {
             if (StringUtils.isNotEmpty(token)) {
-                request.addHeader("Authorization", BasicScheme.authenticate(new UsernamePasswordCredentials(token, ""), "UTF-8"));
+                String authHeader = "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes());
+                request.addHeader(HttpHeaders.AUTHORIZATION, authHeader);
             }
             response = client.execute(request, httpClientContext);
             int statusCode = response.getStatusLine().getStatusCode();
