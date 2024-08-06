@@ -1,28 +1,27 @@
-# demo
+# Sonar Quality Gates Plugin
+Jenkins plugin that fails the build if the predefined sonar quality gates are not green.
 
-## Introduction
+#### Sonarqube supported versions
 
-TODO Describe what your plugin does here
+* Sonar 5.6
+* Sonar 6.x+
+* Sonar 8.0+
 
-## Getting started
+#### Usage 
 
-TODO Tell users how to configure your plugin here, include screenshots, pipeline examples and 
-configuration-as-code examples.
+1. In `Manage Jenkins -> Configure System -> Quality Gates - Sonarqube` add yours sonar configuration.
+    * If token is specified, the parameters account login and account password will be ignored.
 
-## Issues
+    ![Plugin Configuration](docs/img/01-sonar-config.PNG)
 
-TODO Decide where you're going to host your issues, the default is Jenkins JIRA, but you can also enable GitHub issues,
-If you use GitHub issues there's no need for this section; else add the following line:
+2. In jenkins job add a `Post-build Actions -> Quality Gates Sonarqube Plugin` and set the sonar instance, if you have multiple sonar configurations, and `Project key` .
 
-Report issues and enhancements in the [Jenkins issue tracker](https://issues.jenkins.io/).
+    ![Job Configuration](docs/img/02-post-build.png)
 
-## Contributing
+#### Issues
 
-TODO review the default [CONTRIBUTING](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md) file and make sure it is appropriate for your plugin, if not then add your own one adapted from the base file
+- [Issues](https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened%2C%20%22In%20Review%22)%20AND%20component%20%3D%20sonar-quality-gates-plugin)
+_______
+###### _Forked from https://github.com/jenkinsci/quality-gates-plugin_
 
-Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
-
-## LICENSE
-
-Licensed under MIT, see [LICENSE](LICENSE.md)
-
+3/4/2020 - Update to trigger build.
