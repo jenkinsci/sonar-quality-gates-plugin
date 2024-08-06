@@ -1,0 +1,51 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+    xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <style type="text/css">
+            .my-style .yui-button{
+                float: right;
+            }
+    </style>
+
+    <f:section title="Quality Gates - Sonarqube" >
+                <f:entry field="listOfGlobalConfigData" >
+                    <f:repeatable name="listOfGlobalConfigData" var="globalConfigData" items="${instance.listOfGlobalConfigData}" add="${%Add Sonar instance}">
+                        <table class="my-style">
+                            <tr>
+                                <td>
+                                    <f:entry field="globalConfigData" >
+                                          <f:entry field="name" title="Name" description="Make sure the name is unique value" >
+                                                <f:textbox name="name" value="${globalConfigData.name}" />
+                                          </f:entry>
+                                          <f:entry field="sonarUrl" title="SonarQube Server URL" description="Default value is 'http://localhost:9000'" >
+                                                <f:textbox name="url" value="${globalConfigData.sonarUrl}" />
+                                          </f:entry>
+                                           <f:entry field="token" title="SonarQube account token" description="Use token instead of user and password" >
+                                                 <f:textbox name="token" value="${globalConfigData.token}" />
+                                           </f:entry>
+                                           <f:entry field="username" title="SonarQube account login" description="Default value is 'admin'" >
+                                                 <f:textbox name="account" value="${globalConfigData.username}" />
+                                           </f:entry>
+                                         <f:entry field="pass" title="SonarQube account password" description="Default value is 'admin'" >
+                                               <f:password name="password" value="${globalConfigData.pass}" />
+                                         </f:entry>
+                                         <f:entry field="maxWaitTime" title="Maximum waiting time (milliseconds)" description="Default value is '300000' or 5 minutes" >
+                                               <f:textbox name="maxWaitTime" value="${globalConfigData.maxWaitTime}" />
+                                         </f:entry>
+                                         <f:entry field="timeToWait" title="Time to wait next check (milliseconds)" description="Default value is '10000' or 10 seconds" >
+                                               <f:textbox name="timeToWait" value="${globalConfigData.timeToWait}" />
+                                         </f:entry>
+                                    </f:entry>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <f:repeatableDeleteButton value="${%Delete}" />
+                                </td>
+                            </tr>
+                         </table>
+                    </f:repeatable>
+                </f:entry>
+        </f:section>
+</j:jelly>

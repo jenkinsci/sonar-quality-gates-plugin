@@ -1,0 +1,56 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+    xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <style type="text/css">
+        .errorUL
+        {
+            color:#F5B041;
+            font-weight:bold;
+        }
+    </style>
+
+    <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() == 0}">
+        <f:section>
+            <f:entry>
+              <ul class="errorUL">
+                    <li>There are no Quality Gates instances configured.</li>
+                    <li>Please configure a Quality Gate instance in the <a href="/configure">system configuration.</a></li>
+                    <li>By default http://localhost:9000, Username: admin, Password: admin will be used.</li>
+              </ul>
+            </f:entry>
+
+            <f:entry field="jobConfigData" description="Enter your project key.">
+                <f:entry title="Project Key" field="projectKey">
+                    <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+                </f:entry>
+            </f:entry>
+        </f:section>
+    </j:if>
+    <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() == 1}">
+        <f:section>
+            <f:entry title="Project Key" field="projectKey">
+                <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+            </f:entry>
+
+            <f:entry title="Job status when analysis fails" field="buildStatus">
+                <f:select name="buildStatus" value="${instance.jobConfigData.buildStatus}" />
+            </f:entry>
+        </f:section>
+    </j:if>
+    <j:if test="${descriptor.jobExecutionService.getGlobalConfigData().listOfGlobalConfigData.size() >= 2}">
+        <f:section>
+            <f:entry field="listOfGlobalConfigData" title="Sonar instance 'Name'">
+                <f:select name="sonarInstancesName" value="${instance.jobConfigData.sonarInstanceName}"/>
+            </f:entry>
+
+            <f:entry title="Project Key" field="projectKey">
+                <f:textbox name="projectKey" value="${instance.jobConfigData.projectKey}" />
+            </f:entry>
+
+            <f:entry title="Job status when analysis fails" field="buildStatus">
+                <f:select name="buildStatus" value="${instance.jobConfigData.buildStatus}" />
+            </f:entry>
+        </f:section>
+    </j:if>
+</j:jelly>
