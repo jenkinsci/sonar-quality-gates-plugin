@@ -9,8 +9,6 @@ import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
 
-import java.io.UnsupportedEncodingException;
-
 public class QualityGatesProvider {
 
     private static final int MILLISECONDS_5_MINUTES = 300000;
@@ -30,16 +28,24 @@ public class QualityGatesProvider {
         this.sonarInstanceValidationService = new SonarInstanceValidationService();
     }
 
-    public QualityGatesProvider(QualityGateResponseParser qualityGateResponseParser, SonarHttpRequester sonarHttpRequester, SonarInstanceValidationService sonarInstanceValidationService) {
+    public QualityGatesProvider(
+            QualityGateResponseParser qualityGateResponseParser,
+            SonarHttpRequester sonarHttpRequester,
+            SonarInstanceValidationService sonarInstanceValidationService) {
 
         this.qualityGateResponseParser = qualityGateResponseParser;
         this.sonarHttpRequester = sonarHttpRequester;
         this.sonarInstanceValidationService = sonarInstanceValidationService;
     }
 
-    public QualityGatesStatus getAPIResultsForQualityGates(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance, BuildListener listener) throws JSONException, InterruptedException{
+    public QualityGatesStatus getAPIResultsForQualityGates(
+            JobConfigData jobConfigData,
+            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance,
+            BuildListener listener)
+            throws JSONException, InterruptedException {
 
-        GlobalConfigDataForSonarInstance validatedData = sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
+        GlobalConfigDataForSonarInstance validatedData =
+                sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
 
         boolean taskAnalysisRunning = true;
 
@@ -67,7 +73,10 @@ public class QualityGatesProvider {
 
             if (ArrayUtils.isNotEmpty(taskCE.getQueue())) {
 
-                listener.getLogger().println("Has build " + taskCE.getQueue()[0].getStatus() + " with id: " + taskCE.getQueue()[0].getId() + " - waiting " + timeToWait + " to execute next check. DEBUG:" + (System.currentTimeMillis()-startTime));
+                listener.getLogger()
+                        .println("Has build " + taskCE.getQueue()[0].getStatus() + " with id: "
+                                + taskCE.getQueue()[0].getId() + " - waiting " + timeToWait
+                                + " to execute next check. DEBUG:" + (System.currentTimeMillis() - startTime));
 
                 Thread.sleep(timeToWait);
             } else {
@@ -78,7 +87,7 @@ public class QualityGatesProvider {
                 }
             }
 
-            if ((System.currentTimeMillis()-startTime)>maxWaitTime) {
+            if ((System.currentTimeMillis() - startTime) > maxWaitTime) {
                 throw new MaxExecutionTimeException("Status => Max time to wait sonar job!");
             }
         } while (taskAnalysisRunning);
@@ -88,7 +97,9 @@ public class QualityGatesProvider {
         return qualityGateResponseParser.getQualityGateResultFromJSON(requesterResult);
     }
 
-    private String getRequesterResult(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+    private String getRequesterResult(
+            JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
+            throws QGException {
 
         return sonarHttpRequester.getAPIInfo(jobConfigData, globalConfigDataForSonarInstance);
     }

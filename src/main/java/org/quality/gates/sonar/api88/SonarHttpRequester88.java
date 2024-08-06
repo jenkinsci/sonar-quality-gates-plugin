@@ -1,22 +1,24 @@
-package org.quality.gates.sonar.api60;
+package org.quality.gates.sonar.api88;
 
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.sonar.api.SonarHttpRequester;
 
 /**
- * @author arkanjoms
- * @since 1.0.1
+ * @author lumi
+ * @since 1.3.2
  */
-public class SonarHttpRequester60 extends SonarHttpRequester {
+public class SonarHttpRequester88 extends SonarHttpRequester {
 
     private static final String SONAR_API_LOGIN = "/api/authentication/login";
 
     private static final String SONAR_API_QUALITY_GATES_STATUS = "/api/qualitygates/project_status?projectKey=%s";
 
-    private static final String SONAR_API_TASK_INFO = "/api/ce/component?componentId=%s";
+    private static final String SONAR_API_TASK_INFO = "/api/ce/component?component=%s";
 
-    public SonarHttpRequester60() {}
+    private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?component=%s";
+
+    public SonarHttpRequester88() {}
 
     @Override
     protected String getSonarApiLogin() {
@@ -34,8 +36,13 @@ public class SonarHttpRequester60 extends SonarHttpRequester {
     }
 
     @Override
+    protected String getSonarApiComponentShow() {
+        return SONAR_API_COMPONENT_SHOW;
+    }
+
+    @Override
     protected String getSonarApiTaskInfoParameter(
             JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-        return getComponentId(jobConfigData, globalConfigDataForSonarInstance);
+        return jobConfigData.getProjectKey();
     }
 }

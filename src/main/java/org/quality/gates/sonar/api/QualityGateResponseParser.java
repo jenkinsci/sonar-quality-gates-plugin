@@ -1,12 +1,11 @@
 package org.quality.gates.sonar.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.quality.gates.jenkins.plugin.QGException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class QualityGateResponseParser {
 

@@ -1,17 +1,15 @@
 package org.quality.gates.sonar.api;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.quality.gates.jenkins.plugin.QGException;
-import org.quality.gates.sonar.api.QualityGateResponseParser;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 public class QualityGateResponseParserTest {
 
@@ -32,7 +30,8 @@ public class QualityGateResponseParserTest {
     @Before
     public void init() {
         qualityGateResponseParser = new QualityGateResponseParser();
-        jsonArrayString = "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
+        jsonArrayString =
+                "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
     }
 
     @Test
@@ -54,13 +53,17 @@ public class QualityGateResponseParserTest {
         secondJsonObject.put("ds", "");
         array.put(firstJsonObject);
         array.put(secondJsonObject);
-        assertEquals(secondJsonObject.toString(), qualityGateResponseParser.getLatestEventResult(array).toString());
+        assertEquals(
+                secondJsonObject.toString(),
+                qualityGateResponseParser.getLatestEventResult(array).toString());
     }
 
     @Test
     public void testCreateJSONArrayFromString() {
         JSONArray expected = new JSONArray();
-        assertEquals(expected.toString(), qualityGateResponseParser.createJSONArrayFromString("[]").toString());
+        assertEquals(
+                expected.toString(),
+                qualityGateResponseParser.createJSONArrayFromString("[]").toString());
     }
 
     @Test(expected = QGException.class)
@@ -70,10 +73,8 @@ public class QualityGateResponseParserTest {
 
     @Test(expected = QGException.class)
     public void testCreateJSONArrayFromStringThrowsExceptionWhenStringISAJSONObjectShouldThrowQGException() {
-        qualityGateResponseParser.createJSONArrayFromString("{\n" +
-                "err_code: 404,\n" +
-                "err_msg: \"Resource not found: wrongProjectKey\"\n" +
-                "}");
+        qualityGateResponseParser.createJSONArrayFromString(
+                "{\n" + "err_code: 404,\n" + "err_msg: \"Resource not found: wrongProjectKey\"\n" + "}");
     }
 
     @Test
@@ -86,7 +87,9 @@ public class QualityGateResponseParserTest {
         jsonObject.put("c", ALERT);
         jsonObject.put(DT, T12_01_31_0100);
         jsonObject.put("ds", "");
-        assertEquals(jsonObject.toString(), qualityGateResponseParser.getJSONObjectFromArray(array, 0).toString());
+        assertEquals(
+                jsonObject.toString(),
+                qualityGateResponseParser.getJSONObjectFromArray(array, 0).toString());
     }
 
     @Test(expected = QGException.class)
@@ -96,7 +99,8 @@ public class QualityGateResponseParserTest {
     }
 
     @Test
-    public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException {
+    public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen()
+            throws JSONException {
         JSONObject expectedObject = new JSONObject();
         expectedObject.put("id", "1");
         expectedObject.put(DT, "2000-01-01T12:00:00+0100");

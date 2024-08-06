@@ -42,8 +42,6 @@ public class QualityGatesStatus {
     @Override
     public String toString() {
 
-        return "QualityGatesStatus{" +
-                "status='" + status + '\'' +
-                '}';
+        return "QualityGatesStatus{" + "status='" + status + '\'' + '}';
     }
 }
