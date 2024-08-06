@@ -73,7 +73,6 @@ public abstract class SonarHttpRequester {
     private void loginApi(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         httpClientContext = HttpClientContext.create();
-        httpClient = HttpClientBuilder.create().build();
 
         if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
             token = globalConfigDataForSonarInstance.getToken();
