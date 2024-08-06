@@ -4,14 +4,13 @@ import hudson.EnvVars;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
-import net.sf.json.JSONObject;
-import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.sf.json.JSONObject;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 public class JobConfigurationService {
 
@@ -23,7 +22,8 @@ public class JobConfigurationService {
 
         ListBoxModel listBoxModel = new ListBoxModel();
 
-        for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance : globalConfig.fetchListOfGlobalConfigData()) {
+        for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance :
+                globalConfig.fetchListOfGlobalConfigData()) {
             listBoxModel.add(globalConfigDataForSonarInstance.getName());
         }
 
@@ -71,7 +71,8 @@ public class JobConfigurationService {
         return instanceName;
     }
 
-    public JobConfigData checkProjectKeyIfVariable(JobConfigData jobConfigData, AbstractBuild build, BuildListener listener) throws QGException {
+    public JobConfigData checkProjectKeyIfVariable(
+            JobConfigData jobConfigData, AbstractBuild build, BuildListener listener) throws QGException {
 
         String projectKey = jobConfigData.getProjectKey();
 
@@ -96,12 +97,14 @@ public class JobConfigurationService {
 
     private String getProjectKey(final String projectKey, EnvVars env) {
 
-        final String projectKeyAfterFirstResolving = resolveEmbeddedEnvVariables(projectKey, env, ENV_VARIABLE_WITH_BRACES_PATTERN, 1);
+        final String projectKeyAfterFirstResolving =
+                resolveEmbeddedEnvVariables(projectKey, env, ENV_VARIABLE_WITH_BRACES_PATTERN, 1);
 
         return resolveEmbeddedEnvVariables(projectKeyAfterFirstResolving, env, ENV_VARIABLE_WITHOUT_BRACES_PATTERN, 0);
     }
 
-    private String resolveEmbeddedEnvVariables(final String projectKey, final EnvVars env, final Pattern pattern, final int braceOffset) {
+    private String resolveEmbeddedEnvVariables(
+            final String projectKey, final EnvVars env, final Pattern pattern, final int braceOffset) {
 
         final Matcher matcher = pattern.matcher(projectKey);
         final StringBuilder builder = new StringBuilder(projectKey);
@@ -109,7 +112,8 @@ public class JobConfigurationService {
         int offset = 0;
 
         while (matcher.find()) {
-            final String envVariable = projectKey.substring(matcher.start() + braceOffset + 1, matcher.end() - braceOffset);
+            final String envVariable =
+                    projectKey.substring(matcher.start() + braceOffset + 1, matcher.end() - braceOffset);
             final String envValue = env.get(envVariable);
 
             if (envValue == null) {

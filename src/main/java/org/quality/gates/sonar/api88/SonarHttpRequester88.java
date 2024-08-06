@@ -17,9 +17,8 @@ public class SonarHttpRequester88 extends SonarHttpRequester {
     private static final String SONAR_API_TASK_INFO = "/api/ce/component?component=%s";
 
     private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?component=%s";
-    
-    public SonarHttpRequester88() {
-    }
+
+    public SonarHttpRequester88() {}
 
     @Override
     protected String getSonarApiLogin() {
@@ -40,10 +39,10 @@ public class SonarHttpRequester88 extends SonarHttpRequester {
     protected String getSonarApiComponentShow() {
         return SONAR_API_COMPONENT_SHOW;
     }
-    
+
     @Override
-    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected String getSonarApiTaskInfoParameter(
+            JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         return jobConfigData.getProjectKey();
     }
 }
-

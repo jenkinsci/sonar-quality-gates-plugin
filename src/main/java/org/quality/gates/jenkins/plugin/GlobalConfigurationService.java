@@ -2,13 +2,12 @@ package org.quality.gates.jenkins.plugin;
 
 import hudson.Util;
 import hudson.util.Secret;
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GlobalConfigurationService {
 
@@ -67,7 +66,7 @@ public class GlobalConfigurationService {
 
         String name = globalConfigData.optString("name");
         int timeToWait = globalConfigData.optInt("timeToWait");
-		int maxWaitTime = globalConfigData.optInt("maxWaitTime");
+        int maxWaitTime = globalConfigData.optInt("maxWaitTime");
         String url = globalConfigData.optString("url");
 
         if (!"".equals(name)) {
@@ -75,9 +74,16 @@ public class GlobalConfigurationService {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
             String token = globalConfigData.optString("token");
             if (StringUtils.isNotEmpty(token)) {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("token"), timeToWait, maxWaitTime);
+                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
+                        name, url, globalConfigData.optString("token"), timeToWait, maxWaitTime);
             } else {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(name, url, globalConfigData.optString("account"), Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))), timeToWait, maxWaitTime);
+                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
+                        name,
+                        url,
+                        globalConfigData.optString("account"),
+                        Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))),
+                        timeToWait,
+                        maxWaitTime);
             }
 
             if (!containsGlobalConfigWithName(name)) {

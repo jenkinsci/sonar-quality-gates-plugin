@@ -1,29 +1,29 @@
 package org.quality.gates.jenkins.plugin;
 
-import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
-
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
+
 public class QGBuilderTest {
 
-    public static final String BUILD_STEP_QUALITY_GATES_PLUGIN_BUILD_PASSED = "Build-Step: Quality Gates plugin build passed: ";
+    public static final String BUILD_STEP_QUALITY_GATES_PLUGIN_BUILD_PASSED =
+            "Build-Step: Quality Gates plugin build passed: ";
     private QGBuilder builder;
 
     @Mock
@@ -56,14 +56,27 @@ public class QGBuilderTest {
     @Mock
     private JobConfigurationService jobConfigurationService;
 
+    private AutoCloseable closeable;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        builder = new QGBuilder(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
-        when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any())).thenReturn(jobConfigData);
+        closeable = MockitoAnnotations.openMocks(this);
+        builder = new QGBuilder(
+                jobConfigData,
+                buildDecision,
+                jobExecutionService,
+                jobConfigurationService,
+                globalConfigDataForSonarInstance);
+        when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
+                .thenReturn(jobConfigData);
         when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
         doReturn(printStream).when(buildListener).getLogger();
-        doReturn(printWriter).when(buildListener).error(anyString(), anyObject());
+        doReturn(printWriter).when(buildListener).error(anyString(), any());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -77,7 +90,8 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener)).thenReturn(false);
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+                .thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
@@ -88,7 +102,8 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener)).thenReturn(false);
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+                .thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(2)).getLogger();

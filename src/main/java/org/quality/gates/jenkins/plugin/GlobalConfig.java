@@ -2,12 +2,11 @@ package org.quality.gates.jenkins.plugin;
 
 import hudson.Extension;
 import hudson.util.FormValidation;
+import java.util.List;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-
-import java.util.List;
 
 @Extension
 public class GlobalConfig extends GlobalConfiguration {
@@ -22,8 +21,9 @@ public class GlobalConfig extends GlobalConfiguration {
         globalConfigurationService = new GlobalConfigurationService();
     }
 
-
-    public GlobalConfig(List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData, GlobalConfigurationService globalConfigurationService) {
+    public GlobalConfig(
+            List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData,
+            GlobalConfigurationService globalConfigurationService) {
 
         this.listOfGlobalConfigData = listOfGlobalConfigData;
         this.globalConfigurationService = globalConfigurationService;
@@ -39,7 +39,8 @@ public class GlobalConfig extends GlobalConfiguration {
         return listOfGlobalConfigData;
     }
 
-    public void setGlobalConfigDataForSonarInstances(List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances) {
+    public void setGlobalConfigDataForSonarInstances(
+            List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances) {
         this.listOfGlobalConfigData = globalConfigDataForSonarInstances;
     }
 

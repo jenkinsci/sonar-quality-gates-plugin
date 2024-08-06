@@ -2,6 +2,14 @@ package org.quality.gates.sonar.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -18,19 +26,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.apache.commons.lang.StringUtils;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
 
 /**
  * @author arkanjoms
@@ -81,8 +81,9 @@ public abstract class SonarHttpRequester {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(
                     AuthScope.ANY,
-                    new UsernamePasswordCredentials(globalConfigDataForSonarInstance.getUsername(), globalConfigDataForSonarInstance.getPass())
-            );
+                    new UsernamePasswordCredentials(
+                            globalConfigDataForSonarInstance.getUsername(),
+                            globalConfigDataForSonarInstance.getPass()));
 
             httpClient = HttpClientBuilder.create()
                     .setDefaultCredentialsProvider(credsProvider)
@@ -131,7 +132,9 @@ public abstract class SonarHttpRequester {
 
         try {
             if (StringUtils.isNotEmpty(token)) {
-                String authHeader = "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes());
+                String authHeader =
+                        "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes(StandardCharsets.UTF_8));
+
                 request.addHeader(HttpHeaders.AUTHORIZATION, authHeader);
             }
             response = client.execute(request, httpClientContext);
@@ -149,15 +152,15 @@ public abstract class SonarHttpRequester {
             throw new QGException("GET execution error", e);
         } finally {
             try {
-                if (response != null)
-                    response.close();
+                if (response != null) response.close();
             } catch (IOException e) {
                 LOGGER.error(e.getLocalizedMessage(), e);
             }
         }
     }
 
-    String getAPITaskInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+    String getAPITaskInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
+            throws QGException {
 
         checkLogged(globalConfigDataForSonarInstance);
 
@@ -165,7 +168,8 @@ public abstract class SonarHttpRequester {
             String sonarProjectKey = getSonarApiTaskInfoParameter(configData, globalConfigDataForSonarInstance);
             String sonarProjectTaskInfoPath = getSonarApiTaskInfoUrl();
             String sonarHostUrl = globalConfigDataForSonarInstance.getSonarUrl();
-            String taskInfoUri = sonarHostUrl + String.format(sonarProjectTaskInfoPath, URLEncoder.encode(sonarProjectKey, "UTF-8"));
+            String taskInfoUri =
+                    sonarHostUrl + String.format(sonarProjectTaskInfoPath, URLEncoder.encode(sonarProjectKey, "UTF-8"));
 
             HttpGet request = new HttpGet(taskInfoUri);
             return executeGetRequest(httpClient, request);
@@ -176,13 +180,16 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiTaskInfoUrl();
 
-    protected abstract String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
+    protected abstract String getSonarApiTaskInfoParameter(
+            JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
 
-    String getAPIInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) throws QGException {
+    String getAPIInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
+            throws QGException {
 
         checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiQualityGatesStatusUrl(), configData.getProjectKey());
+        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl()
+                + String.format(getSonarApiQualityGatesStatusUrl(), configData.getProjectKey());
 
         HttpGet request = new HttpGet(String.format(sonarApiQualityGates, configData.getProjectKey()));
 
@@ -191,11 +198,13 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiQualityGatesStatusUrl();
 
-    protected String getComponentId(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected String getComponentId(
+            JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         checkLogged(globalConfigDataForSonarInstance);
 
-        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl() + String.format(getSonarApiComponentShow(), configData.getProjectKey());
+        String sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl()
+                + String.format(getSonarApiComponentShow(), configData.getProjectKey());
 
         HttpGet request = new HttpGet(sonarApiQualityGates);
 

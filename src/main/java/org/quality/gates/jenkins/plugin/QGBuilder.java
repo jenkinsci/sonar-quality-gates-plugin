@@ -30,7 +30,12 @@ public class QGBuilder extends Builder {
         this.globalConfigDataForSonarInstance = null;
     }
 
-    protected QGBuilder(JobConfigData jobConfigData, BuildDecision buildDecision, JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected QGBuilder(
+            JobConfigData jobConfigData,
+            BuildDecision buildDecision,
+            JobExecutionService jobExecutionService,
+            JobConfigurationService jobConfigurationService,
+            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
@@ -46,10 +51,12 @@ public class QGBuilder extends Builder {
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
 
-        globalConfigDataForSonarInstance = buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
+        globalConfigDataForSonarInstance =
+                buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
 
         if (globalConfigDataForSonarInstance == null) {
-            listener.error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
+            listener.error(
+                    JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, jobConfigData.getSonarInstanceName());
             return false;
         }
 
@@ -68,11 +75,14 @@ public class QGBuilder extends Builder {
         boolean buildHasPassed = false;
 
         try {
-            JobConfigData checkedJobConfigData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
+            JobConfigData checkedJobConfigData =
+                    jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
             buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData, listener);
             if ("".equals(jobConfigData.getSonarInstanceName()))
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
-            listener.getLogger().println("Build-Step: Quality Gates plugin build passed: " + String.valueOf(buildHasPassed).toUpperCase());
+            listener.getLogger()
+                    .println("Build-Step: Quality Gates plugin build passed: "
+                            + String.valueOf(buildHasPassed).toUpperCase());
 
             if (!buildHasPassed && BuildStatusEnum.UNSTABLE.equals(checkedJobConfigData.getBuildStatus())) {
                 build.setResult(Result.UNSTABLE);

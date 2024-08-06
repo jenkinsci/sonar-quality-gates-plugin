@@ -12,9 +12,6 @@
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>sonar-quality-gates</artifactId>
   <version>${revision}${changelist}</version>
-  <description>Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
-        Quality Gates status is different than "Passed")
-  </description>
   <packaging>hpi</packaging>
 
   <name>Sonar Quality Gates Plugin</name>
@@ -111,7 +108,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.15.0</version>
+      <version>4.0.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.hamcrest</groupId>
