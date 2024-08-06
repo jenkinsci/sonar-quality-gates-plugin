@@ -44,7 +44,8 @@ class SonarHttpRequesterFactory {
             } else if (majorSonarVersion(sonarVersion) >= 8) {
                 return new SonarHttpRequester88();
             } else {
-                throw new UnsuportedVersionException("Plugin doesn't suport this version of sonar api! Please contact the developer.");
+                throw new UnsuportedVersionException(
+                        "Plugin doesn't suport this version of sonar api! Please contact the developer.");
             }
         } catch (IOException e) {
             throw new ApiConnectionException(e.getLocalizedMessage());

@@ -24,8 +24,8 @@ public class GlobalConfigDataForSonarInstance {
     private String token;
 
     private int timeToWait;
-	
-	private int maxWaitTime;
+
+    private int maxWaitTime;
 
     public GlobalConfigDataForSonarInstance() {
 
@@ -35,14 +35,15 @@ public class GlobalConfigDataForSonarInstance {
         this.pass = "";
     }
 
-    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
+    public GlobalConfigDataForSonarInstance(
+            String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
 
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.username = username;
         this.secretPass = secretPass;
         this.timeToWait = timeToWait;
-		this.maxWaitTime = maxWaitTime;
+        this.maxWaitTime = maxWaitTime;
     }
 
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, String pass) {
@@ -53,13 +54,14 @@ public class GlobalConfigDataForSonarInstance {
         this.pass = pass;
     }
 
-    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String token, int timeToWait, int maxWaitTime) {
+    public GlobalConfigDataForSonarInstance(
+            String name, String sonarUrl, String token, int timeToWait, int maxWaitTime) {
 
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.token = token;
         this.timeToWait = timeToWait;
-		this.maxWaitTime = maxWaitTime;
+        this.maxWaitTime = maxWaitTime;
     }
 
     public String getName() {
@@ -97,19 +99,19 @@ public class GlobalConfigDataForSonarInstance {
     public int getTimeToWait() {
         return timeToWait;
     }
-	
-	public int getMaxWaitTime () {
-		return maxWaitTime;
-	}
+
+    public int getMaxWaitTime() {
+        return maxWaitTime;
+    }
 
     public void setTimeToWait(int timeToWait) {
         this.timeToWait = timeToWait;
     }
 
-	public void setMaxWaitTime(int maxWaitTime) {
-		this.maxWaitTime = maxWaitTime;
-	}
-	
+    public void setMaxWaitTime(int maxWaitTime) {
+        this.maxWaitTime = maxWaitTime;
+    }
+
     public String getToken() {
         return token;
     }
@@ -165,12 +167,11 @@ public class GlobalConfigDataForSonarInstance {
     @Override
     public String toString() {
 
-        return "GlobalConfigDataForSonarInstance{" +
-                "name='" + name + '\'' +
-                ", username='" + username + '\'' +
-                ", sonarUrl='" + sonarUrl + '\'' +
-                ", timeToWait='" + timeToWait + '\'' +
-				", maxWaitTime=" + maxWaitTime +
-                '}';
+        return "GlobalConfigDataForSonarInstance{" + "name='"
+                + name + '\'' + ", username='"
+                + username + '\'' + ", sonarUrl='"
+                + sonarUrl + '\'' + ", timeToWait='"
+                + timeToWait + '\'' + ", maxWaitTime="
+                + maxWaitTime + '}';
     }
 }

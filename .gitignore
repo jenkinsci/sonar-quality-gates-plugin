@@ -1,5 +1,15 @@
 target
-.idea
-*.iml
+
+# mvn hpi:run
 work
-release.properties
+
+# IntelliJ IDEA project files
+*.iml
+*.iws
+*.ipr
+.idea
+
+# Eclipse project files
+.settings
+.classpath
+.project

@@ -6,13 +6,12 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import java.util.Arrays;
+import javax.inject.Inject;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
-
-import javax.inject.Inject;
-import java.util.Arrays;
 
 @Extension
 public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> {
@@ -29,7 +28,8 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
         load();
     }
 
-    public QGPublisherDescriptor(JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
+    public QGPublisherDescriptor(
+            JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
 
         super(QGPublisher.class);
         this.jobExecutionService = jobExecutionService;
@@ -79,8 +79,11 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     @Override
     public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws QGException {
 
-        JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService.getGlobalConfigData().getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
+        JobConfigData firstInstanceJobConfigData =
+                jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService
+                .getGlobalConfigData()
+                .getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
         return new QGPublisher(firstInstanceJobConfigData, globalConfigDataForSonarInstance);
     }
 }

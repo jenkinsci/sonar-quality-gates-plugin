@@ -1,31 +1,35 @@
 package org.quality.gates.jenkins.plugin;
 
+import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.List;
-
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
 public class QGPublisherTest {
 
-    public static final String POST_BUILD_STEP_QUALITY_GATES_PLUGIN_BUILD_PASSED = "PostBuild-Step: Quality Gates plugin build passed: ";
+    public static final String POST_BUILD_STEP_QUALITY_GATES_PLUGIN_BUILD_PASSED =
+            "PostBuild-Step: Quality Gates plugin build passed: ";
+
+    @InjectMocks
     private QGPublisher publisher;
 
     @Mock
@@ -47,7 +51,7 @@ public class QGPublisherTest {
     private PrintWriter printWriter;
 
     @Mock
-    private AbstractBuild abstractBuild;
+    private AbstractBuild<?, ?> abstractBuild;
 
     @Mock
     private Launcher launcher;
@@ -56,22 +60,36 @@ public class QGPublisherTest {
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @Mock
-    JobConfigurationService jobConfigurationService;
+    private JobConfigurationService jobConfigurationService;
 
     @Mock
-    List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
 
-    @Mock
-    private BuildListener listener;
+    private AutoCloseable closeable;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        publisher = new QGPublisher(jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, globalConfigDataForSonarInstance);
-        when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any())).thenReturn(jobConfigData);
-        when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
-        doReturn(printStream).when(buildListener).getLogger();
-        doReturn(printWriter).when(buildListener).error(anyString(), any());
+        try {
+            closeable = MockitoAnnotations.openMocks(this);
+            publisher = new QGPublisher(
+                    jobConfigData,
+                    buildDecision,
+                    jobExecutionService,
+                    jobConfigurationService,
+                    globalConfigDataForSonarInstance);
+            when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
+                    .thenReturn(jobConfigData);
+            when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
+            doReturn(printStream).when(buildListener).getLogger();
+            doReturn(printWriter).when(buildListener).error(anyString(), any());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -87,7 +105,7 @@ public class QGPublisherTest {
         setBuildResult(Result.FAILURE);
         buildDecisionShouldBe(false);
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
-        verifyZeroInteractions(buildDecision);
+        verifyNoInteractions(buildDecision);
     }
 
     @Test
@@ -114,7 +132,8 @@ public class QGPublisherTest {
     }
 
     private void buildDecisionShouldBe(boolean toBeReturned) throws QGException {
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener)).thenReturn(toBeReturned);
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+                .thenReturn(toBeReturned);
     }
 
     private void setBuildResult(Result result) {

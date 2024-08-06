@@ -6,13 +6,12 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import java.util.Arrays;
+import javax.inject.Inject;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
-
-import javax.inject.Inject;
-import java.util.Arrays;
 
 @Extension
 public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
@@ -29,7 +28,8 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
         load();
     }
 
-    public QGBuilderDescriptor(JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
+    public QGBuilderDescriptor(
+            JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
 
         super(QGBuilder.class);
 
@@ -76,8 +76,11 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     @Override
     public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws QGException {
 
-        JobConfigData firstInstanceJobConfigData = jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService.getGlobalConfigData().getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
+        JobConfigData firstInstanceJobConfigData =
+                jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
+        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService
+                .getGlobalConfigData()
+                .getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
         return new QGBuilder(firstInstanceJobConfigData, globalConfigDataForSonarInstance);
     }
 }

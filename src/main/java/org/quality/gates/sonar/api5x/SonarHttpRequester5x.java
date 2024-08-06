@@ -16,8 +16,7 @@ public class SonarHttpRequester5x extends SonarHttpRequester {
 
     private static final String SONAR_API_TASK_INFO = "/api/ce/component?componentId=%s";
 
-    public SonarHttpRequester5x() {
-    }
+    public SonarHttpRequester5x() {}
 
     @Override
     protected String getSonarApiLogin() {
@@ -35,7 +34,8 @@ public class SonarHttpRequester5x extends SonarHttpRequester {
     }
 
     @Override
-    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected String getSonarApiTaskInfoParameter(
+            JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         return getComponentId(jobConfigData, globalConfigDataForSonarInstance);
     }
 }
