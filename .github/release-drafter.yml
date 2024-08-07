@@ -1,2 +1,0 @@
-_extends: .github
-tag-template: sonar-quality-gates-$NEXT_MINOR_VERSION
