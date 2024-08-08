@@ -80,8 +80,8 @@ public class GlobalConfigDataForSonarInstance {
         this.username = username;
     }
 
-    public String getPass() {
-        return Secret.toString(secretPass);
+    public Secret getPass() {
+        return secretPass != null ? secretPass : Secret.fromString("");
     }
 
     public void setPass(String pass) {

@@ -97,7 +97,7 @@ public class BuildDecisionTest {
         GlobalConfigDataForSonarInstance returnedInstance =
                 buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
         assertTrue(returnedInstance.getName().equals(emptyString));
-        assertTrue(returnedInstance.getPass().equals(emptyString));
+        assertTrue(returnedInstance.getPass().getPlainText().equals(emptyString));
         assertTrue(returnedInstance.getSonarUrl().equals(emptyString));
         assertTrue(returnedInstance.getUsername().equals(emptyString));
     }
