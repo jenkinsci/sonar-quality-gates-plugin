@@ -1,12 +1,13 @@
 package org.quality.gates.jenkins.plugin;
 
+import static java.util.Arrays.asList;
+
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import java.util.Arrays;
 import javax.inject.Inject;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
@@ -23,14 +24,12 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     private JobExecutionService jobExecutionService;
 
     public QGPublisherDescriptor() {
-
         super(QGPublisher.class);
         load();
     }
 
     public QGPublisherDescriptor(
             JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
-
         super(QGPublisher.class);
         this.jobExecutionService = jobExecutionService;
         this.jobConfigurationService = jobConfigurationService;
@@ -45,7 +44,6 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     }
 
     public FormValidation doCheckProjectKey(@QueryParameter String projectKey) {
-
         if (projectKey.isEmpty()) {
             return FormValidation.error("Please insert project key.");
         }
@@ -54,8 +52,8 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     }
 
     public ListBoxModel doFillBuildStatusItems() {
-        ListBoxModel items = new ListBoxModel();
-        Arrays.asList(BuildStatusEnum.values()).forEach(e -> items.add(e.toString()));
+        var items = new ListBoxModel();
+        asList(BuildStatusEnum.values()).forEach(e -> items.add(e.toString()));
         return items;
     }
 
@@ -71,19 +69,18 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-
         save();
         return true;
     }
 
     @Override
     public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws QGException {
-
-        JobConfigData firstInstanceJobConfigData =
+        var firstInstanceJobConfigData =
                 jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService
+        var globalConfigDataForSonarInstance = jobExecutionService
                 .getGlobalConfigData()
                 .getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
+
         return new QGPublisher(firstInstanceJobConfigData, globalConfigDataForSonarInstance);
     }
 }

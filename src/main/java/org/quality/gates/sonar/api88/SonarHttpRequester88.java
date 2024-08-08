@@ -18,8 +18,6 @@ public class SonarHttpRequester88 extends SonarHttpRequester {
 
     private static final String SONAR_API_COMPONENT_SHOW = "/api/components/show?component=%s";
 
-    public SonarHttpRequester88() {}
-
     @Override
     protected String getSonarApiLogin() {
         return SONAR_API_LOGIN;

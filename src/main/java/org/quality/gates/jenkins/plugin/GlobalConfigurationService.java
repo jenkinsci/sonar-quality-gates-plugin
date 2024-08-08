@@ -1,13 +1,10 @@
 package org.quality.gates.jenkins.plugin;
 
-import hudson.Util;
-import hudson.util.Secret;
 import java.util.ArrayList;
 import java.util.List;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 
 public class GlobalConfigurationService {
 
@@ -18,9 +15,8 @@ public class GlobalConfigurationService {
     }
 
     protected List<GlobalConfigDataForSonarInstance> instantiateGlobalConfigData(JSONObject json) {
-
         listOfGlobalConfigInstances = new ArrayList<>();
-        JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
+        var globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
 
         if (globalDataConfigs == null) {
             globalDataConfigs = new JSONArray();
@@ -32,8 +28,7 @@ public class GlobalConfigurationService {
     }
 
     protected void initGlobalDataConfig(JSON globalDataConfigs) {
-
-        JSONArray array = getGlobalConfigsArray(globalDataConfigs);
+        var array = getGlobalConfigsArray(globalDataConfigs);
 
         for (int i = 0; i < array.size(); i++) {
             JSONObject jsonobject = array.getJSONObject(i);
@@ -42,58 +37,35 @@ public class GlobalConfigurationService {
     }
 
     protected JSONArray getGlobalConfigsArray(JSON globalDataConfigs) {
-
-        JSONArray array;
-
         if (globalDataConfigs.isArray()) {
-            array = JSONArray.class.cast(globalDataConfigs);
-        } else {
-            array = createJsonArrayFromObject((JSONObject) globalDataConfigs);
+            return (JSONArray) globalDataConfigs;
         }
 
-        return array;
+        return createJsonArrayFromObject((JSONObject) globalDataConfigs);
     }
 
     protected JSONArray createJsonArrayFromObject(JSONObject globalDataConfigs) {
-
-        JSONArray array = new JSONArray();
+        var array = new JSONArray();
         array.add(globalDataConfigs);
-
         return array;
     }
 
     protected void addGlobalConfigDataForSonarInstance(JSONObject globalConfigData) {
+        var name = globalConfigData.optString("name");
+        var url = globalConfigData.optString("url");
+        var sonarCredentialsId = globalConfigData.optString("sonarCredentialsId");
+        var timeToWait = globalConfigData.optInt("timeToWait");
+        var maxWaitTime = globalConfigData.optInt("maxWaitTime");
 
-        String name = globalConfigData.optString("name");
-        int timeToWait = globalConfigData.optInt("timeToWait");
-        int maxWaitTime = globalConfigData.optInt("maxWaitTime");
-        String url = globalConfigData.optString("url");
+        var globalConfigDataForSonarInstance =
+                new GlobalConfigDataForSonarInstance(name, url, sonarCredentialsId, timeToWait, maxWaitTime);
 
-        if (!"".equals(name)) {
-
-            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
-            String token = globalConfigData.optString("token");
-            if (StringUtils.isNotEmpty(token)) {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
-                        name, url, globalConfigData.optString("token"), timeToWait, maxWaitTime);
-            } else {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
-                        name,
-                        url,
-                        globalConfigData.optString("account"),
-                        Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("password"))),
-                        timeToWait,
-                        maxWaitTime);
-            }
-
-            if (!containsGlobalConfigWithName(name)) {
-                listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
-            }
+        if (!containsGlobalConfigWithName(name)) {
+            listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
         }
     }
 
     protected boolean containsGlobalConfigWithName(String name) {
-
         for (GlobalConfigDataForSonarInstance globalConfigDataInstance : listOfGlobalConfigInstances) {
             if (globalConfigDataInstance.getName().equals(name)) {
                 return true;

@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Fails the build whenever the Quality Gates criteria in the Sonar 5.6+ analysis aren't met (the project
-        Quality Gates status is different than "Passed")
+    Fails the build whenever the Quality Gates criteria in the Sonar analysis aren't met (the project
+    Quality Gates status is different than "Passed")
 </div>

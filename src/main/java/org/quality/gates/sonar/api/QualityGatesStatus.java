@@ -1,10 +1,12 @@
 package org.quality.gates.sonar.api;
 
+import java.util.Objects;
+
 public class QualityGatesStatus {
 
     public static final String BUILDS = "OK";
 
-    private String status;
+    private final String status;
 
     public QualityGatesStatus(String status) {
         this.status = status;
@@ -20,28 +22,19 @@ public class QualityGatesStatus {
 
     @Override
     public boolean equals(Object o) {
-
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         QualityGatesStatus that = (QualityGatesStatus) o;
-
-        return status != null ? status.equals(that.status) : that.status == null;
+        return Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return status != null ? status.hashCode() : 0;
+        return Objects.hashCode(status);
     }
 
     @Override
     public String toString() {
-
         return "QualityGatesStatus{" + "status='" + status + '\'' + '}';
     }
 }

@@ -1,12 +1,13 @@
 package org.quality.gates.jenkins.plugin;
 
+import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import org.json.JSONException;
 import org.quality.gates.sonar.api.QualityGatesProvider;
 
 public class BuildDecision {
 
-    private QualityGatesProvider qualityGatesProvider;
+    private final QualityGatesProvider qualityGatesProvider;
 
     public BuildDecision(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
         qualityGatesProvider = new QualityGatesProvider(globalConfigDataForSonarInstance);
@@ -19,12 +20,12 @@ public class BuildDecision {
     public boolean getStatus(
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance,
             JobConfigData jobConfigData,
-            BuildListener listener)
+            BuildListener listener,
+            AbstractBuild<?, ?> build)
             throws QGException {
-
         try {
             return qualityGatesProvider
-                    .getAPIResultsForQualityGates(jobConfigData, globalConfigDataForSonarInstance, listener)
+                    .getAPIResultsForQualityGates(jobConfigData, globalConfigDataForSonarInstance, listener, build)
                     .hasStatusGreen();
         } catch (JSONException | InterruptedException e) {
             throw new QGException("Please check your credentials or your Project Key", e);
@@ -32,45 +33,28 @@ public class BuildDecision {
     }
 
     GlobalConfigDataForSonarInstance chooseSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
-
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
-
         if (globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
-            globalConfigDataForSonarInstance = noSonarInstance(jobConfigData);
+            return noSonarInstance(jobConfigData);
         } else if (globalConfig.fetchListOfGlobalConfigData().size() == 1) {
-            globalConfigDataForSonarInstance = singleSonarInstance(globalConfig, jobConfigData);
-        } else {
-            globalConfigDataForSonarInstance =
-                    multipleSonarInstances(jobConfigData.getSonarInstanceName(), globalConfig);
+            return singleSonarInstance(globalConfig, jobConfigData);
         }
-
-        return globalConfigDataForSonarInstance;
+        return selectSolarInstance(jobConfigData.getSonarInstanceName(), globalConfig);
     }
 
     private GlobalConfigDataForSonarInstance noSonarInstance(JobConfigData jobConfigData) {
-
         jobConfigData.setSonarInstanceName("");
         return new GlobalConfigDataForSonarInstance();
     }
 
     private GlobalConfigDataForSonarInstance singleSonarInstance(
             GlobalConfig globalConfig, JobConfigData jobConfigData) {
-
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
+        var globalConfigDataForSonarInstance =
                 globalConfig.fetchListOfGlobalConfigData().get(0);
         jobConfigData.setSonarInstanceName(globalConfigDataForSonarInstance.getName());
         return globalConfigDataForSonarInstance;
     }
 
-    public GlobalConfigDataForSonarInstance multipleSonarInstances(String instanceName, GlobalConfig globalConfig) {
-
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                globalConfig.getSonarInstanceByName(instanceName);
-
-        if (globalConfigDataForSonarInstance != null) {
-            return globalConfigDataForSonarInstance;
-        }
-
-        return null;
+    public GlobalConfigDataForSonarInstance selectSolarInstance(String instanceName, GlobalConfig globalConfig) {
+        return globalConfig.getSonarInstanceByName(instanceName);
     }
 }

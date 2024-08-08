@@ -1,12 +1,7 @@
 package org.quality.gates.jenkins.plugin;
 
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -56,6 +51,9 @@ public class QGBuilderTest {
     @Mock
     private JobConfigurationService jobConfigurationService;
 
+    @Mock
+    private AbstractBuild<?, ?> run;
+
     private AutoCloseable closeable;
 
     @Before
@@ -90,7 +88,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener, run))
                 .thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
@@ -102,7 +100,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener, run))
                 .thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));

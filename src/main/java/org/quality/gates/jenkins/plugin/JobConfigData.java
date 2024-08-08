@@ -1,5 +1,6 @@
 package org.quality.gates.jenkins.plugin;
 
+import java.util.Objects;
 import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 public class JobConfigData {
@@ -36,31 +37,24 @@ public class JobConfigData {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         JobConfigData that = (JobConfigData) o;
-
-        if (!projectKey.equals(that.projectKey)) return false;
-
-        return sonarInstanceName.equals(that.sonarInstanceName);
+        return Objects.equals(projectKey, that.projectKey)
+                && Objects.equals(sonarInstanceName, that.sonarInstanceName)
+                && buildStatus == that.buildStatus;
     }
 
     @Override
     public int hashCode() {
-
-        int result = projectKey.hashCode();
-        result = 31 * result + sonarInstanceName.hashCode();
-
-        return result;
+        return Objects.hash(projectKey, sonarInstanceName, buildStatus);
     }
 
     @Override
     public String toString() {
         return "JobConfigData{" + "projectKey='"
                 + projectKey + '\'' + ", sonarInstanceName='"
-                + sonarInstanceName + '}';
+                + sonarInstanceName + '\'' + ", buildStatus="
+                + buildStatus + '}';
     }
 }

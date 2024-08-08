@@ -5,9 +5,8 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.util.ListBoxModel;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.regex.Matcher;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 import net.sf.json.JSONObject;
 import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
@@ -19,8 +18,7 @@ public class JobConfigurationService {
     private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile("(\\$[a-zA-Z0-9_]+)");
 
     public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
-
-        ListBoxModel listBoxModel = new ListBoxModel();
+        var listBoxModel = new ListBoxModel();
 
         for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance :
                 globalConfig.fetchListOfGlobalConfigData()) {
@@ -31,16 +29,11 @@ public class JobConfigurationService {
     }
 
     public JobConfigData createJobConfigData(JSONObject formData, GlobalConfig globalConfig) {
-
-        JobConfigData firstInstanceJobConfigData = new JobConfigData();
-        String projectKey = formData.getString("projectKey");
+        var firstInstanceJobConfigData = new JobConfigData();
+        var projectKey = formData.getString("projectKey");
 
         if (!projectKey.startsWith("$")) {
-            try {
-                projectKey = URLDecoder.decode(projectKey, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new QGException("Error while decoding the project key. UTF-8 not supported.", e);
-            }
+            projectKey = URLDecoder.decode(projectKey, StandardCharsets.UTF_8);
         }
 
         String name;
@@ -59,28 +52,21 @@ public class JobConfigurationService {
     }
 
     protected String hasFormDataKey(JSONObject formData, GlobalConfig globalConfig) {
-
-        String instanceName;
-
         if (formData.containsKey("sonarInstancesName")) {
-            instanceName = formData.getString("sonarInstancesName");
-        } else {
-            instanceName = globalConfig.fetchListOfGlobalConfigData().get(0).getName();
+            return formData.getString("sonarInstancesName");
         }
-
-        return instanceName;
+        return globalConfig.fetchListOfGlobalConfigData().get(0).getName();
     }
 
     public JobConfigData checkProjectKeyIfVariable(
-            JobConfigData jobConfigData, AbstractBuild build, BuildListener listener) throws QGException {
-
-        String projectKey = jobConfigData.getProjectKey();
+            JobConfigData jobConfigData, AbstractBuild<?, ?> build, BuildListener listener) throws QGException {
+        var projectKey = jobConfigData.getProjectKey();
 
         if (projectKey.isEmpty()) {
             throw new QGException("Empty project key.");
         }
 
-        final JobConfigData envVariableJobConfigData = new JobConfigData();
+        var envVariableJobConfigData = new JobConfigData();
         envVariableJobConfigData.setSonarInstanceName(jobConfigData.getSonarInstanceName());
 
         try {
@@ -96,8 +82,7 @@ public class JobConfigurationService {
     }
 
     private String getProjectKey(final String projectKey, EnvVars env) {
-
-        final String projectKeyAfterFirstResolving =
+        var projectKeyAfterFirstResolving =
                 resolveEmbeddedEnvVariables(projectKey, env, ENV_VARIABLE_WITH_BRACES_PATTERN, 1);
 
         return resolveEmbeddedEnvVariables(projectKeyAfterFirstResolving, env, ENV_VARIABLE_WITHOUT_BRACES_PATTERN, 0);
@@ -105,16 +90,14 @@ public class JobConfigurationService {
 
     private String resolveEmbeddedEnvVariables(
             final String projectKey, final EnvVars env, final Pattern pattern, final int braceOffset) {
-
-        final Matcher matcher = pattern.matcher(projectKey);
-        final StringBuilder builder = new StringBuilder(projectKey);
-        boolean matchesFound = false;
-        int offset = 0;
+        var matcher = pattern.matcher(projectKey);
+        var builder = new StringBuilder(projectKey);
+        var matchesFound = false;
+        var offset = 0;
 
         while (matcher.find()) {
-            final String envVariable =
-                    projectKey.substring(matcher.start() + braceOffset + 1, matcher.end() - braceOffset);
-            final String envValue = env.get(envVariable);
+            var envVariable = projectKey.substring(matcher.start() + braceOffset + 1, matcher.end() - braceOffset);
+            var envValue = env.get(envVariable);
 
             if (envValue == null) {
                 throw new QGException("Environment Variable [" + envVariable + "] not found");
