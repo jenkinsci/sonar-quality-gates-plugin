@@ -1,70 +1,39 @@
 package org.quality.gates.sonar.api;
 
-import hudson.util.Secret;
-import org.apache.commons.lang.StringUtils;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import java.util.Optional;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 
 public class SonarInstanceValidationService {
 
     String validateUrl(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+        var sonarUrl = Optional.of(globalConfigDataForSonarInstance.getSonarUrl())
+                .orElse(GlobalConfigDataForSonarInstance.DEFAULT_URL);
 
-        String sonarUrl;
-
-        if (globalConfigDataForSonarInstance.getSonarUrl().isEmpty()) {
-            sonarUrl = GlobalConfigDataForSonarInstance.DEFAULT_URL;
-        } else {
-            sonarUrl = globalConfigDataForSonarInstance.getSonarUrl();
-            if (sonarUrl.endsWith("/")) {
-                sonarUrl = sonarUrl.substring(0, sonarUrl.length() - 1);
-            }
+        if (sonarUrl.endsWith("/")) {
+            sonarUrl = sonarUrl.substring(0, sonarUrl.length() - 1);
         }
 
         return sonarUrl;
     }
 
-    String validateUsername(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    String validateCredentialsId(GlobalConfigDataForSonarInstance configData) {
+        var credentialsId = configData.getSonarCredentialsId();
+        var credentials = CredentialsProvider.listCredentialsInItem(
+                StandardUsernamePasswordCredentials.class, null, null, null, null);
 
-        String sonarUsername;
+        credentials.stream().filter(c -> credentialsId.equals(c.name)).findFirst();
 
-        if (globalConfigDataForSonarInstance.getUsername().isEmpty()) {
-            sonarUsername = GlobalConfigDataForSonarInstance.DEFAULT_USERNAME;
-        } else {
-            sonarUsername = globalConfigDataForSonarInstance.getUsername();
-        }
-
-        return sonarUsername;
-    }
-
-    private Secret validatePassword(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
-        String sonarPassword;
-
-        if (globalConfigDataForSonarInstance.getPass().isEmpty()) {
-            sonarPassword = GlobalConfigDataForSonarInstance.DEFAULT_PASS;
-        } else {
-            sonarPassword = globalConfigDataForSonarInstance.getPass();
-        }
-
-        return Secret.fromString(sonarPassword);
+        return credentialsId;
     }
 
     GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
-        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
-            return new GlobalConfigDataForSonarInstance(
-                    globalConfigDataForSonarInstance.getName(),
-                    validateUrl(globalConfigDataForSonarInstance),
-                    globalConfigDataForSonarInstance.getToken(),
-                    globalConfigDataForSonarInstance.getTimeToWait(),
-                    globalConfigDataForSonarInstance.getMaxWaitTime());
-        } else {
-            return new GlobalConfigDataForSonarInstance(
-                    globalConfigDataForSonarInstance.getName(),
-                    validateUrl(globalConfigDataForSonarInstance),
-                    validateUsername(globalConfigDataForSonarInstance),
-                    validatePassword(globalConfigDataForSonarInstance),
-                    globalConfigDataForSonarInstance.getTimeToWait(),
-                    globalConfigDataForSonarInstance.getMaxWaitTime());
-        }
+        return new GlobalConfigDataForSonarInstance(
+                globalConfigDataForSonarInstance.getName(),
+                validateUrl(globalConfigDataForSonarInstance),
+                validateCredentialsId(globalConfigDataForSonarInstance),
+                globalConfigDataForSonarInstance.getTimeToWait(),
+                globalConfigDataForSonarInstance.getMaxWaitTime());
     }
 }

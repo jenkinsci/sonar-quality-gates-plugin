@@ -3,11 +3,7 @@ package org.quality.gates.jenkins.plugin;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import hudson.model.BuildListener;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.Result;
-import hudson.model.Run;
+import hudson.model.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +21,13 @@ public class QGPublisherIT {
 
     public static final String TEST_NAME = "TestName";
 
+    @Rule
+    public JenkinsRule jenkinsRule = new JenkinsRule();
+
     private QGPublisher publisher;
-
     private QGBuilder builder;
-
     private JobConfigData jobConfigData;
-
     private FreeStyleProject freeStyleProject;
-
     private GlobalConfig globalConfig;
 
     @Mock
@@ -44,15 +39,12 @@ public class QGPublisherIT {
     @Mock
     private JobConfigurationService jobConfigurationService;
 
+    @Mock
+    private AbstractBuild<?, ?> run;
+
     private JobExecutionService jobExecutionService;
-
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
-
     private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList;
-
-    @Rule
-    public JenkinsRule jenkinsRule = new JenkinsRule();
-
     private AutoCloseable closeable;
 
     @Before
@@ -98,7 +90,7 @@ public class QGPublisherIT {
     public void testPerformShouldFailBecauseOfPreviousSteps() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         doReturn(null).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        doReturn(false).when(buildDecision).getStatus(globalConfigDataForSonarInstance, jobConfigData, listener);
+        doReturn(false).when(buildDecision).getStatus(globalConfigDataForSonarInstance, jobConfigData, listener, run);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("Previous steps failed the build", lastRun);
@@ -108,7 +100,7 @@ public class QGPublisherIT {
     public void testPerformShouldFail() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener))
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener, run))
                 .thenReturn(true, false);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();

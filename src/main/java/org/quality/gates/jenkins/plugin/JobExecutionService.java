@@ -1,5 +1,6 @@
 package org.quality.gates.jenkins.plugin;
 
+import java.util.Optional;
 import jenkins.model.GlobalConfiguration;
 
 public class JobExecutionService {
@@ -11,13 +12,7 @@ public class JobExecutionService {
             "The Sonar Instance in the global configuration with name '%s' no longer exists.\n";
 
     public GlobalConfig getGlobalConfigData() {
-
-        GlobalConfig globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
-
-        if (globalConfig == null) {
-            return new GlobalConfig();
-        }
-
-        return globalConfig;
+        return Optional.ofNullable(GlobalConfiguration.all().get(GlobalConfig.class))
+                .orElse(new GlobalConfig());
     }
 }

@@ -1,12 +1,8 @@
 package org.quality.gates.jenkins.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +69,7 @@ public class GlobalConfigurationServiceTest {
         String arrayString =
                 "[{\"name\":\"Sonar1\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"},{\"name\":\"Sonar2\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]";
         globalDataConfigs = JSONSerializer.toJSON(arrayString);
-        jsonArray = JSONArray.class.cast(globalDataConfigs);
+        jsonArray = (JSONArray) globalDataConfigs;
         assertEquals(jsonArray, globalConfigurationService.getGlobalConfigsArray(globalDataConfigs));
     }
 

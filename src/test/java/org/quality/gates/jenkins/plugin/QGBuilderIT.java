@@ -4,11 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
-import hudson.model.BuildListener;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.Result;
-import hudson.model.Run;
+import hudson.model.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +22,12 @@ public class QGBuilderIT {
 
     public static final String TEST_NAME = "TestName";
 
+    @Rule
+    public JenkinsRule jenkinsRule = new JenkinsRule();
+
     private QGBuilder qgBuilder;
-
     private JobConfigData jobConfigData;
-
     private FreeStyleProject freeStyleProject;
-
     private GlobalConfig globalConfig;
 
     @Mock
@@ -41,18 +37,10 @@ public class QGBuilderIT {
     private BuildListener listener;
 
     private JobConfigurationService jobConfigurationService;
-
     private JobExecutionService jobExecutionService;
-
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
-
     private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList;
-
     private QGBuilderDescriptor builderDescriptor;
-
-    @Rule
-    public JenkinsRule jenkinsRule = new JenkinsRule();
-
     private AutoCloseable closeable;
 
     @Before
@@ -99,9 +87,12 @@ public class QGBuilderIT {
                 .getStatus(
                         any(GlobalConfigDataForSonarInstance.class),
                         any(JobConfigData.class),
-                        any(BuildListener.class));
+                        any(BuildListener.class),
+                        any(AbstractBuild.class));
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
-        Run lastRun = freeStyleProject._getRuns().newestValue();
+
+        var lastRun = freeStyleProject._getRuns().newestValue();
+
         jenkinsRule.assertLogContains("build passed: TRUE", lastRun);
     }
 
@@ -115,9 +106,12 @@ public class QGBuilderIT {
                 .getStatus(
                         any(GlobalConfigDataForSonarInstance.class),
                         any(JobConfigData.class),
-                        any(BuildListener.class));
+                        any(BuildListener.class),
+                        any(AbstractBuild.class));
         jenkinsRule.buildAndAssertSuccess(freeStyleProject);
-        Run lastRun = freeStyleProject._getRuns().newestValue();
+
+        var lastRun = freeStyleProject._getRuns().newestValue();
+
         jenkinsRule.assertLogContains(JobExecutionService.DEFAULT_CONFIGURATION_WARNING, lastRun);
         jenkinsRule.assertLogContains("build passed: TRUE", lastRun);
     }
@@ -132,9 +126,12 @@ public class QGBuilderIT {
                 .getStatus(
                         any(GlobalConfigDataForSonarInstance.class),
                         any(JobConfigData.class),
-                        any(BuildListener.class));
+                        any(BuildListener.class),
+                        any(AbstractBuild.class));
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
-        Run lastRun = freeStyleProject._getRuns().newestValue();
+
+        var lastRun = freeStyleProject._getRuns().newestValue();
+
         jenkinsRule.assertLogContains("build passed: FALSE", lastRun);
     }
 
@@ -149,9 +146,12 @@ public class QGBuilderIT {
                 .getStatus(
                         any(GlobalConfigDataForSonarInstance.class),
                         any(JobConfigData.class),
-                        any(BuildListener.class));
+                        any(BuildListener.class),
+                        any(AbstractBuild.class));
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
-        Run lastRun = freeStyleProject._getRuns().newestValue();
+
+        var lastRun = freeStyleProject._getRuns().newestValue();
+
         jenkinsRule.assertLogContains("QGException", lastRun);
     }
 

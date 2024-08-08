@@ -3,11 +3,7 @@ package org.quality.gates.jenkins.plugin;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -64,6 +60,9 @@ public class QGPublisherTest {
 
     @Mock
     private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+
+    @Mock
+    private AbstractBuild<?, ?> run;
 
     private AutoCloseable closeable;
 
@@ -132,7 +131,7 @@ public class QGPublisherTest {
     }
 
     private void buildDecisionShouldBe(boolean toBeReturned) throws QGException {
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener, run))
                 .thenReturn(toBeReturned);
     }
 

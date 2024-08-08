@@ -11,19 +11,18 @@ import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 public class QGPublisher extends Recorder {
 
-    private JobConfigData jobConfigData;
+    private final JobConfigData jobConfigData;
 
-    private BuildDecision buildDecision;
+    private final BuildDecision buildDecision;
 
-    private JobConfigurationService jobConfigurationService;
+    private final JobConfigurationService jobConfigurationService;
 
-    private JobExecutionService jobExecutionService;
+    private final JobExecutionService jobExecutionService;
 
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
     public QGPublisher(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision(globalConfigDataForSonarInstance);
         this.jobExecutionService = new JobExecutionService();
@@ -37,7 +36,6 @@ public class QGPublisher extends Recorder {
             JobExecutionService jobExecutionService,
             JobConfigurationService jobConfigurationService,
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobConfigurationService = jobConfigurationService;
@@ -61,7 +59,6 @@ public class QGPublisher extends Recorder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-
         globalConfigDataForSonarInstance =
                 buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
 
@@ -76,8 +73,7 @@ public class QGPublisher extends Recorder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
-
-        Result result = build.getResult();
+        var result = build.getResult();
 
         if (Result.SUCCESS != result) {
             listener.getLogger().println("Previous steps failed the build.\nResult is: " + result);
@@ -90,7 +86,8 @@ public class QGPublisher extends Recorder {
         try {
             JobConfigData checkedJobConfigData =
                     jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-            buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData, listener);
+            buildHasPassed =
+                    buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData, listener, build);
 
             if ("".equals(jobConfigData.getSonarInstanceName())) {
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);

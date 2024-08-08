@@ -4,9 +4,9 @@ package org.quality.gates.sonar.api;
  * @author arkanjoms
  * @since 1.0.1
  */
-class UnsuportedVersionException extends RuntimeException {
+class UnsupportedVersionException extends RuntimeException {
 
-    UnsuportedVersionException(String message) {
+    UnsupportedVersionException(String message) {
         super(message);
     }
 }

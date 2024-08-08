@@ -119,13 +119,16 @@ public class JobConfigurationServiceTest {
         jobConfigData = new JobConfigData();
         jobConfigData.setProjectKey("TestKey");
         jobConfigData.setSonarInstanceName("TestName");
-        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
-        int greaterThanZero = 1;
-        doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
-        String sonarInstanceName = "TestName";
+        jobConfigData.setBuildStatus(BuildStatusEnum.FAILED);
+
+        var sonarInstanceName = "TestName";
         formData.put("sonarInstancesName", sonarInstanceName);
-        JobConfigData returnedJobConfigData = jobConfigurationService.createJobConfigData(formData, globalConfig);
-        assertEquals(jobConfigData, returnedJobConfigData);
+
+        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
+
+        var result = jobConfigurationService.createJobConfigData(formData, globalConfig);
+
+        assertEquals(jobConfigData, result);
     }
 
     protected void createGlobalConfigData() {
@@ -153,7 +156,7 @@ public class JobConfigurationServiceTest {
         doReturn(envVars).when(build).getEnvironment(listener);
         doReturn("EnvVariable").when(envVars).get("PROJECT_KEY");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        assertTrue(returnedData.getProjectKey().equals("EnvVariable"));
+        assertEquals("EnvVariable", returnedData.getProjectKey());
     }
 
     @Test
@@ -179,7 +182,7 @@ public class JobConfigurationServiceTest {
         doReturn(envVars).when(build).getEnvironment(listener);
         doReturn("EnvVariable").when(envVars).get("PROJECT_KEY");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        assertTrue(returnedData.getProjectKey().equals("EnvVariable"));
+        assertEquals("EnvVariable", returnedData.getProjectKey());
     }
 
     @Test
@@ -187,7 +190,7 @@ public class JobConfigurationServiceTest {
         String key = "NormalString";
         doReturn(key).when(jobConfigData).getProjectKey();
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        assertTrue(returnedData.getProjectKey().equals("NormalString"));
+        assertEquals("NormalString", returnedData.getProjectKey());
     }
 
     @Test(expected = QGException.class)
@@ -218,7 +221,7 @@ public class JobConfigurationServiceTest {
         doReturn("Foo-Value").when(envVars).get("FOO");
         doReturn("Bar-Value").when(envVars).get("BAR");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        assertTrue(returnedData.getProjectKey().equals("Foo-Value:Bar-Value"));
+        assertEquals("Foo-Value:Bar-Value", returnedData.getProjectKey());
     }
 
     @Test(expected = QGException.class)
@@ -241,7 +244,7 @@ public class JobConfigurationServiceTest {
         doReturn("Foo-Value").when(envVars).get("FOO");
         doReturn("Bar-Value").when(envVars).get("BAR");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        assertTrue(returnedData.getProjectKey().equals("Foo-Value:Bar-Value"));
+        assertEquals("Foo-Value:Bar-Value", returnedData.getProjectKey());
     }
 
     @Test
@@ -255,6 +258,6 @@ public class JobConfigurationServiceTest {
         doReturn("Bar").when(envVars).get("BAR");
         doReturn("12").when(envVars).get("VERSION");
         JobConfigData returnedData = jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
-        assertTrue(returnedData.getProjectKey().equals("Foo-12:Bar"));
+        assertEquals("Foo-12:Bar", returnedData.getProjectKey());
     }
 }
