@@ -22,7 +22,7 @@
                                                 <f:textbox name="url" value="${globalConfigData.sonarUrl}" />
                                           </f:entry>
                                            <f:entry field="token" title="SonarQube account token" description="Use token instead of user and password" >
-                                                 <f:textbox name="token" value="${globalConfigData.token}" />
+                                                 <f:password name="token" value="${globalConfigData.token}" />
                                            </f:entry>
                                            <f:entry field="username" title="SonarQube account login" description="Default value is 'admin'" >
                                                  <f:textbox name="account" value="${globalConfigData.username}" />
