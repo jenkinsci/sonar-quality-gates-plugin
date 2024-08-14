@@ -75,7 +75,11 @@ public class GlobalConfigurationService {
             String token = globalConfigData.optString("token");
             if (StringUtils.isNotEmpty(token)) {
                 globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
-                        name, url, globalConfigData.optString("token"), timeToWait, maxWaitTime);
+                        name,
+                        url,
+                        Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("token"))),
+                        timeToWait,
+                        maxWaitTime);
             } else {
                 globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
                         name,

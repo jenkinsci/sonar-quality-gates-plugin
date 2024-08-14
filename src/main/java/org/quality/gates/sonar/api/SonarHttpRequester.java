@@ -74,8 +74,8 @@ public abstract class SonarHttpRequester {
 
         httpClientContext = HttpClientContext.create();
 
-        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
-            token = globalConfigDataForSonarInstance.getToken();
+        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken().getPlainText())) {
+            token = globalConfigDataForSonarInstance.getToken().getPlainText();
             httpClient = HttpClientBuilder.create().build();
         } else {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
