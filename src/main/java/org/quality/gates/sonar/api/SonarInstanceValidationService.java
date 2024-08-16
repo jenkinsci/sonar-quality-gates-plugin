@@ -50,7 +50,7 @@ public class SonarInstanceValidationService {
 
     GlobalConfigDataForSonarInstance validateData(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
 
-        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken())) {
+        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken().getPlainText())) {
             return new GlobalConfigDataForSonarInstance(
                     globalConfigDataForSonarInstance.getName(),
                     validateUrl(globalConfigDataForSonarInstance),
