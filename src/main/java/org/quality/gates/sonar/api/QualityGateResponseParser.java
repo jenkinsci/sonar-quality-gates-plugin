@@ -10,10 +10,8 @@ import org.quality.gates.jenkins.plugin.QGException;
 public class QualityGateResponseParser {
 
     public QualityGatesStatus getQualityGateResultFromJSON(String jsonString) throws QGException {
-
-        JSONObject qualityGatesProjectStatus = createJSONObjectFromString(jsonString);
-
-        String qualityGatesStatusResult = getStatusFromJSONObject(qualityGatesProjectStatus);
+        var qualityGatesProjectStatus = createJSONObjectFromString(jsonString);
+        var qualityGatesStatusResult = getStatusFromJSONObject(qualityGatesProjectStatus);
 
         if (qualityGatesStatusResult.startsWith("OK")) {
             return new QualityGatesStatus("OK");
@@ -23,9 +21,7 @@ public class QualityGateResponseParser {
     }
 
     protected JSONObject getLatestEventResult(JSONArray jsonArray) throws QGException {
-
-        List<JSONObject> jsonObjects = new ArrayList<>();
-        JSONObject returnObject;
+        var jsonObjects = new ArrayList<JSONObject>();
 
         int jsonArrayLength = jsonArray.length();
 
@@ -37,11 +33,11 @@ public class QualityGateResponseParser {
             }
         }
 
-        String mostRecentAlertID = getValueForJSONKey(jsonObjects, 0, "id");
-        returnObject = jsonObjects.get(0);
+        var mostRecentAlertID = getValueForJSONKey(jsonObjects, 0, "id");
+        var returnObject = jsonObjects.get(0);
 
         for (int i = 0; i < jsonObjects.size(); i++) {
-            String alertId = getValueForJSONKey(jsonObjects, i, "id");
+            var alertId = getValueForJSONKey(jsonObjects, i, "id");
             if (Integer.parseInt(alertId) > Integer.parseInt(mostRecentAlertID)) {
                 returnObject = jsonObjects.get(i);
             }
@@ -51,9 +47,8 @@ public class QualityGateResponseParser {
     }
 
     protected JSONObject createObjectWithStatusGreen() {
-
         try {
-            JSONObject returnObject = new JSONObject();
+            var returnObject = new JSONObject();
             returnObject.put("id", "1");
             returnObject.put("dt", "2000-01-01T12:00:00+0100");
             returnObject.put("n", "Green");
@@ -65,7 +60,6 @@ public class QualityGateResponseParser {
     }
 
     protected JSONObject getJSONObjectFromArray(JSONArray array, int index) throws QGException {
-
         try {
             return array.getJSONObject(index);
         } catch (JSONException e) {
@@ -74,7 +68,6 @@ public class QualityGateResponseParser {
     }
 
     protected String getValueForJSONKey(List<JSONObject> array, int index, String key) throws QGException {
-
         try {
             return array.get(index).getString(key);
         } catch (JSONException e) {
@@ -83,7 +76,6 @@ public class QualityGateResponseParser {
     }
 
     protected String getStatusFromJSONObject(JSONObject jsonObject) throws QGException {
-
         try {
             return ((JSONObject) jsonObject.get("projectStatus")).get("status").toString();
         } catch (JSONException e) {
@@ -92,7 +84,6 @@ public class QualityGateResponseParser {
     }
 
     protected JSONArray createJSONArrayFromString(String jsonString) throws QGException {
-
         try {
             return new JSONArray(jsonString);
         } catch (JSONException e) {
@@ -101,7 +92,6 @@ public class QualityGateResponseParser {
     }
 
     protected JSONObject createJSONObjectFromString(String jsonString) throws QGException {
-
         try {
             return new JSONObject(jsonString);
         } catch (JSONException e) {

@@ -36,12 +36,11 @@ public class JobConfigData {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        JobConfigData that = (JobConfigData) o;
+        var that = (JobConfigData) o;
 
         if (!projectKey.equals(that.projectKey)) return false;
 
@@ -50,8 +49,7 @@ public class JobConfigData {
 
     @Override
     public int hashCode() {
-
-        int result = projectKey.hashCode();
+        var result = projectKey.hashCode();
         result = 31 * result + sonarInstanceName.hashCode();
 
         return result;

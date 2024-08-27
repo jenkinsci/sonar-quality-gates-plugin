@@ -10,19 +10,18 @@ import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 public class QGBuilder extends Builder {
 
-    private JobConfigData jobConfigData;
+    private final JobConfigData jobConfigData;
 
-    private BuildDecision buildDecision;
+    private final BuildDecision buildDecision;
 
-    private JobConfigurationService jobConfigurationService;
+    private final JobConfigurationService jobConfigurationService;
 
-    private JobExecutionService jobExecutionService;
+    private final JobExecutionService jobExecutionService;
 
     private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
     public QGBuilder(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision(globalConfigDataForSonarInstance);
         this.jobExecutionService = new JobExecutionService();
@@ -36,7 +35,6 @@ public class QGBuilder extends Builder {
             JobExecutionService jobExecutionService,
             JobConfigurationService jobConfigurationService,
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;
@@ -50,7 +48,6 @@ public class QGBuilder extends Builder {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-
         globalConfigDataForSonarInstance =
                 buildDecision.chooseSonarInstance(jobExecutionService.getGlobalConfigData(), jobConfigData);
 
@@ -65,7 +62,6 @@ public class QGBuilder extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -75,11 +71,13 @@ public class QGBuilder extends Builder {
         boolean buildHasPassed = false;
 
         try {
-            JobConfigData checkedJobConfigData =
+            var checkedJobConfigData =
                     jobConfigurationService.checkProjectKeyIfVariable(jobConfigData, build, listener);
             buildHasPassed = buildDecision.getStatus(globalConfigDataForSonarInstance, checkedJobConfigData, listener);
-            if ("".equals(jobConfigData.getSonarInstanceName()))
+            if ("".equals(jobConfigData.getSonarInstanceName())) {
                 listener.getLogger().println(JobExecutionService.DEFAULT_CONFIGURATION_WARNING);
+            }
+
             listener.getLogger()
                     .println("Build-Step: Quality Gates plugin build passed: "
                             + String.valueOf(buildHasPassed).toUpperCase());

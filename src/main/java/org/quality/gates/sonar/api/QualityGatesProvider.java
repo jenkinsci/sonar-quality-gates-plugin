@@ -1,6 +1,5 @@
 package org.quality.gates.sonar.api;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import hudson.model.BuildListener;
 import org.apache.commons.lang.ArrayUtils;
@@ -15,14 +14,13 @@ public class QualityGatesProvider {
 
     private static final int MILLISECONDS_10_SECONDS = 10000;
 
-    private QualityGateResponseParser qualityGateResponseParser;
+    private final QualityGateResponseParser qualityGateResponseParser;
 
-    private SonarHttpRequester sonarHttpRequester;
+    private final SonarHttpRequester sonarHttpRequester;
 
-    private SonarInstanceValidationService sonarInstanceValidationService;
+    private final SonarInstanceValidationService sonarInstanceValidationService;
 
     public QualityGatesProvider(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-
         this.qualityGateResponseParser = new QualityGateResponseParser();
         this.sonarHttpRequester = SonarHttpRequesterFactory.getSonarHttpRequester(globalConfigDataForSonarInstance);
         this.sonarInstanceValidationService = new SonarInstanceValidationService();
@@ -32,7 +30,6 @@ public class QualityGatesProvider {
             QualityGateResponseParser qualityGateResponseParser,
             SonarHttpRequester sonarHttpRequester,
             SonarInstanceValidationService sonarInstanceValidationService) {
-
         this.qualityGateResponseParser = qualityGateResponseParser;
         this.sonarHttpRequester = sonarHttpRequester;
         this.sonarInstanceValidationService = sonarInstanceValidationService;
@@ -43,14 +40,10 @@ public class QualityGatesProvider {
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance,
             BuildListener listener)
             throws JSONException, InterruptedException {
-
-        GlobalConfigDataForSonarInstance validatedData =
-                sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
-
-        boolean taskAnalysisRunning = true;
-
-        int timeToWait = globalConfigDataForSonarInstance.getTimeToWait();
-        int maxWaitTime = globalConfigDataForSonarInstance.getMaxWaitTime();
+        var validatedData = sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
+        var taskAnalysisRunning = true;
+        var timeToWait = globalConfigDataForSonarInstance.getTimeToWait();
+        var maxWaitTime = globalConfigDataForSonarInstance.getMaxWaitTime();
 
         if (timeToWait == 0) {
             timeToWait = MILLISECONDS_10_SECONDS;
@@ -60,19 +53,15 @@ public class QualityGatesProvider {
             maxWaitTime = MILLISECONDS_5_MINUTES;
         }
 
-        long startTime = System.currentTimeMillis();
+        var startTime = System.currentTimeMillis();
 
         do {
-
             sonarHttpRequester.setLogged(false);
-            String statusResultJson = sonarHttpRequester.getAPITaskInfo(jobConfigData, validatedData);
-
-            Gson gson = new GsonBuilder().create();
-
-            QualityGateTaskCE taskCE = gson.fromJson(statusResultJson, QualityGateTaskCE.class);
+            var statusResultJson = sonarHttpRequester.getAPITaskInfo(jobConfigData, validatedData);
+            var gson = new GsonBuilder().create();
+            var taskCE = gson.fromJson(statusResultJson, QualityGateTaskCE.class);
 
             if (ArrayUtils.isNotEmpty(taskCE.getQueue())) {
-
                 listener.getLogger()
                         .println("Has build " + taskCE.getQueue()[0].getStatus() + " with id: "
                                 + taskCE.getQueue()[0].getId() + " - waiting " + timeToWait
@@ -92,7 +81,7 @@ public class QualityGatesProvider {
             }
         } while (taskAnalysisRunning);
 
-        String requesterResult = getRequesterResult(jobConfigData, validatedData);
+        var requesterResult = getRequesterResult(jobConfigData, validatedData);
 
         return qualityGateResponseParser.getQualityGateResultFromJSON(requesterResult);
     }
@@ -100,7 +89,6 @@ public class QualityGatesProvider {
     private String getRequesterResult(
             JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
             throws QGException {
-
         return sonarHttpRequester.getAPIInfo(jobConfigData, globalConfigDataForSonarInstance);
     }
 }
