@@ -1,5 +1,6 @@
 package org.quality.gates.jenkins.plugin;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
@@ -23,14 +24,12 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     private JobExecutionService jobExecutionService;
 
     public QGBuilderDescriptor() {
-
         super(QGBuilder.class);
         load();
     }
 
     public QGBuilderDescriptor(
             JobExecutionService jobExecutionService, JobConfigurationService jobConfigurationService) {
-
         super(QGBuilder.class);
 
         this.jobConfigurationService = jobConfigurationService;
@@ -42,13 +41,12 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     public ListBoxModel doFillBuildStatusItems() {
-        ListBoxModel items = new ListBoxModel();
+        var items = new ListBoxModel();
         Arrays.asList(BuildStatusEnum.values()).forEach(e -> items.add(e.toString()));
         return items;
     }
 
     public FormValidation doCheckProjectKey(@QueryParameter String projectKey) {
-
         if (projectKey.isEmpty()) {
             return FormValidation.error("Please insert project key.");
         }
@@ -56,6 +54,7 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
         return FormValidation.ok();
     }
 
+    @NonNull
     @Override
     public String getDisplayName() {
         return "Quality Gates Sonarqube Plugin";
@@ -68,19 +67,18 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
     @Override
     public boolean configure(StaplerRequest staplerRequest, JSONObject json) throws FormException {
-
         save();
         return true;
     }
 
     @Override
     public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws QGException {
-
-        JobConfigData firstInstanceJobConfigData =
+        var firstInstanceJobConfigData =
                 jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = jobExecutionService
+        var globalConfigDataForSonarInstance = jobExecutionService
                 .getGlobalConfigData()
                 .getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
+
         return new QGBuilder(firstInstanceJobConfigData, globalConfigDataForSonarInstance);
     }
 }

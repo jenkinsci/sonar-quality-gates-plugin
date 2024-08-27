@@ -11,8 +11,7 @@ public class JobExecutionService {
             "The Sonar Instance in the global configuration with name '%s' no longer exists.\n";
 
     public GlobalConfig getGlobalConfigData() {
-
-        GlobalConfig globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
+        var globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
 
         if (globalConfig == null) {
             return new GlobalConfig();

@@ -4,7 +4,7 @@ public class QualityGatesStatus {
 
     public static final String BUILDS = "OK";
 
-    private String status;
+    private final String status;
 
     public QualityGatesStatus(String status) {
         this.status = status;
@@ -20,7 +20,6 @@ public class QualityGatesStatus {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) {
             return true;
         }
@@ -29,7 +28,7 @@ public class QualityGatesStatus {
             return false;
         }
 
-        QualityGatesStatus that = (QualityGatesStatus) o;
+        var that = (QualityGatesStatus) o;
 
         return status != null ? status.equals(that.status) : that.status == null;
     }
@@ -41,7 +40,6 @@ public class QualityGatesStatus {
 
     @Override
     public String toString() {
-
         return "QualityGatesStatus{" + "status='" + status + '\'' + '}';
     }
 }

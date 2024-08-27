@@ -18,9 +18,8 @@ public class GlobalConfigurationService {
     }
 
     protected List<GlobalConfigDataForSonarInstance> instantiateGlobalConfigData(JSONObject json) {
-
         listOfGlobalConfigInstances = new ArrayList<>();
-        JSON globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
+        var globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
 
         if (globalDataConfigs == null) {
             globalDataConfigs = new JSONArray();
@@ -32,8 +31,7 @@ public class GlobalConfigurationService {
     }
 
     protected void initGlobalDataConfig(JSON globalDataConfigs) {
-
-        JSONArray array = getGlobalConfigsArray(globalDataConfigs);
+        var array = getGlobalConfigsArray(globalDataConfigs);
 
         for (int i = 0; i < array.size(); i++) {
             JSONObject jsonobject = array.getJSONObject(i);
@@ -42,37 +40,29 @@ public class GlobalConfigurationService {
     }
 
     protected JSONArray getGlobalConfigsArray(JSON globalDataConfigs) {
-
-        JSONArray array;
-
         if (globalDataConfigs.isArray()) {
-            array = JSONArray.class.cast(globalDataConfigs);
-        } else {
-            array = createJsonArrayFromObject((JSONObject) globalDataConfigs);
+            return JSONArray.class.cast(globalDataConfigs);
         }
 
-        return array;
+        return createJsonArrayFromObject((JSONObject) globalDataConfigs);
     }
 
     protected JSONArray createJsonArrayFromObject(JSONObject globalDataConfigs) {
-
-        JSONArray array = new JSONArray();
+        var array = new JSONArray();
         array.add(globalDataConfigs);
 
         return array;
     }
 
     protected void addGlobalConfigDataForSonarInstance(JSONObject globalConfigData) {
-
-        String name = globalConfigData.optString("name");
-        int timeToWait = globalConfigData.optInt("timeToWait");
-        int maxWaitTime = globalConfigData.optInt("maxWaitTime");
-        String url = globalConfigData.optString("url");
+        var name = globalConfigData.optString("name");
+        var timeToWait = globalConfigData.optInt("timeToWait");
+        var maxWaitTime = globalConfigData.optInt("maxWaitTime");
+        var url = globalConfigData.optString("url");
 
         if (!"".equals(name)) {
-
             GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
-            String token = globalConfigData.optString("token");
+            var token = globalConfigData.optString("token");
             if (StringUtils.isNotEmpty(token)) {
                 globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
                         name,
@@ -97,7 +87,6 @@ public class GlobalConfigurationService {
     }
 
     protected boolean containsGlobalConfigWithName(String name) {
-
         for (GlobalConfigDataForSonarInstance globalConfigDataInstance : listOfGlobalConfigInstances) {
             if (globalConfigDataInstance.getName().equals(name)) {
                 return true;

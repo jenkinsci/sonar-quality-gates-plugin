@@ -28,7 +28,6 @@ public class GlobalConfigDataForSonarInstance {
     private int maxWaitTime;
 
     public GlobalConfigDataForSonarInstance() {
-
         this.name = "";
         this.sonarUrl = "";
         this.username = "";
@@ -37,7 +36,6 @@ public class GlobalConfigDataForSonarInstance {
 
     public GlobalConfigDataForSonarInstance(
             String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
-
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.username = username;
@@ -47,7 +45,6 @@ public class GlobalConfigDataForSonarInstance {
     }
 
     public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, String pass) {
-
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.username = username;
@@ -56,7 +53,6 @@ public class GlobalConfigDataForSonarInstance {
 
     public GlobalConfigDataForSonarInstance(
             String name, String sonarUrl, Secret token, int timeToWait, int maxWaitTime) {
-
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.token = token;
@@ -122,7 +118,6 @@ public class GlobalConfigDataForSonarInstance {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) {
             return true;
         }
@@ -131,7 +126,7 @@ public class GlobalConfigDataForSonarInstance {
             return false;
         }
 
-        GlobalConfigDataForSonarInstance that = (GlobalConfigDataForSonarInstance) o;
+        var that = (GlobalConfigDataForSonarInstance) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
@@ -154,8 +149,7 @@ public class GlobalConfigDataForSonarInstance {
 
     @Override
     public int hashCode() {
-
-        int result = name != null ? name.hashCode() : 0;
+        var result = name != null ? name.hashCode() : 0;
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (token != null ? token.hashCode() : 0);
         result = 31 * result + (pass != null ? pass.hashCode() : 0);
@@ -166,7 +160,6 @@ public class GlobalConfigDataForSonarInstance {
 
     @Override
     public String toString() {
-
         return "GlobalConfigDataForSonarInstance{" + "name='"
                 + name + '\'' + ", username='"
                 + username + '\'' + ", sonarUrl='"
