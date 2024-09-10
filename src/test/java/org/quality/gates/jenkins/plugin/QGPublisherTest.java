@@ -57,7 +57,7 @@ public class QGPublisherTest {
     private Launcher launcher;
 
     @Mock
-    private SonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance sonarInstance;
 
     @Mock
     private JobConfigurationService jobConfigurationService;
@@ -72,11 +72,7 @@ public class QGPublisherTest {
         try {
             closeable = MockitoAnnotations.openMocks(this);
             publisher = new QGPublisher(
-                    jobConfigData,
-                    buildDecision,
-                    jobExecutionService,
-                    jobConfigurationService,
-                    globalConfigDataForSonarInstance);
+                    jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
             when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
                     .thenReturn(jobConfigData);
             when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
@@ -126,7 +122,7 @@ public class QGPublisherTest {
     public void testPerformBuildResultFailWithNoWarning() throws QGException {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(false);
-        doReturn("SomeName").when(globalConfigDataForSonarInstance).getName();
+        doReturn("SomeName").when(sonarInstance).getName();
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -134,7 +130,7 @@ public class QGPublisherTest {
     }
 
     private void buildDecisionShouldBe(boolean toBeReturned) throws QGException {
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(sonarInstance, jobConfigData, buildListener))
                 .thenReturn(toBeReturned);
     }
 

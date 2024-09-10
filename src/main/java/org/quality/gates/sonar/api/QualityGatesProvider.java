@@ -20,9 +20,9 @@ public class QualityGatesProvider {
 
     private final SonarInstanceValidationService sonarInstanceValidationService;
 
-    public QualityGatesProvider(SonarInstance globalConfigDataForSonarInstance) {
+    public QualityGatesProvider(SonarInstance sonarInstance) {
         this.qualityGateResponseParser = new QualityGateResponseParser();
-        this.sonarHttpRequester = SonarHttpRequesterFactory.getSonarHttpRequester(globalConfigDataForSonarInstance);
+        this.sonarHttpRequester = SonarHttpRequesterFactory.getSonarHttpRequester(sonarInstance);
         this.sonarInstanceValidationService = new SonarInstanceValidationService();
     }
 
@@ -36,12 +36,12 @@ public class QualityGatesProvider {
     }
 
     public QualityGatesStatus getAPIResultsForQualityGates(
-            JobConfigData jobConfigData, SonarInstance globalConfigDataForSonarInstance, BuildListener listener)
+            JobConfigData jobConfigData, SonarInstance sonarInstance, BuildListener listener)
             throws JSONException, InterruptedException {
-        var validatedData = sonarInstanceValidationService.validateData(globalConfigDataForSonarInstance);
+        var validatedData = sonarInstanceValidationService.validateData(sonarInstance);
         var taskAnalysisRunning = true;
-        var timeToWait = globalConfigDataForSonarInstance.getTimeToWait();
-        var maxWaitTime = globalConfigDataForSonarInstance.getMaxWaitTime();
+        var timeToWait = sonarInstance.getTimeToWait();
+        var maxWaitTime = sonarInstance.getMaxWaitTime();
 
         if (timeToWait == 0) {
             timeToWait = MILLISECONDS_10_SECONDS;
@@ -84,8 +84,7 @@ public class QualityGatesProvider {
         return qualityGateResponseParser.getQualityGateResultFromJSON(requesterResult);
     }
 
-    private String getRequesterResult(JobConfigData jobConfigData, SonarInstance globalConfigDataForSonarInstance)
-            throws QGException {
-        return sonarHttpRequester.getAPIInfo(jobConfigData, globalConfigDataForSonarInstance);
+    private String getRequesterResult(JobConfigData jobConfigData, SonarInstance sonarInstance) throws QGException {
+        return sonarHttpRequester.getAPIInfo(jobConfigData, sonarInstance);
     }
 }

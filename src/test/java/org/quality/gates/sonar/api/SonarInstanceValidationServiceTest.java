@@ -23,34 +23,31 @@ public class SonarInstanceValidationServiceTest {
 
     @Test
     public void testValidateUrlEmptySonarUrlShouldReturnDefaultUrl() {
-        SonarInstance globalConfigDataForSonarInstance = new SonarInstance("", "", "", "");
-        assertEquals(
-                "http://localhost:9000", sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "", "", "");
+        assertEquals("http://localhost:9000", sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
     public void testValidateUrlNormalUrlShouldReturnGivenUrl() {
-        SonarInstance globalConfigDataForSonarInstance = new SonarInstance("", HTTP_MY_URL_COM_9000, "", "");
-        assertEquals(
-                HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", HTTP_MY_URL_COM_9000, "", "");
+        assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
     public void testValidateUrlNormalUrlWithSlashInTheEndShouldStripTheSlash() {
-        SonarInstance globalConfigDataForSonarInstance = new SonarInstance("", "http://myUrl.com:9000/", "", "");
-        assertEquals(
-                HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "http://myUrl.com:9000/", "", "");
+        assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
     public void testValidateUsernameEmptyUsernameShouldReturnDefaultUsername() {
-        SonarInstance globalConfigDataForSonarInstance = new SonarInstance("", "", "", "");
-        assertEquals(ADMIN, sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "", "", "");
+        assertEquals(ADMIN, sonarInstanceValidationService.validateUsername(sonarInstance));
     }
 
     @Test
     public void testValidateUsernameGivenUsernameShouldReturnGivenUsername() {
-        SonarInstance globalConfigDataForSonarInstance = new SonarInstance("", "", "myUser", "");
-        assertEquals(MY_USER, sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "", "myUser", "");
+        assertEquals(MY_USER, sonarInstanceValidationService.validateUsername(sonarInstance));
     }
 }

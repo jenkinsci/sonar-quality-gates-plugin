@@ -19,7 +19,7 @@ public class GlobalConfigurationService {
 
     protected List<SonarInstance> instantiateGlobalConfigData(JSONObject json) {
         listOfGlobalConfigInstances = new ArrayList<>();
-        var globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
+        var globalDataConfigs = (JSON) json.opt("sonarInstances");
 
         if (globalDataConfigs == null) {
             globalDataConfigs = new JSONArray();
@@ -61,17 +61,17 @@ public class GlobalConfigurationService {
         var url = globalConfigData.optString("url");
 
         if (!"".equals(name)) {
-            SonarInstance globalConfigDataForSonarInstance;
+            SonarInstance sonarInstance;
             var token = globalConfigData.optString("token");
             if (StringUtils.isNotEmpty(token)) {
-                globalConfigDataForSonarInstance = new SonarInstance(
+                sonarInstance = new SonarInstance(
                         name,
                         url,
                         Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("token"))),
                         timeToWait,
                         maxWaitTime);
             } else {
-                globalConfigDataForSonarInstance = new SonarInstance(
+                sonarInstance = new SonarInstance(
                         name,
                         url,
                         globalConfigData.optString("account"),
@@ -81,7 +81,7 @@ public class GlobalConfigurationService {
             }
 
             if (!containsGlobalConfigWithName(name)) {
-                listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
+                listOfGlobalConfigInstances.add(sonarInstance);
             }
         }
     }

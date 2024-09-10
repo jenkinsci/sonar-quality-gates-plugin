@@ -41,8 +41,7 @@ public class SonarHttpRequester88 extends SonarHttpRequester {
     }
 
     @Override
-    protected String getSonarApiTaskInfoParameter(
-            JobConfigData jobConfigData, SonarInstance globalConfigDataForSonarInstance) {
+    protected String getSonarApiTaskInfoParameter(JobConfigData jobConfigData, SonarInstance sonarInstance) {
         return jobConfigData.getProjectKey();
     }
 }

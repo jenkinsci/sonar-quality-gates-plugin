@@ -6,51 +6,51 @@ import org.quality.gates.jenkins.plugin.SonarInstance;
 
 public class SonarInstanceValidationService {
 
-    String validateUrl(SonarInstance globalConfigDataForSonarInstance) {
-        if (globalConfigDataForSonarInstance.getSonarUrl().isEmpty()) {
+    String validateUrl(SonarInstance sonarInstance) {
+        if (sonarInstance.getUrl().isEmpty()) {
             return SonarInstance.DEFAULT_URL;
         }
 
-        var sonarUrl = globalConfigDataForSonarInstance.getSonarUrl();
-        if (sonarUrl.endsWith("/")) {
-            sonarUrl = sonarUrl.substring(0, sonarUrl.length() - 1);
+        var url = sonarInstance.getUrl();
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
         }
 
-        return sonarUrl;
+        return url;
     }
 
-    String validateUsername(SonarInstance globalConfigDataForSonarInstance) {
-        if (globalConfigDataForSonarInstance.getUsername().isEmpty()) {
+    String validateUsername(SonarInstance sonarInstance) {
+        if (sonarInstance.getUsername().isEmpty()) {
             return SonarInstance.DEFAULT_USERNAME;
         }
 
-        return globalConfigDataForSonarInstance.getUsername();
+        return sonarInstance.getUsername();
     }
 
-    private Secret validatePassword(SonarInstance globalConfigDataForSonarInstance) {
-        if (globalConfigDataForSonarInstance.getPass().getPlainText().isEmpty()) {
+    private Secret validatePassword(SonarInstance sonarInstance) {
+        if (sonarInstance.getPass().getPlainText().isEmpty()) {
             return Secret.fromString(SonarInstance.DEFAULT_PASS);
         }
 
-        return globalConfigDataForSonarInstance.getPass();
+        return sonarInstance.getPass();
     }
 
-    SonarInstance validateData(SonarInstance globalConfigDataForSonarInstance) {
-        if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken().getPlainText())) {
+    SonarInstance validateData(SonarInstance sonarInstance) {
+        if (StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
             return new SonarInstance(
-                    globalConfigDataForSonarInstance.getName(),
-                    validateUrl(globalConfigDataForSonarInstance),
-                    globalConfigDataForSonarInstance.getToken(),
-                    globalConfigDataForSonarInstance.getTimeToWait(),
-                    globalConfigDataForSonarInstance.getMaxWaitTime());
+                    sonarInstance.getName(),
+                    validateUrl(sonarInstance),
+                    sonarInstance.getToken(),
+                    sonarInstance.getTimeToWait(),
+                    sonarInstance.getMaxWaitTime());
         }
 
         return new SonarInstance(
-                globalConfigDataForSonarInstance.getName(),
-                validateUrl(globalConfigDataForSonarInstance),
-                validateUsername(globalConfigDataForSonarInstance),
-                validatePassword(globalConfigDataForSonarInstance),
-                globalConfigDataForSonarInstance.getTimeToWait(),
-                globalConfigDataForSonarInstance.getMaxWaitTime());
+                sonarInstance.getName(),
+                validateUrl(sonarInstance),
+                validateUsername(sonarInstance),
+                validatePassword(sonarInstance),
+                sonarInstance.getTimeToWait(),
+                sonarInstance.getMaxWaitTime());
     }
 }

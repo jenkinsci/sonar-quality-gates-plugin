@@ -31,7 +31,7 @@ public class ConfigurationAsCodeTest extends RoundTripAbstractTest {
                 "GlobalSonarQualityGatesConfiguration should not be null",
                 globalSonarQualityGatesConfiguration != null);
 
-        List<SonarInstance> sonarInstances = globalSonarQualityGatesConfiguration.fetchListOfGlobalConfigData();
+        List<SonarInstance> sonarInstances = globalSonarQualityGatesConfiguration.getSonarInstances();
 
         // Assert that sonarInstances is not null
         assertThat("SonarInstances should not be null", sonarInstances != null);
@@ -53,7 +53,7 @@ public class ConfigurationAsCodeTest extends RoundTripAbstractTest {
                 sonarInstance.getPass().getPlainText().equals("test-password"));
         assertThat(
                 "SonarInstance url should be 'http://localhost:9000'",
-                sonarInstance.getSonarUrl().equals("http://localhost:9000"));
+                sonarInstance.getUrl().equals("http://localhost:9000"));
         assertThat("SonarInstance timeToWait should be 10000", sonarInstance.getTimeToWait() == 10000);
         assertThat("SonarInstance maxWaitTime should be 50000", sonarInstance.getMaxWaitTime() == 50000);
     }

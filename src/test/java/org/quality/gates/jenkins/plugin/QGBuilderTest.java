@@ -51,7 +51,7 @@ public class QGBuilderTest {
     private Launcher launcher;
 
     @Mock
-    private SonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance sonarInstance;
 
     @Mock
     private JobConfigurationService jobConfigurationService;
@@ -62,11 +62,7 @@ public class QGBuilderTest {
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
         builder = new QGBuilder(
-                jobConfigData,
-                buildDecision,
-                jobExecutionService,
-                jobConfigurationService,
-                globalConfigDataForSonarInstance);
+                jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
         when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
                 .thenReturn(jobConfigData);
         when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
@@ -92,7 +88,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithNoWarning() throws QGException {
         String stringWithName = "Name";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(sonarInstance, jobConfigData, buildListener))
                 .thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(stringWithName);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));
@@ -104,7 +100,7 @@ public class QGBuilderTest {
     @Test
     public void testPerformShouldFailWithWarning() throws QGException {
         String emptyString = "";
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(sonarInstance, jobConfigData, buildListener))
                 .thenReturn(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn(emptyString);
         assertFalse(builder.perform(abstractBuild, launcher, buildListener));

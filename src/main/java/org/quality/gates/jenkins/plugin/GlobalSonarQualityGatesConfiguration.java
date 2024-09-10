@@ -14,7 +14,7 @@ import org.kohsuke.stapler.StaplerRequest;
 @Symbol("sonarQualityGates")
 public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
 
-    private List<SonarInstance> listOfGlobalConfigData;
+    private List<SonarInstance> sonarInstances;
 
     private final GlobalConfigurationService globalConfigurationService;
 
@@ -24,28 +24,29 @@ public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
     }
 
     public GlobalSonarQualityGatesConfiguration(
-            List<SonarInstance> listOfGlobalConfigData, GlobalConfigurationService globalConfigurationService) {
-        this.listOfGlobalConfigData = listOfGlobalConfigData;
+            List<SonarInstance> sonarInstances, GlobalConfigurationService globalConfigurationService) {
+        this.sonarInstances = sonarInstances;
         this.globalConfigurationService = globalConfigurationService;
     }
 
-    public List<SonarInstance> getListOfGlobalConfigData() {
+    public List<SonarInstance> getSonarInstances() {
         load();
-        return listOfGlobalConfigData;
+        return sonarInstances;
     }
 
-    public List<SonarInstance> fetchListOfGlobalConfigData() {
-        return listOfGlobalConfigData;
+    public List<SonarInstance> fetchSonarInstances() {
+        return sonarInstances;
     }
 
     @DataBoundSetter
-    public void setGlobalConfigDataForSonarInstances(List<SonarInstance> globalConfigDataForSonarInstances) {
-        this.listOfGlobalConfigData = globalConfigDataForSonarInstances;
+    public void setSonarInstances(List<SonarInstance> globalConfigDataForSonarInstances) {
+        this.sonarInstances = globalConfigDataForSonarInstances;
     }
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-        listOfGlobalConfigData = globalConfigurationService.instantiateGlobalConfigData(json);
+        sonarInstances = globalConfigurationService.instantiateGlobalConfigData(json);
+        req.bindJSON(this, json);
         save();
 
         return true;
@@ -60,9 +61,9 @@ public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
     }
 
     public SonarInstance getSonarInstanceByName(String name) {
-        for (SonarInstance globalConfigDataForSonarInstance : listOfGlobalConfigData) {
-            if (name.equals(globalConfigDataForSonarInstance.getName())) {
-                return globalConfigDataForSonarInstance;
+        for (SonarInstance sonarInstance : sonarInstances) {
+            if (name.equals(sonarInstance.getName())) {
+                return sonarInstance;
             }
         }
 

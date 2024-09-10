@@ -33,7 +33,7 @@ public class BuildDecisionTest {
     JobConfigData jobConfigData;
 
     @Mock
-    SonarInstance globalConfigDataForSonarInstance;
+    SonarInstance sonarInstance;
 
     @Mock
     GlobalSonarQualityGatesConfiguration globalConfig;
@@ -61,7 +61,7 @@ public class BuildDecisionTest {
                 .getAPIResultsForQualityGates(
                         any(JobConfigData.class), any(SonarInstance.class), any(BuildListener.class));
         doReturn(true).when(qualityGatesStatus).hasStatusGreen();
-        assertTrue(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener));
+        assertTrue(buildDecision.getStatus(sonarInstance, jobConfigData, listener));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class BuildDecisionTest {
                 .getAPIResultsForQualityGates(
                         any(JobConfigData.class), any(SonarInstance.class), any(BuildListener.class));
         doReturn(false).when(qualityGatesStatus).hasStatusGreen();
-        assertFalse(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener));
+        assertFalse(buildDecision.getStatus(sonarInstance, jobConfigData, listener));
     }
 
     @Test(expected = QGException.class)
@@ -80,18 +80,18 @@ public class BuildDecisionTest {
         when(qualityGatesProvider.getAPIResultsForQualityGates(
                         any(JobConfigData.class), any(SonarInstance.class), any(BuildListener.class)))
                 .thenThrow(jsonException);
-        buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener);
+        buildDecision.getStatus(sonarInstance, jobConfigData, listener);
     }
 
     @Test
     public void testChooseSonarInstanceIfListIsEmpty() {
         String emptyString = "";
         List<SonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
-        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchSonarInstances();
         SonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
         assertTrue(returnedInstance.getName().equals(emptyString));
         assertTrue(returnedInstance.getPass().getPlainText().equals(emptyString));
-        assertTrue(returnedInstance.getSonarUrl().equals(emptyString));
+        assertTrue(returnedInstance.getUrl().equals(emptyString));
         assertTrue(returnedInstance.getUsername().equals(emptyString));
     }
 
@@ -100,10 +100,10 @@ public class BuildDecisionTest {
         List<SonarInstance> globalConfigDataForSonarInstanceList = new ArrayList<>();
         SonarInstance singleInstance = new SonarInstance("TestName", "TestUrl", "TestUsername", "TestPass");
         globalConfigDataForSonarInstanceList.add(singleInstance);
-        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchSonarInstances();
         SonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
         assertTrue(returnedInstance.getName().equals("TestName"));
-        assertTrue(returnedInstance.getSonarUrl().equals("TestUrl"));
+        assertTrue(returnedInstance.getUrl().equals("TestUrl"));
         assertTrue(returnedInstance.getUsername().equals("TestUsername"));
     }
 
@@ -114,12 +114,12 @@ public class BuildDecisionTest {
         SonarInstance secondInstance = new SonarInstance("TestName1", "TestUrl1", "TestUsername1", "TestPass1");
         globalConfigDataForSonarInstanceList.add(firstInstance);
         globalConfigDataForSonarInstanceList.add(secondInstance);
-        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchSonarInstances();
         doReturn(secondInstance).when(globalConfig).getSonarInstanceByName("TestName1");
         doReturn("TestName1").when(jobConfigData).getSonarInstanceName();
         SonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
         assertTrue(returnedInstance.getName().equals("TestName1"));
-        assertTrue(returnedInstance.getSonarUrl().equals("TestUrl1"));
+        assertTrue(returnedInstance.getUrl().equals("TestUrl1"));
         assertTrue(returnedInstance.getUsername().equals("TestUsername1"));
     }
 
@@ -130,7 +130,7 @@ public class BuildDecisionTest {
         SonarInstance secondInstance = new SonarInstance("TestName1", "TestUrl1", "TestUsername1", "TestPass1");
         globalConfigDataForSonarInstanceList.add(firstInstance);
         globalConfigDataForSonarInstanceList.add(secondInstance);
-        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchSonarInstances();
         doReturn(null).when(globalConfig).getSonarInstanceByName("RandomName");
         doReturn("RandomName").when(jobConfigData).getSonarInstanceName();
         SonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);

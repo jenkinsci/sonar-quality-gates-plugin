@@ -36,7 +36,7 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
         this.jobExecutionService = jobExecutionService;
     }
 
-    public ListBoxModel doFillListOfGlobalConfigDataItems() {
+    public ListBoxModel doFillSonarInstancesItems() {
         return jobConfigurationService.getListOfSonarInstanceNames(jobExecutionService.getGlobalConfigData());
     }
 
@@ -75,10 +75,10 @@ public final class QGBuilderDescriptor extends BuildStepDescriptor<Builder> {
     public QGBuilder newInstance(StaplerRequest req, JSONObject formData) throws QGException {
         var firstInstanceJobConfigData =
                 jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
-        var globalConfigDataForSonarInstance = jobExecutionService
+        var sonarInstance = jobExecutionService
                 .getGlobalConfigData()
                 .getSonarInstanceByName(firstInstanceJobConfigData.getSonarInstanceName());
 
-        return new QGBuilder(firstInstanceJobConfigData, globalConfigDataForSonarInstance);
+        return new QGBuilder(firstInstanceJobConfigData, sonarInstance);
     }
 }

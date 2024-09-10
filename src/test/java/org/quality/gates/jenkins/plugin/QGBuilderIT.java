@@ -44,7 +44,7 @@ public class QGBuilderIT {
 
     private JobExecutionService jobExecutionService;
 
-    private SonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance sonarInstance;
 
     private List<SonarInstance> globalConfigDataForSonarInstanceList;
 
@@ -61,14 +61,10 @@ public class QGBuilderIT {
         jobConfigData = new JobConfigData();
         jobConfigurationService = new JobConfigurationService();
         jobExecutionService = new JobExecutionService();
-        globalConfigDataForSonarInstance = new SonarInstance();
+        sonarInstance = new SonarInstance();
         builderDescriptor = new QGBuilderDescriptor(jobExecutionService, jobConfigurationService);
         qgBuilder = new QGBuilder(
-                jobConfigData,
-                buildDecision,
-                jobExecutionService,
-                jobConfigurationService,
-                globalConfigDataForSonarInstance);
+                jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
         globalConfig = GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
         freeStyleProject = jenkinsRule.createFreeStyleProject("freeStyleProject");
         freeStyleProject.getBuildersList().add(qgBuilder);
@@ -93,7 +89,7 @@ public class QGBuilderIT {
     public void testPerformShouldSucceedWithNoWarning() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         jobConfigData.setProjectKey("projectKey");
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
+        doReturn(sonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         doReturn(true)
                 .when(buildDecision)
                 .getStatus(any(SonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
@@ -106,7 +102,7 @@ public class QGBuilderIT {
     public void testPerformShouldSucceedWithWarning() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames("", "");
         jobConfigData.setProjectKey("projectKey");
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
+        doReturn(sonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         doReturn(true)
                 .when(buildDecision)
                 .getStatus(any(SonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
@@ -120,7 +116,7 @@ public class QGBuilderIT {
     public void testPerformShouldFail() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         jobConfigData.setProjectKey("projectKey");
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
+        doReturn(sonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         doReturn(false)
                 .when(buildDecision)
                 .getStatus(any(SonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
@@ -134,7 +130,7 @@ public class QGBuilderIT {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         jobConfigData.setProjectKey("projectKey");
         QGException exception = new QGException("TestException");
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
+        doReturn(sonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         doThrow(exception)
                 .when(buildDecision)
                 .getStatus(any(SonarInstance.class), any(JobConfigData.class), any(BuildListener.class));
@@ -144,9 +140,9 @@ public class QGBuilderIT {
     }
 
     private void setGlobalConfigDataAndJobConfigDataNames(String firstInstanceName, String secondInstanceName) {
-        globalConfigDataForSonarInstance.setName(firstInstanceName);
+        sonarInstance.setName(firstInstanceName);
         jobConfigData.setSonarInstanceName(secondInstanceName);
-        globalConfig.setGlobalConfigDataForSonarInstances(globalConfigDataForSonarInstanceList);
+        globalConfig.setSonarInstances(globalConfigDataForSonarInstanceList);
     }
 
     private FreeStyleBuild buildProject(FreeStyleProject freeStyleProject)

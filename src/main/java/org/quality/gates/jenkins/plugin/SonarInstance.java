@@ -22,7 +22,7 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
 
     private String pass;
 
-    private String sonarUrl;
+    private String url;
 
     private Secret secretPass;
 
@@ -34,32 +34,31 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
 
     public SonarInstance() {
         this.name = "";
-        this.sonarUrl = "";
+        this.url = "";
         this.username = "";
         this.pass = "";
     }
 
     @DataBoundConstructor
-    public SonarInstance(
-            String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
+    public SonarInstance(String name, String url, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
         this.name = name;
-        this.sonarUrl = sonarUrl;
+        this.url = url;
         this.username = username;
         this.secretPass = secretPass;
         this.timeToWait = timeToWait;
         this.maxWaitTime = maxWaitTime;
     }
 
-    public SonarInstance(String name, String sonarUrl, String username, String pass) {
+    public SonarInstance(String name, String url, String username, String pass) {
         this.name = name;
-        this.sonarUrl = sonarUrl;
+        this.url = url;
         this.username = username;
         this.pass = pass;
     }
 
-    public SonarInstance(String name, String sonarUrl, Secret token, int timeToWait, int maxWaitTime) {
+    public SonarInstance(String name, String url, Secret token, int timeToWait, int maxWaitTime) {
         this.name = name;
-        this.sonarUrl = sonarUrl;
+        this.url = url;
         this.token = token;
         this.timeToWait = timeToWait;
         this.maxWaitTime = maxWaitTime;
@@ -92,13 +91,13 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
         this.secretPass = Secret.fromString(Util.fixEmptyAndTrim(pass));
     }
 
-    public String getSonarUrl() {
-        return sonarUrl;
+    public String getUrl() {
+        return url;
     }
 
     @DataBoundSetter
-    public void setSonarUrl(String sonarUrl) {
-        this.sonarUrl = sonarUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getTimeToWait() {
@@ -159,7 +158,7 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
             return false;
         }
 
-        return sonarUrl != null ? sonarUrl.equals(that.sonarUrl) : that.sonarUrl == null;
+        return url != null ? url.equals(that.url) : that.url == null;
     }
 
     @Override
@@ -168,17 +167,17 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (token != null ? token.hashCode() : 0);
         result = 31 * result + (pass != null ? pass.hashCode() : 0);
-        result = 31 * result + (sonarUrl != null ? sonarUrl.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
 
         return result;
     }
 
     @Override
     public String toString() {
-        return "GlobalConfigDataForSonarInstance{" + "name='"
+        return "SonarInstance{" + "name='"
                 + name + '\'' + ", username='"
-                + username + '\'' + ", sonarUrl='"
-                + sonarUrl + '\'' + ", timeToWait='"
+                + username + '\'' + ", url='"
+                + url + '\'' + ", timeToWait='"
                 + timeToWait + '\'' + ", maxWaitTime="
                 + maxWaitTime + '}';
     }

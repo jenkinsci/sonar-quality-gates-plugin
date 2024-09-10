@@ -20,8 +20,8 @@ public class JobConfigurationService {
     public ListBoxModel getListOfSonarInstanceNames(GlobalSonarQualityGatesConfiguration globalConfig) {
         var listBoxModel = new ListBoxModel();
 
-        for (SonarInstance globalConfigDataForSonarInstance : globalConfig.fetchListOfGlobalConfigData()) {
-            listBoxModel.add(globalConfigDataForSonarInstance.getName());
+        for (SonarInstance sonarInstance : globalConfig.fetchSonarInstances()) {
+            listBoxModel.add(sonarInstance.getName());
         }
 
         return listBoxModel;
@@ -37,7 +37,7 @@ public class JobConfigurationService {
 
         var name = "";
 
-        if (!globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
+        if (!globalConfig.fetchSonarInstances().isEmpty()) {
             name = hasFormDataKey(formData, globalConfig);
         }
 
@@ -53,7 +53,7 @@ public class JobConfigurationService {
             return formData.getString("sonarInstancesName");
         }
 
-        return globalConfig.fetchListOfGlobalConfigData().get(0).getName();
+        return globalConfig.fetchSonarInstances().get(0).getName();
     }
 
     public JobConfigData checkProjectKeyIfVariable(
