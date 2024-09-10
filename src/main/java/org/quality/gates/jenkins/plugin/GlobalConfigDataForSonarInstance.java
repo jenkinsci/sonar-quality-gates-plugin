@@ -1,9 +1,14 @@
 package org.quality.gates.jenkins.plugin;
 
+import hudson.Extension;
 import hudson.Util;
+import hudson.model.AbstractDescribableImpl;
+import hudson.model.Descriptor;
 import hudson.util.Secret;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
-public class GlobalConfigDataForSonarInstance {
+public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<GlobalConfigDataForSonarInstance> {
 
     public static final String DEFAULT_URL = "http://localhost:9000";
 
@@ -34,6 +39,7 @@ public class GlobalConfigDataForSonarInstance {
         this.pass = "";
     }
 
+	@DataBoundConstructor
     public GlobalConfigDataForSonarInstance(
             String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
         this.name = name;
@@ -64,6 +70,7 @@ public class GlobalConfigDataForSonarInstance {
         return name;
     }
 
+	@DataBoundSetter
     public void setName(String name) {
         this.name = name;
     }
@@ -72,6 +79,7 @@ public class GlobalConfigDataForSonarInstance {
         return username;
     }
 
+	@DataBoundSetter
     public void setUsername(String username) {
         this.username = username;
     }
@@ -80,6 +88,7 @@ public class GlobalConfigDataForSonarInstance {
         return secretPass != null ? secretPass : Secret.fromString("");
     }
 
+	@DataBoundSetter
     public void setPass(String pass) {
         this.secretPass = Secret.fromString(Util.fixEmptyAndTrim(pass));
     }
@@ -88,6 +97,7 @@ public class GlobalConfigDataForSonarInstance {
         return sonarUrl;
     }
 
+	@DataBoundSetter
     public void setSonarUrl(String sonarUrl) {
         this.sonarUrl = sonarUrl;
     }
@@ -100,10 +110,12 @@ public class GlobalConfigDataForSonarInstance {
         return maxWaitTime;
     }
 
+    @DataBoundSetter
     public void setTimeToWait(int timeToWait) {
         this.timeToWait = timeToWait;
     }
 
+    @DataBoundSetter
     public void setMaxWaitTime(int maxWaitTime) {
         this.maxWaitTime = maxWaitTime;
     }
@@ -112,9 +124,13 @@ public class GlobalConfigDataForSonarInstance {
         return token != null ? token : Secret.fromString("");
     }
 
+    @DataBoundSetter
     public void setToken(String token) {
         this.token = Secret.fromString(Util.fixEmptyAndTrim(token));
     }
+
+    @Extension
+    public static class DescriptorImpl extends Descriptor<GlobalConfigDataForSonarInstance> {}
 
     @Override
     public boolean equals(Object o) {

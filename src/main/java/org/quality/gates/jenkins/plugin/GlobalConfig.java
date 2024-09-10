@@ -5,10 +5,13 @@ import hudson.util.FormValidation;
 import java.util.List;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
+import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 @Extension
+@Symbol("sonarQualityGates")
 public class GlobalConfig extends GlobalConfiguration {
 
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
@@ -36,6 +39,7 @@ public class GlobalConfig extends GlobalConfiguration {
         return listOfGlobalConfigData;
     }
 
+	@DataBoundSetter
     public void setGlobalConfigDataForSonarInstances(
             List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances) {
         this.listOfGlobalConfigData = globalConfigDataForSonarInstances;
