@@ -33,7 +33,7 @@ public class QGPublisherIT {
 
     private FreeStyleProject freeStyleProject;
 
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
     private BuildDecision buildDecision;
@@ -73,7 +73,7 @@ public class QGPublisherIT {
                 jobExecutionService,
                 jobConfigurationService,
                 globalConfigDataForSonarInstance);
-        globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
+        globalConfig = GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
         freeStyleProject = jenkinsRule.createFreeStyleProject("freeStyleProject");
         freeStyleProject.getBuildersList().add(builder);
         freeStyleProject.getPublishersList().add(publisher);

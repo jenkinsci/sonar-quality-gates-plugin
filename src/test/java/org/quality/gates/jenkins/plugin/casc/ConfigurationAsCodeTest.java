@@ -6,8 +6,8 @@ import io.jenkins.plugins.casc.misc.RoundTripAbstractTest;
 import java.util.List;
 import jenkins.model.GlobalConfiguration;
 import org.jvnet.hudson.test.RestartableJenkinsRule;
-import org.quality.gates.jenkins.plugin.GlobalConfig;
 import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import org.quality.gates.jenkins.plugin.GlobalSonarQualityGatesConfiguration;
 
 public class ConfigurationAsCodeTest extends RoundTripAbstractTest {
 
@@ -23,15 +23,16 @@ public class ConfigurationAsCodeTest extends RoundTripAbstractTest {
 
     @Override
     protected void assertConfiguredAsExpected(RestartableJenkinsRule j, String configContent) {
-        GlobalConfig globalSonarQualityGatesConfiguration =
-                GlobalConfiguration.all().get(GlobalConfig.class);
+        GlobalSonarQualityGatesConfiguration globalSonarQualityGatesConfiguration =
+                GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
 
         // Assert that globalSonarQualityGatesConfiguration is not null
         assertThat(
                 "GlobalSonarQualityGatesConfiguration should not be null",
                 globalSonarQualityGatesConfiguration != null);
 
-        List<GlobalConfigDataForSonarInstance> sonarInstances = globalSonarQualityGatesConfiguration.fetchListOfGlobalConfigData();
+        List<GlobalConfigDataForSonarInstance> sonarInstances =
+                globalSonarQualityGatesConfiguration.fetchListOfGlobalConfigData();
 
         // Assert that sonarInstances is not null
         assertThat("SonarInstances should not be null", sonarInstances != null);

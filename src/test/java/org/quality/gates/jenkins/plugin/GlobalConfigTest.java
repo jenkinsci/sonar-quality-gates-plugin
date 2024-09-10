@@ -22,10 +22,10 @@ import org.mockito.MockitoAnnotations;
 
 public class GlobalConfigTest {
 
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @InjectMocks
-    private GlobalConfig spyGlobalConfig;
+    private GlobalSonarQualityGatesConfiguration spyGlobalConfig;
 
     @Mock
     private StaplerRequest staplerRequest;
@@ -44,7 +44,8 @@ public class GlobalConfigTest {
         closeable = MockitoAnnotations.openMocks(this);
         jsonObject = new JSONObject();
         globalConfigDataForSonarInstances = new ArrayList<>();
-        globalConfig = new GlobalConfig(globalConfigDataForSonarInstances, globalConfigurationService);
+        globalConfig =
+                new GlobalSonarQualityGatesConfiguration(globalConfigDataForSonarInstances, globalConfigurationService);
         spyGlobalConfig = spy(globalConfig);
     }
 

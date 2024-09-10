@@ -39,7 +39,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
         this.pass = "";
     }
 
-	@DataBoundConstructor
+    @DataBoundConstructor
     public GlobalConfigDataForSonarInstance(
             String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
         this.name = name;
@@ -70,7 +70,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
         return name;
     }
 
-	@DataBoundSetter
+    @DataBoundSetter
     public void setName(String name) {
         this.name = name;
     }
@@ -79,7 +79,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
         return username;
     }
 
-	@DataBoundSetter
+    @DataBoundSetter
     public void setUsername(String username) {
         this.username = username;
     }
@@ -88,7 +88,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
         return secretPass != null ? secretPass : Secret.fromString("");
     }
 
-	@DataBoundSetter
+    @DataBoundSetter
     public void setPass(String pass) {
         this.secretPass = Secret.fromString(Util.fixEmptyAndTrim(pass));
     }
@@ -97,7 +97,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
         return sonarUrl;
     }
 
-	@DataBoundSetter
+    @DataBoundSetter
     public void setSonarUrl(String sonarUrl) {
         this.sonarUrl = sonarUrl;
     }

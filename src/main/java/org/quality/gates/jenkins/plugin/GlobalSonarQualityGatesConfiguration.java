@@ -12,18 +12,18 @@ import org.kohsuke.stapler.StaplerRequest;
 
 @Extension
 @Symbol("sonarQualityGates")
-public class GlobalConfig extends GlobalConfiguration {
+public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
 
     private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
 
     private final GlobalConfigurationService globalConfigurationService;
 
-    public GlobalConfig() {
+    public GlobalSonarQualityGatesConfiguration() {
         load();
         globalConfigurationService = new GlobalConfigurationService();
     }
 
-    public GlobalConfig(
+    public GlobalSonarQualityGatesConfiguration(
             List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData,
             GlobalConfigurationService globalConfigurationService) {
         this.listOfGlobalConfigData = listOfGlobalConfigData;
@@ -39,7 +39,7 @@ public class GlobalConfig extends GlobalConfiguration {
         return listOfGlobalConfigData;
     }
 
-	@DataBoundSetter
+    @DataBoundSetter
     public void setGlobalConfigDataForSonarInstances(
             List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances) {
         this.listOfGlobalConfigData = globalConfigDataForSonarInstances;

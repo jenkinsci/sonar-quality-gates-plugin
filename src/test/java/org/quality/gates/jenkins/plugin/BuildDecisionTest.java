@@ -36,7 +36,7 @@ public class BuildDecisionTest {
     GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
 
     @Mock
-    GlobalConfig globalConfig;
+    GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
     private BuildListener listener;

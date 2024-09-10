@@ -26,7 +26,7 @@ public class JobConfigurationServiceTest {
     private JobConfigurationService jobConfigurationService;
 
     @Mock
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
     private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;

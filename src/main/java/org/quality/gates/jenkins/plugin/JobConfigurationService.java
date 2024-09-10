@@ -17,7 +17,7 @@ public class JobConfigurationService {
 
     private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile("(\\$[a-zA-Z0-9_]+)");
 
-    public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
+    public ListBoxModel getListOfSonarInstanceNames(GlobalSonarQualityGatesConfiguration globalConfig) {
         var listBoxModel = new ListBoxModel();
 
         for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance :
@@ -28,7 +28,7 @@ public class JobConfigurationService {
         return listBoxModel;
     }
 
-    public JobConfigData createJobConfigData(JSONObject formData, GlobalConfig globalConfig) {
+    public JobConfigData createJobConfigData(JSONObject formData, GlobalSonarQualityGatesConfiguration globalConfig) {
         var firstInstanceJobConfigData = new JobConfigData();
         var projectKey = formData.getString("projectKey");
 
@@ -49,7 +49,7 @@ public class JobConfigurationService {
         return firstInstanceJobConfigData;
     }
 
-    protected String hasFormDataKey(JSONObject formData, GlobalConfig globalConfig) {
+    protected String hasFormDataKey(JSONObject formData, GlobalSonarQualityGatesConfiguration globalConfig) {
         if (formData.containsKey("sonarInstancesName")) {
             return formData.getString("sonarInstancesName");
         }

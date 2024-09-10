@@ -94,7 +94,9 @@ public class QGPublisherTest {
 
     @Test
     public void testPrebuildShouldFail() {
-        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
+        doReturn(null)
+                .when(buildDecision)
+                .chooseSonarInstance(any(GlobalSonarQualityGatesConfiguration.class), any(JobConfigData.class));
         doReturn("TestInstanceName").when(jobConfigData).getSonarInstanceName();
         assertFalse(publisher.prebuild(abstractBuild, buildListener));
         verify(buildListener).error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, "TestInstanceName");

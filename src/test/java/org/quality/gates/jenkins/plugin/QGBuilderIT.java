@@ -32,7 +32,7 @@ public class QGBuilderIT {
 
     private FreeStyleProject freeStyleProject;
 
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
     private BuildDecision buildDecision;
@@ -69,7 +69,7 @@ public class QGBuilderIT {
                 jobExecutionService,
                 jobConfigurationService,
                 globalConfigDataForSonarInstance);
-        globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
+        globalConfig = GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
         freeStyleProject = jenkinsRule.createFreeStyleProject("freeStyleProject");
         freeStyleProject.getBuildersList().add(qgBuilder);
         globalConfigDataForSonarInstanceList = new ArrayList<>();

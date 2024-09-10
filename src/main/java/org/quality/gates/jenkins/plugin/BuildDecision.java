@@ -30,7 +30,8 @@ public class BuildDecision {
         }
     }
 
-    GlobalConfigDataForSonarInstance chooseSonarInstance(GlobalConfig globalConfig, JobConfigData jobConfigData) {
+    GlobalConfigDataForSonarInstance chooseSonarInstance(
+            GlobalSonarQualityGatesConfiguration globalConfig, JobConfigData jobConfigData) {
         if (globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
             return noSonarInstance(jobConfigData);
         } else if (globalConfig.fetchListOfGlobalConfigData().size() == 1) {
@@ -46,7 +47,7 @@ public class BuildDecision {
     }
 
     private GlobalConfigDataForSonarInstance singleSonarInstance(
-            GlobalConfig globalConfig, JobConfigData jobConfigData) {
+            GlobalSonarQualityGatesConfiguration globalConfig, JobConfigData jobConfigData) {
         var globalConfigDataForSonarInstance =
                 globalConfig.fetchListOfGlobalConfigData().get(0);
         jobConfigData.setSonarInstanceName(globalConfigDataForSonarInstance.getName());
@@ -54,7 +55,8 @@ public class BuildDecision {
         return globalConfigDataForSonarInstance;
     }
 
-    public GlobalConfigDataForSonarInstance multipleSonarInstances(String instanceName, GlobalConfig globalConfig) {
+    public GlobalConfigDataForSonarInstance multipleSonarInstances(
+            String instanceName, GlobalSonarQualityGatesConfiguration globalConfig) {
         return globalConfig.getSonarInstanceByName(instanceName);
     }
 }
