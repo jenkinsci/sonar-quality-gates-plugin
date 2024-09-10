@@ -29,10 +29,10 @@ public class JobConfigurationServiceTest {
     private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<SonarInstance> globalConfigDataForSonarInstances;
 
     @Mock
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance globalConfigDataForSonarInstance;
 
     private JSONObject formData;
 
@@ -86,7 +86,7 @@ public class JobConfigurationServiceTest {
         createGlobalConfigData();
         globalConfigDataForSonarInstance.setName("First Instance");
         globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance);
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance1 = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfigDataForSonarInstance1 = new SonarInstance();
         globalConfigDataForSonarInstance1.setName("Second Instance");
         globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance1);
 
@@ -104,7 +104,7 @@ public class JobConfigurationServiceTest {
         doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        globalConfigDataForSonarInstance = new SonarInstance();
         globalConfigDataForSonarInstance.setName("TestName");
         doReturn(globalConfigDataForSonarInstance)
                 .when(globalConfigDataForSonarInstances)
@@ -130,7 +130,7 @@ public class JobConfigurationServiceTest {
 
     protected void createGlobalConfigData() {
         globalConfigDataForSonarInstances = new ArrayList<>();
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        globalConfigDataForSonarInstance = new SonarInstance();
     }
 
     @Test

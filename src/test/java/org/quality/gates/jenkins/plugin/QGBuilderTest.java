@@ -51,7 +51,7 @@ public class QGBuilderTest {
     private Launcher launcher;
 
     @Mock
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance globalConfigDataForSonarInstance;
 
     @Mock
     private JobConfigurationService jobConfigurationService;

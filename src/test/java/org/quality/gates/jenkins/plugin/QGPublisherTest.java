@@ -57,13 +57,13 @@ public class QGPublisherTest {
     private Launcher launcher;
 
     @Mock
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance globalConfigDataForSonarInstance;
 
     @Mock
     private JobConfigurationService jobConfigurationService;
 
     @Mock
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<SonarInstance> globalConfigDataForSonarInstances;
 
     private AutoCloseable closeable;
 

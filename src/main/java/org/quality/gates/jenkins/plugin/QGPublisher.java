@@ -19,10 +19,10 @@ public class QGPublisher extends Recorder {
 
     private final JobExecutionService jobExecutionService;
 
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
-    public QGPublisher(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    public QGPublisher(JobConfigData jobConfigData, SonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision(globalConfigDataForSonarInstance);
         this.jobExecutionService = new JobExecutionService();
@@ -35,7 +35,7 @@ public class QGPublisher extends Recorder {
             BuildDecision buildDecision,
             JobExecutionService jobExecutionService,
             JobConfigurationService jobConfigurationService,
-            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+            SonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobConfigurationService = jobConfigurationService;

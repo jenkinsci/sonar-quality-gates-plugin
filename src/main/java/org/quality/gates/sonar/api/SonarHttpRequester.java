@@ -24,9 +24,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
+import org.quality.gates.jenkins.plugin.SonarInstance;
 
 /**
  * @author arkanjoms
@@ -38,13 +38,13 @@ public abstract class SonarHttpRequester {
 
     /**
      * Cached client context for lazy login.
-     * @see #loginApi(GlobalConfigDataForSonarInstance)
+     * @see #loginApi(SonarInstance)
      */
     private transient HttpClientContext httpClientContext;
 
     /**
      * Cached client for lazy login.
-     * @see #loginApi(GlobalConfigDataForSonarInstance)
+     * @see #loginApi(SonarInstance)
      */
     private transient CloseableHttpClient httpClient;
 
@@ -64,7 +64,7 @@ public abstract class SonarHttpRequester {
         this.logged = logged;
     }
 
-    private void loginApi(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    private void loginApi(SonarInstance globalConfigDataForSonarInstance) {
         httpClientContext = HttpClientContext.create();
 
         if (StringUtils.isNotEmpty(globalConfigDataForSonarInstance.getToken().getPlainText())) {
@@ -143,8 +143,7 @@ public abstract class SonarHttpRequester {
         }
     }
 
-    String getAPITaskInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
-            throws QGException {
+    String getAPITaskInfo(JobConfigData configData, SonarInstance globalConfigDataForSonarInstance) throws QGException {
         checkLogged(globalConfigDataForSonarInstance);
 
         var sonarProjectKey = getSonarApiTaskInfoParameter(configData, globalConfigDataForSonarInstance);
@@ -160,10 +159,9 @@ public abstract class SonarHttpRequester {
     protected abstract String getSonarApiTaskInfoUrl();
 
     protected abstract String getSonarApiTaskInfoParameter(
-            JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance);
+            JobConfigData jobConfigData, SonarInstance globalConfigDataForSonarInstance);
 
-    String getAPIInfo(JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance)
-            throws QGException {
+    String getAPIInfo(JobConfigData configData, SonarInstance globalConfigDataForSonarInstance) throws QGException {
         checkLogged(globalConfigDataForSonarInstance);
 
         var sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl()
@@ -175,8 +173,7 @@ public abstract class SonarHttpRequester {
 
     protected abstract String getSonarApiQualityGatesStatusUrl();
 
-    protected String getComponentId(
-            JobConfigData configData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    protected String getComponentId(JobConfigData configData, SonarInstance globalConfigDataForSonarInstance) {
         checkLogged(globalConfigDataForSonarInstance);
 
         var sonarApiQualityGates = globalConfigDataForSonarInstance.getSonarUrl()
@@ -189,7 +186,7 @@ public abstract class SonarHttpRequester {
         return component.getComponent().getId();
     }
 
-    private void checkLogged(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    private void checkLogged(SonarInstance globalConfigDataForSonarInstance) {
         if (!isLogged()) {
             loginApi(globalConfigDataForSonarInstance);
         }

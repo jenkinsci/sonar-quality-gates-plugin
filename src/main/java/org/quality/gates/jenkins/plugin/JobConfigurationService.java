@@ -20,8 +20,7 @@ public class JobConfigurationService {
     public ListBoxModel getListOfSonarInstanceNames(GlobalSonarQualityGatesConfiguration globalConfig) {
         var listBoxModel = new ListBoxModel();
 
-        for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance :
-                globalConfig.fetchListOfGlobalConfigData()) {
+        for (SonarInstance globalConfigDataForSonarInstance : globalConfig.fetchListOfGlobalConfigData()) {
             listBoxModel.add(globalConfigDataForSonarInstance.getName());
         }
 

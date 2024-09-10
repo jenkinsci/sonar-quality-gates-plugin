@@ -14,7 +14,7 @@ import org.kohsuke.stapler.StaplerRequest;
 @Symbol("sonarQualityGates")
 public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
 
-    private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
+    private List<SonarInstance> listOfGlobalConfigData;
 
     private final GlobalConfigurationService globalConfigurationService;
 
@@ -24,24 +24,22 @@ public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
     }
 
     public GlobalSonarQualityGatesConfiguration(
-            List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData,
-            GlobalConfigurationService globalConfigurationService) {
+            List<SonarInstance> listOfGlobalConfigData, GlobalConfigurationService globalConfigurationService) {
         this.listOfGlobalConfigData = listOfGlobalConfigData;
         this.globalConfigurationService = globalConfigurationService;
     }
 
-    public List<GlobalConfigDataForSonarInstance> getListOfGlobalConfigData() {
+    public List<SonarInstance> getListOfGlobalConfigData() {
         load();
         return listOfGlobalConfigData;
     }
 
-    public List<GlobalConfigDataForSonarInstance> fetchListOfGlobalConfigData() {
+    public List<SonarInstance> fetchListOfGlobalConfigData() {
         return listOfGlobalConfigData;
     }
 
     @DataBoundSetter
-    public void setGlobalConfigDataForSonarInstances(
-            List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances) {
+    public void setGlobalConfigDataForSonarInstances(List<SonarInstance> globalConfigDataForSonarInstances) {
         this.listOfGlobalConfigData = globalConfigDataForSonarInstances;
     }
 
@@ -61,8 +59,8 @@ public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
         return FormValidation.ok();
     }
 
-    public GlobalConfigDataForSonarInstance getSonarInstanceByName(String name) {
-        for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance : listOfGlobalConfigData) {
+    public SonarInstance getSonarInstanceByName(String name) {
+        for (SonarInstance globalConfigDataForSonarInstance : listOfGlobalConfigData) {
             if (name.equals(globalConfigDataForSonarInstance.getName())) {
                 return globalConfigDataForSonarInstance;
             }

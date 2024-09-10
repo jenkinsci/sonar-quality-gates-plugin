@@ -18,10 +18,10 @@ public class QGBuilder extends Builder {
 
     private final JobExecutionService jobExecutionService;
 
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance globalConfigDataForSonarInstance;
 
     @DataBoundConstructor
-    public QGBuilder(JobConfigData jobConfigData, GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    public QGBuilder(JobConfigData jobConfigData, SonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = new BuildDecision(globalConfigDataForSonarInstance);
         this.jobExecutionService = new JobExecutionService();
@@ -34,7 +34,7 @@ public class QGBuilder extends Builder {
             BuildDecision buildDecision,
             JobExecutionService jobExecutionService,
             JobConfigurationService jobConfigurationService,
-            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+            SonarInstance globalConfigDataForSonarInstance) {
         this.jobConfigData = jobConfigData;
         this.buildDecision = buildDecision;
         this.jobExecutionService = jobExecutionService;

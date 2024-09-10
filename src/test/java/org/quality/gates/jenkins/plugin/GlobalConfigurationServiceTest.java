@@ -27,7 +27,7 @@ public class GlobalConfigurationServiceTest {
     private GlobalConfigurationService spyGlobalConfigurationService;
 
     @Mock
-    private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigData;
+    private List<SonarInstance> listOfGlobalConfigData;
 
     private JSONObject jsonObjectNotNull;
 
@@ -107,7 +107,7 @@ public class GlobalConfigurationServiceTest {
     @Test
     public void testContainsGlobalConfigWithNameTrue() {
         String name = "Ime";
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfigDataForSonarInstance = new SonarInstance();
         globalConfigDataForSonarInstance.setName("Ime");
         listOfGlobalConfigData.add(globalConfigDataForSonarInstance);
         spyGlobalConfigurationService.setListOfGlobalConfigInstances(listOfGlobalConfigData);
@@ -117,7 +117,7 @@ public class GlobalConfigurationServiceTest {
     @Test
     public void testContainsGlobalConfigWithNameFalse() {
         String name = "Ime";
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfigDataForSonarInstance = new SonarInstance();
         globalConfigDataForSonarInstance.setName("Ime3");
         listOfGlobalConfigData.add(globalConfigDataForSonarInstance);
         spyGlobalConfigurationService.setListOfGlobalConfigInstances(listOfGlobalConfigData);

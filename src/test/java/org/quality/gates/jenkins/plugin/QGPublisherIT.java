@@ -46,9 +46,9 @@ public class QGPublisherIT {
 
     private JobExecutionService jobExecutionService;
 
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance globalConfigDataForSonarInstance;
 
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList;
+    private List<SonarInstance> globalConfigDataForSonarInstanceList;
 
     @Rule
     public JenkinsRule jenkinsRule = new JenkinsRule();
@@ -60,7 +60,7 @@ public class QGPublisherIT {
         closeable = MockitoAnnotations.openMocks(this);
         jobConfigData = new JobConfigData();
         jobExecutionService = new JobExecutionService();
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        globalConfigDataForSonarInstance = new SonarInstance();
         publisher = new QGPublisher(
                 jobConfigData,
                 buildDecision,

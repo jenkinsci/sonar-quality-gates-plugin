@@ -8,7 +8,7 @@ public class BuildDecision {
 
     private final QualityGatesProvider qualityGatesProvider;
 
-    public BuildDecision(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
+    public BuildDecision(SonarInstance globalConfigDataForSonarInstance) {
         qualityGatesProvider = new QualityGatesProvider(globalConfigDataForSonarInstance);
     }
 
@@ -17,9 +17,7 @@ public class BuildDecision {
     }
 
     public boolean getStatus(
-            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance,
-            JobConfigData jobConfigData,
-            BuildListener listener)
+            SonarInstance globalConfigDataForSonarInstance, JobConfigData jobConfigData, BuildListener listener)
             throws QGException {
         try {
             return qualityGatesProvider
@@ -30,8 +28,7 @@ public class BuildDecision {
         }
     }
 
-    GlobalConfigDataForSonarInstance chooseSonarInstance(
-            GlobalSonarQualityGatesConfiguration globalConfig, JobConfigData jobConfigData) {
+    SonarInstance chooseSonarInstance(GlobalSonarQualityGatesConfiguration globalConfig, JobConfigData jobConfigData) {
         if (globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
             return noSonarInstance(jobConfigData);
         } else if (globalConfig.fetchListOfGlobalConfigData().size() == 1) {
@@ -41,12 +38,12 @@ public class BuildDecision {
         return multipleSonarInstances(jobConfigData.getSonarInstanceName(), globalConfig);
     }
 
-    private GlobalConfigDataForSonarInstance noSonarInstance(JobConfigData jobConfigData) {
+    private SonarInstance noSonarInstance(JobConfigData jobConfigData) {
         jobConfigData.setSonarInstanceName("");
-        return new GlobalConfigDataForSonarInstance();
+        return new SonarInstance();
     }
 
-    private GlobalConfigDataForSonarInstance singleSonarInstance(
+    private SonarInstance singleSonarInstance(
             GlobalSonarQualityGatesConfiguration globalConfig, JobConfigData jobConfigData) {
         var globalConfigDataForSonarInstance =
                 globalConfig.fetchListOfGlobalConfigData().get(0);
@@ -55,7 +52,7 @@ public class BuildDecision {
         return globalConfigDataForSonarInstance;
     }
 
-    public GlobalConfigDataForSonarInstance multipleSonarInstances(
+    public SonarInstance multipleSonarInstances(
             String instanceName, GlobalSonarQualityGatesConfiguration globalConfig) {
         return globalConfig.getSonarInstanceByName(instanceName);
     }

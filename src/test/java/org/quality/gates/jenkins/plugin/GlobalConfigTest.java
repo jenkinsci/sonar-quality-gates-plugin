@@ -33,7 +33,7 @@ public class GlobalConfigTest {
     @Mock
     private GlobalConfigurationService globalConfigurationService;
 
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<SonarInstance> globalConfigDataForSonarInstances;
 
     private JSONObject jsonObject;
 
@@ -65,7 +65,7 @@ public class GlobalConfigTest {
 
     @Test
     public void testGetSonarInstanceByNameIF() {
-        GlobalConfigDataForSonarInstance globalConfig1 = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfig1 = new SonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
 
@@ -75,7 +75,7 @@ public class GlobalConfigTest {
 
     @Test
     public void testGetSonarInstanceByNameELSE() {
-        GlobalConfigDataForSonarInstance globalConfig1 = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfig1 = new SonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
 

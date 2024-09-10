@@ -8,7 +8,7 @@ import hudson.util.Secret;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<GlobalConfigDataForSonarInstance> {
+public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
 
     public static final String DEFAULT_URL = "http://localhost:9000";
 
@@ -32,7 +32,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
 
     private int maxWaitTime;
 
-    public GlobalConfigDataForSonarInstance() {
+    public SonarInstance() {
         this.name = "";
         this.sonarUrl = "";
         this.username = "";
@@ -40,7 +40,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
     }
 
     @DataBoundConstructor
-    public GlobalConfigDataForSonarInstance(
+    public SonarInstance(
             String name, String sonarUrl, String username, Secret secretPass, int timeToWait, int maxWaitTime) {
         this.name = name;
         this.sonarUrl = sonarUrl;
@@ -50,15 +50,14 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
         this.maxWaitTime = maxWaitTime;
     }
 
-    public GlobalConfigDataForSonarInstance(String name, String sonarUrl, String username, String pass) {
+    public SonarInstance(String name, String sonarUrl, String username, String pass) {
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.username = username;
         this.pass = pass;
     }
 
-    public GlobalConfigDataForSonarInstance(
-            String name, String sonarUrl, Secret token, int timeToWait, int maxWaitTime) {
+    public SonarInstance(String name, String sonarUrl, Secret token, int timeToWait, int maxWaitTime) {
         this.name = name;
         this.sonarUrl = sonarUrl;
         this.token = token;
@@ -130,7 +129,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
     }
 
     @Extension
-    public static class DescriptorImpl extends Descriptor<GlobalConfigDataForSonarInstance> {}
+    public static class DescriptorImpl extends Descriptor<SonarInstance> {}
 
     @Override
     public boolean equals(Object o) {
@@ -142,7 +141,7 @@ public class GlobalConfigDataForSonarInstance extends AbstractDescribableImpl<Gl
             return false;
         }
 
-        var that = (GlobalConfigDataForSonarInstance) o;
+        var that = (SonarInstance) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
