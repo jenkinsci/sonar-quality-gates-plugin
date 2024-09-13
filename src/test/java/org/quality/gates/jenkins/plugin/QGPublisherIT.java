@@ -27,8 +27,6 @@ public class QGPublisherIT {
 
     private QGPublisher publisher;
 
-    private QGBuilder builder;
-
     private JobConfigData jobConfigData;
 
     private FreeStyleProject freeStyleProject;
@@ -67,15 +65,8 @@ public class QGPublisherIT {
                 jobExecutionService,
                 jobConfigurationService,
                 globalConfigDataForSonarInstance);
-        builder = new QGBuilder(
-                jobConfigData,
-                buildDecision,
-                jobExecutionService,
-                jobConfigurationService,
-                globalConfigDataForSonarInstance);
         globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
         freeStyleProject = jenkinsRule.createFreeStyleProject("freeStyleProject");
-        freeStyleProject.getBuildersList().add(builder);
         freeStyleProject.getPublishersList().add(publisher);
         globalConfigDataForSonarInstanceList = new ArrayList<>();
     }
