@@ -22,10 +22,10 @@ import org.mockito.MockitoAnnotations;
 
 public class GlobalConfigTest {
 
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @InjectMocks
-    private GlobalConfig spyGlobalConfig;
+    private GlobalSonarQualityGatesConfiguration spyGlobalConfig;
 
     @Mock
     private StaplerRequest staplerRequest;
@@ -33,7 +33,7 @@ public class GlobalConfigTest {
     @Mock
     private GlobalConfigurationService globalConfigurationService;
 
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<SonarInstance> globalConfigDataForSonarInstances;
 
     private JSONObject jsonObject;
 
@@ -44,7 +44,8 @@ public class GlobalConfigTest {
         closeable = MockitoAnnotations.openMocks(this);
         jsonObject = new JSONObject();
         globalConfigDataForSonarInstances = new ArrayList<>();
-        globalConfig = new GlobalConfig(globalConfigDataForSonarInstances, globalConfigurationService);
+        globalConfig =
+                new GlobalSonarQualityGatesConfiguration(globalConfigDataForSonarInstances, globalConfigurationService);
         spyGlobalConfig = spy(globalConfig);
     }
 
@@ -64,7 +65,7 @@ public class GlobalConfigTest {
 
     @Test
     public void testGetSonarInstanceByNameIF() {
-        GlobalConfigDataForSonarInstance globalConfig1 = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfig1 = new SonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
 
@@ -74,7 +75,7 @@ public class GlobalConfigTest {
 
     @Test
     public void testGetSonarInstanceByNameELSE() {
-        GlobalConfigDataForSonarInstance globalConfig1 = new GlobalConfigDataForSonarInstance();
+        SonarInstance globalConfig1 = new SonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
 

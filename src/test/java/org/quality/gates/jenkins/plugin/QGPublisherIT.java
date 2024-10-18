@@ -33,7 +33,7 @@ public class QGPublisherIT {
 
     private FreeStyleProject freeStyleProject;
 
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
     private BuildDecision buildDecision;
@@ -46,9 +46,9 @@ public class QGPublisherIT {
 
     private JobExecutionService jobExecutionService;
 
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance sonarInstance;
 
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstanceList;
+    private List<SonarInstance> globalConfigDataForSonarInstanceList;
 
     @Rule
     public JenkinsRule jenkinsRule = new JenkinsRule();
@@ -60,20 +60,12 @@ public class QGPublisherIT {
         closeable = MockitoAnnotations.openMocks(this);
         jobConfigData = new JobConfigData();
         jobExecutionService = new JobExecutionService();
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        sonarInstance = new SonarInstance();
         publisher = new QGPublisher(
-                jobConfigData,
-                buildDecision,
-                jobExecutionService,
-                jobConfigurationService,
-                globalConfigDataForSonarInstance);
+                jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
         builder = new QGBuilder(
-                jobConfigData,
-                buildDecision,
-                jobExecutionService,
-                jobConfigurationService,
-                globalConfigDataForSonarInstance);
-        globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
+                jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
+        globalConfig = GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
         freeStyleProject = jenkinsRule.createFreeStyleProject("freeStyleProject");
         freeStyleProject.getBuildersList().add(builder);
         freeStyleProject.getPublishersList().add(publisher);
@@ -98,7 +90,7 @@ public class QGPublisherIT {
     public void testPerformShouldFailBecauseOfPreviousSteps() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         doReturn(null).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        doReturn(false).when(buildDecision).getStatus(globalConfigDataForSonarInstance, jobConfigData, listener);
+        doReturn(false).when(buildDecision).getStatus(sonarInstance, jobConfigData, listener);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("Previous steps failed the build", lastRun);
@@ -107,18 +99,17 @@ public class QGPublisherIT {
     @Test
     public void testPerformShouldFail() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
-        doReturn(globalConfigDataForSonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, listener))
-                .thenReturn(true, false);
+        doReturn(sonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
+        when(buildDecision.getStatus(sonarInstance, jobConfigData, listener)).thenReturn(true, false);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
         Run lastRun = freeStyleProject._getRuns().newestValue();
         jenkinsRule.assertLogContains("build passed: FALSE", lastRun);
     }
 
     private void setGlobalConfigDataAndJobConfigDataNames(String firstInstanceName, String secondInstanceName) {
-        globalConfigDataForSonarInstance.setName(firstInstanceName);
+        sonarInstance.setName(firstInstanceName);
         jobConfigData.setSonarInstanceName(secondInstanceName);
-        globalConfig.setGlobalConfigDataForSonarInstances(globalConfigDataForSonarInstanceList);
+        globalConfig.setSonarInstances(globalConfigDataForSonarInstanceList);
     }
 
     private FreeStyleBuild buildProject(FreeStyleProject freeStyleProject)

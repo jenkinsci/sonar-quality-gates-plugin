@@ -57,13 +57,13 @@ public class QGPublisherTest {
     private Launcher launcher;
 
     @Mock
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance sonarInstance;
 
     @Mock
     private JobConfigurationService jobConfigurationService;
 
     @Mock
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<SonarInstance> globalConfigDataForSonarInstances;
 
     private AutoCloseable closeable;
 
@@ -72,11 +72,7 @@ public class QGPublisherTest {
         try {
             closeable = MockitoAnnotations.openMocks(this);
             publisher = new QGPublisher(
-                    jobConfigData,
-                    buildDecision,
-                    jobExecutionService,
-                    jobConfigurationService,
-                    globalConfigDataForSonarInstance);
+                    jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
             when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
                     .thenReturn(jobConfigData);
             when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
@@ -94,7 +90,9 @@ public class QGPublisherTest {
 
     @Test
     public void testPrebuildShouldFail() {
-        doReturn(null).when(buildDecision).chooseSonarInstance(any(GlobalConfig.class), any(JobConfigData.class));
+        doReturn(null)
+                .when(buildDecision)
+                .chooseSonarInstance(any(GlobalSonarQualityGatesConfiguration.class), any(JobConfigData.class));
         doReturn("TestInstanceName").when(jobConfigData).getSonarInstanceName();
         assertFalse(publisher.prebuild(abstractBuild, buildListener));
         verify(buildListener).error(JobExecutionService.GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR, "TestInstanceName");
@@ -124,7 +122,7 @@ public class QGPublisherTest {
     public void testPerformBuildResultFailWithNoWarning() throws QGException {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(false);
-        doReturn("SomeName").when(globalConfigDataForSonarInstance).getName();
+        doReturn("SomeName").when(sonarInstance).getName();
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
         verify(buildListener, times(1)).getLogger();
         PrintStream stream = buildListener.getLogger();
@@ -132,7 +130,7 @@ public class QGPublisherTest {
     }
 
     private void buildDecisionShouldBe(boolean toBeReturned) throws QGException {
-        when(buildDecision.getStatus(globalConfigDataForSonarInstance, jobConfigData, buildListener))
+        when(buildDecision.getStatus(sonarInstance, jobConfigData, buildListener))
                 .thenReturn(toBeReturned);
     }
 

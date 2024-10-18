@@ -1,0 +1,10 @@
+unclassified:
+  sonarQualityGates:
+    sonarInstances:
+     - name: "test-name"
+       username: "test-username"
+       pass: "test-password"
+       url: "http://localhost:9000"
+       timeToWait: 10000
+       maxWaitTime: 50000
+     

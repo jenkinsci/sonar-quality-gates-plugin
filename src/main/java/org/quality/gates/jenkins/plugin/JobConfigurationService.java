@@ -17,18 +17,17 @@ public class JobConfigurationService {
 
     private static final Pattern ENV_VARIABLE_WITHOUT_BRACES_PATTERN = Pattern.compile("(\\$[a-zA-Z0-9_]+)");
 
-    public ListBoxModel getListOfSonarInstanceNames(GlobalConfig globalConfig) {
+    public ListBoxModel getListOfSonarInstanceNames(GlobalSonarQualityGatesConfiguration globalConfig) {
         var listBoxModel = new ListBoxModel();
 
-        for (GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance :
-                globalConfig.fetchListOfGlobalConfigData()) {
-            listBoxModel.add(globalConfigDataForSonarInstance.getName());
+        for (SonarInstance sonarInstance : globalConfig.fetchSonarInstances()) {
+            listBoxModel.add(sonarInstance.getName());
         }
 
         return listBoxModel;
     }
 
-    public JobConfigData createJobConfigData(JSONObject formData, GlobalConfig globalConfig) {
+    public JobConfigData createJobConfigData(JSONObject formData, GlobalSonarQualityGatesConfiguration globalConfig) {
         var firstInstanceJobConfigData = new JobConfigData();
         var projectKey = formData.getString("projectKey");
 
@@ -38,7 +37,7 @@ public class JobConfigurationService {
 
         var name = "";
 
-        if (!globalConfig.fetchListOfGlobalConfigData().isEmpty()) {
+        if (!globalConfig.fetchSonarInstances().isEmpty()) {
             name = hasFormDataKey(formData, globalConfig);
         }
 
@@ -49,12 +48,12 @@ public class JobConfigurationService {
         return firstInstanceJobConfigData;
     }
 
-    protected String hasFormDataKey(JSONObject formData, GlobalConfig globalConfig) {
+    protected String hasFormDataKey(JSONObject formData, GlobalSonarQualityGatesConfiguration globalConfig) {
         if (formData.containsKey("sonarInstancesName")) {
             return formData.getString("sonarInstancesName");
         }
 
-        return globalConfig.fetchListOfGlobalConfigData().get(0).getName();
+        return globalConfig.fetchSonarInstances().get(0).getName();
     }
 
     public JobConfigData checkProjectKeyIfVariable(

@@ -10,11 +10,11 @@ public class JobExecutionService {
     public static final String GLOBAL_CONFIG_NO_LONGER_EXISTS_ERROR =
             "The Sonar Instance in the global configuration with name '%s' no longer exists.\n";
 
-    public GlobalConfig getGlobalConfigData() {
-        var globalConfig = GlobalConfiguration.all().get(GlobalConfig.class);
+    public GlobalSonarQualityGatesConfiguration getGlobalConfigData() {
+        var globalConfig = GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
 
         if (globalConfig == null) {
-            return new GlobalConfig();
+            return new GlobalSonarQualityGatesConfiguration();
         }
 
         return globalConfig;

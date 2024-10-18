@@ -11,15 +11,15 @@ import org.apache.commons.lang.StringUtils;
 
 public class GlobalConfigurationService {
 
-    private List<GlobalConfigDataForSonarInstance> listOfGlobalConfigInstances;
+    private List<SonarInstance> listOfGlobalConfigInstances;
 
-    public void setListOfGlobalConfigInstances(List<GlobalConfigDataForSonarInstance> listOfGlobalConfigInstances) {
+    public void setListOfGlobalConfigInstances(List<SonarInstance> listOfGlobalConfigInstances) {
         this.listOfGlobalConfigInstances = listOfGlobalConfigInstances;
     }
 
-    protected List<GlobalConfigDataForSonarInstance> instantiateGlobalConfigData(JSONObject json) {
+    protected List<SonarInstance> instantiateGlobalConfigData(JSONObject json) {
         listOfGlobalConfigInstances = new ArrayList<>();
-        var globalDataConfigs = (JSON) json.opt("listOfGlobalConfigData");
+        var globalDataConfigs = (JSON) json.opt("sonarInstances");
 
         if (globalDataConfigs == null) {
             globalDataConfigs = new JSONArray();
@@ -61,17 +61,17 @@ public class GlobalConfigurationService {
         var url = globalConfigData.optString("url");
 
         if (!"".equals(name)) {
-            GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+            SonarInstance sonarInstance;
             var token = globalConfigData.optString("token");
             if (StringUtils.isNotEmpty(token)) {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
+                sonarInstance = new SonarInstance(
                         name,
                         url,
                         Secret.fromString(Util.fixEmptyAndTrim(globalConfigData.optString("token"))),
                         timeToWait,
                         maxWaitTime);
             } else {
-                globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance(
+                sonarInstance = new SonarInstance(
                         name,
                         url,
                         globalConfigData.optString("account"),
@@ -81,13 +81,13 @@ public class GlobalConfigurationService {
             }
 
             if (!containsGlobalConfigWithName(name)) {
-                listOfGlobalConfigInstances.add(globalConfigDataForSonarInstance);
+                listOfGlobalConfigInstances.add(sonarInstance);
             }
         }
     }
 
     protected boolean containsGlobalConfigWithName(String name) {
-        for (GlobalConfigDataForSonarInstance globalConfigDataInstance : listOfGlobalConfigInstances) {
+        for (SonarInstance globalConfigDataInstance : listOfGlobalConfigInstances) {
             if (globalConfigDataInstance.getName().equals(name)) {
                 return true;
             }

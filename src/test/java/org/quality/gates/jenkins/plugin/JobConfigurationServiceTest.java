@@ -26,13 +26,13 @@ public class JobConfigurationServiceTest {
     private JobConfigurationService jobConfigurationService;
 
     @Mock
-    private GlobalConfig globalConfig;
+    private GlobalSonarQualityGatesConfiguration globalConfig;
 
     @Mock
-    private List<GlobalConfigDataForSonarInstance> globalConfigDataForSonarInstances;
+    private List<SonarInstance> globalConfigDataForSonarInstances;
 
     @Mock
-    private GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance;
+    private SonarInstance sonarInstance;
 
     private JSONObject formData;
 
@@ -68,9 +68,9 @@ public class JobConfigurationServiceTest {
     @Test
     public void testGetListBoxModelShouldReturnOneInstance() {
         createGlobalConfigData();
-        globalConfigDataForSonarInstance.setName("First Instance");
-        globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance);
-        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
+        sonarInstance.setName("First Instance");
+        globalConfigDataForSonarInstances.add(sonarInstance);
+        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchSonarInstances();
         ListBoxModel returnList = jobConfigurationService.getListOfSonarInstanceNames(globalConfig);
         assertEquals("[First Instance=First Instance]", returnList.toString());
     }
@@ -84,13 +84,13 @@ public class JobConfigurationServiceTest {
     @Test
     public void testGetListBoxModelShouldReturnMoreInstance() {
         createGlobalConfigData();
-        globalConfigDataForSonarInstance.setName("First Instance");
-        globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance);
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance1 = new GlobalConfigDataForSonarInstance();
+        sonarInstance.setName("First Instance");
+        globalConfigDataForSonarInstances.add(sonarInstance);
+        SonarInstance globalConfigDataForSonarInstance1 = new SonarInstance();
         globalConfigDataForSonarInstance1.setName("Second Instance");
         globalConfigDataForSonarInstances.add(globalConfigDataForSonarInstance1);
 
-        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchSonarInstances();
         ListBoxModel returnList = jobConfigurationService.getListOfSonarInstanceNames(globalConfig);
         assertEquals("[First Instance=First Instance, Second Instance=Second Instance]", returnList.toString());
     }
@@ -101,14 +101,12 @@ public class JobConfigurationServiceTest {
         jobConfigData.setProjectKey("TestKey");
         jobConfigData.setSonarInstanceName("TestName");
         jobConfigData.setBuildStatus(BuildStatusEnum.FAILED);
-        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchSonarInstances();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
-        globalConfigDataForSonarInstance.setName("TestName");
-        doReturn(globalConfigDataForSonarInstance)
-                .when(globalConfigDataForSonarInstances)
-                .get(0);
+        sonarInstance = new SonarInstance();
+        sonarInstance.setName("TestName");
+        doReturn(sonarInstance).when(globalConfigDataForSonarInstances).get(0);
         JobConfigData returnedJobConfigData = jobConfigurationService.createJobConfigData(formData, globalConfig);
         verify(globalConfigDataForSonarInstances, times(1)).get(0);
         assertEquals(jobConfigData, returnedJobConfigData);
@@ -119,7 +117,7 @@ public class JobConfigurationServiceTest {
         jobConfigData = new JobConfigData();
         jobConfigData.setProjectKey("TestKey");
         jobConfigData.setSonarInstanceName("TestName");
-        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchListOfGlobalConfigData();
+        doReturn(globalConfigDataForSonarInstances).when(globalConfig).fetchSonarInstances();
         int greaterThanZero = 1;
         doReturn(greaterThanZero).when(globalConfigDataForSonarInstances).size();
         String sonarInstanceName = "TestName";
@@ -130,7 +128,7 @@ public class JobConfigurationServiceTest {
 
     protected void createGlobalConfigData() {
         globalConfigDataForSonarInstances = new ArrayList<>();
-        globalConfigDataForSonarInstance = new GlobalConfigDataForSonarInstance();
+        sonarInstance = new SonarInstance();
     }
 
     @Test

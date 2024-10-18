@@ -5,7 +5,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import org.quality.gates.jenkins.plugin.SonarInstance;
 import org.quality.gates.sonar.api80.SonarHttpRequester80;
 import org.quality.gates.sonar.api88.SonarHttpRequester88;
 
@@ -17,8 +17,8 @@ class SonarHttpRequesterFactory {
 
     private static final String SONAR_API_SERVER_VERSION = "/api/server/version";
 
-    static SonarHttpRequester getSonarHttpRequester(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-        var request = new HttpGet(getSonarApiServerVersion(globalConfigDataForSonarInstance));
+    static SonarHttpRequester getSonarHttpRequester(SonarInstance sonarInstance) {
+        var request = new HttpGet(getSonarApiServerVersion(sonarInstance));
         var context = HttpClientContext.create();
 
         try (var client = HttpClientBuilder.create().build();
@@ -37,8 +37,8 @@ class SonarHttpRequesterFactory {
         }
     }
 
-    private static String getSonarApiServerVersion(GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance) {
-        return globalConfigDataForSonarInstance.getSonarUrl() + SONAR_API_SERVER_VERSION;
+    private static String getSonarApiServerVersion(SonarInstance sonarInstance) {
+        return sonarInstance.getUrl() + SONAR_API_SERVER_VERSION;
     }
 
     private static int majorSonarVersion(String sonarVersion) {

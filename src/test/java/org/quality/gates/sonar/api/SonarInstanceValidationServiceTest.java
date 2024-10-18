@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.quality.gates.jenkins.plugin.GlobalConfigDataForSonarInstance;
+import org.quality.gates.jenkins.plugin.SonarInstance;
 
 public class SonarInstanceValidationServiceTest {
 
@@ -23,39 +23,31 @@ public class SonarInstanceValidationServiceTest {
 
     @Test
     public void testValidateUrlEmptySonarUrlShouldReturnDefaultUrl() {
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                new GlobalConfigDataForSonarInstance("", "", "", "");
-        assertEquals(
-                "http://localhost:9000", sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "", "", "");
+        assertEquals("http://localhost:9000", sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
     public void testValidateUrlNormalUrlShouldReturnGivenUrl() {
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                new GlobalConfigDataForSonarInstance("", HTTP_MY_URL_COM_9000, "", "");
-        assertEquals(
-                HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", HTTP_MY_URL_COM_9000, "", "");
+        assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
     public void testValidateUrlNormalUrlWithSlashInTheEndShouldStripTheSlash() {
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                new GlobalConfigDataForSonarInstance("", "http://myUrl.com:9000/", "", "");
-        assertEquals(
-                HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "http://myUrl.com:9000/", "", "");
+        assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
     public void testValidateUsernameEmptyUsernameShouldReturnDefaultUsername() {
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                new GlobalConfigDataForSonarInstance("", "", "", "");
-        assertEquals(ADMIN, sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "", "", "");
+        assertEquals(ADMIN, sonarInstanceValidationService.validateUsername(sonarInstance));
     }
 
     @Test
     public void testValidateUsernameGivenUsernameShouldReturnGivenUsername() {
-        GlobalConfigDataForSonarInstance globalConfigDataForSonarInstance =
-                new GlobalConfigDataForSonarInstance("", "", "myUser", "");
-        assertEquals(MY_USER, sonarInstanceValidationService.validateUsername(globalConfigDataForSonarInstance));
+        SonarInstance sonarInstance = new SonarInstance("", "", "myUser", "");
+        assertEquals(MY_USER, sonarInstanceValidationService.validateUsername(sonarInstance));
     }
 }
