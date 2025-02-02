@@ -74,7 +74,12 @@ public class QualityGateResponseParserTest {
     @Test(expected = QGException.class)
     public void testCreateJSONArrayFromStringThrowsExceptionWhenStringISAJSONObjectShouldThrowQGException() {
         qualityGateResponseParser.createJSONArrayFromString(
-                "{\n" + "err_code: 404,\n" + "err_msg: \"Resource not found: wrongProjectKey\"\n" + "}");
+                """
+                {
+                err_code: 404,
+                err_msg: "Resource not found: wrongProjectKey"
+                }\
+                """);
     }
 
     @Test
