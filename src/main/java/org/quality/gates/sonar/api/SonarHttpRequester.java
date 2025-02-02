@@ -1,6 +1,5 @@
 package org.quality.gates.sonar.api;
 
-import static java.lang.String.format;
 import static java.net.URLEncoder.encode;
 
 import com.google.gson.GsonBuilder;
@@ -149,7 +148,7 @@ public abstract class SonarHttpRequester {
         var sonarProjectTaskInfoPath = getSonarApiTaskInfoUrl();
         var sonarHostUrl = sonarInstance.getUrl();
         var taskInfoUri =
-                sonarHostUrl + format(sonarProjectTaskInfoPath, encode(sonarProjectKey, StandardCharsets.UTF_8));
+                sonarHostUrl + sonarProjectTaskInfoPath.formatted(encode(sonarProjectKey, StandardCharsets.UTF_8));
         var request = new HttpGet(taskInfoUri);
 
         return executeGetRequest(httpClient, request);
@@ -163,8 +162,8 @@ public abstract class SonarHttpRequester {
         checkLogged(sonarInstance);
 
         var sonarApiQualityGates =
-                sonarInstance.getUrl() + format(getSonarApiQualityGatesStatusUrl(), configData.getProjectKey());
-        var request = new HttpGet(format(sonarApiQualityGates, configData.getProjectKey()));
+                sonarInstance.getUrl() + getSonarApiQualityGatesStatusUrl().formatted(configData.getProjectKey());
+        var request = new HttpGet(sonarApiQualityGates.formatted(configData.getProjectKey()));
 
         return executeGetRequest(httpClient, request);
     }
@@ -175,7 +174,7 @@ public abstract class SonarHttpRequester {
         checkLogged(sonarInstance);
 
         var sonarApiQualityGates =
-                sonarInstance.getUrl() + format(getSonarApiComponentShow(), configData.getProjectKey());
+                sonarInstance.getUrl() + getSonarApiComponentShow().formatted(configData.getProjectKey());
         var request = new HttpGet(sonarApiQualityGates);
         var result = executeGetRequest(httpClient, request);
         var gson = new GsonBuilder().create();

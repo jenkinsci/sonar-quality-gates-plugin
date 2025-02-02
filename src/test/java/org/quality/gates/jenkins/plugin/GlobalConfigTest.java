@@ -15,7 +15,7 @@ import net.sf.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -28,7 +28,7 @@ public class GlobalConfigTest {
     private GlobalSonarQualityGatesConfiguration spyGlobalConfig;
 
     @Mock
-    private StaplerRequest staplerRequest;
+    private StaplerRequest2 staplerRequest;
 
     @Mock
     private GlobalConfigurationService globalConfigurationService;
