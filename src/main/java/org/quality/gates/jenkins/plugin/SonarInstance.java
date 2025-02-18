@@ -83,7 +83,7 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
     }
 
     public Secret getPass() {
-        return secretPass != null ? secretPass : Secret.fromString("");
+        return secretPass;
     }
 
     @DataBoundSetter
@@ -119,7 +119,7 @@ public class SonarInstance extends AbstractDescribableImpl<SonarInstance> {
     }
 
     public Secret getToken() {
-        return token != null ? token : Secret.fromString("");
+        return token;
     }
 
     @DataBoundSetter
