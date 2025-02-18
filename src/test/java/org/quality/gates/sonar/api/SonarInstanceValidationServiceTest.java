@@ -1,12 +1,12 @@
 package org.quality.gates.sonar.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quality.gates.jenkins.plugin.SonarInstance;
 
-public class SonarInstanceValidationServiceTest {
+class SonarInstanceValidationServiceTest {
 
     private static final String HTTP_MY_URL_COM_9000 = "http://myUrl.com:9000";
 
@@ -16,37 +16,37 @@ public class SonarInstanceValidationServiceTest {
 
     private SonarInstanceValidationService sonarInstanceValidationService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         sonarInstanceValidationService = new SonarInstanceValidationService();
     }
 
     @Test
-    public void testValidateUrlEmptySonarUrlShouldReturnDefaultUrl() {
+    void testValidateUrlEmptySonarUrlShouldReturnDefaultUrl() {
         SonarInstance sonarInstance = new SonarInstance("", "", "", "");
         assertEquals("http://localhost:9000", sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
-    public void testValidateUrlNormalUrlShouldReturnGivenUrl() {
+    void testValidateUrlNormalUrlShouldReturnGivenUrl() {
         SonarInstance sonarInstance = new SonarInstance("", HTTP_MY_URL_COM_9000, "", "");
         assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
-    public void testValidateUrlNormalUrlWithSlashInTheEndShouldStripTheSlash() {
+    void testValidateUrlNormalUrlWithSlashInTheEndShouldStripTheSlash() {
         SonarInstance sonarInstance = new SonarInstance("", "http://myUrl.com:9000/", "", "");
         assertEquals(HTTP_MY_URL_COM_9000, sonarInstanceValidationService.validateUrl(sonarInstance));
     }
 
     @Test
-    public void testValidateUsernameEmptyUsernameShouldReturnDefaultUsername() {
+    void testValidateUsernameEmptyUsernameShouldReturnDefaultUsername() {
         SonarInstance sonarInstance = new SonarInstance("", "", "", "");
         assertEquals(ADMIN, sonarInstanceValidationService.validateUsername(sonarInstance));
     }
 
     @Test
-    public void testValidateUsernameGivenUsernameShouldReturnGivenUsername() {
+    void testValidateUsernameGivenUsernameShouldReturnGivenUsername() {
         SonarInstance sonarInstance = new SonarInstance("", "", "myUser", "");
         assertEquals(MY_USER, sonarInstanceValidationService.validateUsername(sonarInstance));
     }

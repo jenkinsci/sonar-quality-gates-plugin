@@ -1,41 +1,42 @@
 package org.quality.gates.sonar.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quality.gates.jenkins.plugin.QGException;
 
-public class QualityGateResponseParserTest {
+class QualityGateResponseParserTest {
 
-    public static final String COM_OPENSOURCE_QUALITY_GATES = "com.opensource:quality-gates";
+    private static final String COM_OPENSOURCE_QUALITY_GATES = "com.opensource:quality-gates";
 
-    public static final String GREEN_WAS_RED = "Green (was Red)";
+    private static final String GREEN_WAS_RED = "Green (was Red)";
 
-    public static final String ALERT = "Alert";
+    private static final String ALERT = "Alert";
 
-    public static final String T12_01_31_0100 = "2016-03-25T12:01:31+0100";
+    private static final String T12_01_31_0100 = "2016-03-25T12:01:31+0100";
 
-    public static final String DT = "dt";
+    private static final String DT = "dt";
 
     private QualityGateResponseParser qualityGateResponseParser;
 
     private String jsonArrayString;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         qualityGateResponseParser = new QualityGateResponseParser();
         jsonArrayString =
                 "[\n{\nid: \"455\",\nrk: \"com.opensource:quality-gates\",\nn: \"Green (was Red)\",\nc: \"Alert\",\ndt: \"2016-03-25T12:01:31+0100\",\nds: \"\"\n},\n{\nid: \"430\",\nrk: \"com.opensource:quality-gates\",\nn: \"Red (was Green)\",\nc: \"Alert\",\ndt: \"2016-03-24T16:28:40+0100\",\nds: \"Major issues variation > 2 over 30 days (2016 Mar 15), Coverage variation < 60 since previous analysis (2016 Mar 24)\"\n}]";
     }
 
     @Test
-    public void testGetLatestEventResultWhenFirstObjectIsntWithLatestDate() throws JSONException {
+    void testGetLatestEventResultWhenFirstObjectIsntWithLatestDate() throws JSONException {
         JSONArray array = new JSONArray();
         JSONObject firstJsonObject = new JSONObject();
         firstJsonObject.put("id", "455");
@@ -59,31 +60,35 @@ public class QualityGateResponseParserTest {
     }
 
     @Test
-    public void testCreateJSONArrayFromString() {
+    void testCreateJSONArrayFromString() {
         JSONArray expected = new JSONArray();
         assertEquals(
                 expected.toString(),
                 qualityGateResponseParser.createJSONArrayFromString("[]").toString());
     }
 
-    @Test(expected = QGException.class)
-    public void testCreateJSONArrayFromStringWhenStringNotInJSONFormatShouldThrowQGException() {
-        qualityGateResponseParser.createJSONArrayFromString("Random string as a response");
+    @Test
+    void testCreateJSONArrayFromStringWhenStringNotInJSONFormatShouldThrowQGException() {
+        assertThrows(
+                QGException.class,
+                () -> qualityGateResponseParser.createJSONArrayFromString("Random string as a response"));
     }
 
-    @Test(expected = QGException.class)
-    public void testCreateJSONArrayFromStringThrowsExceptionWhenStringISAJSONObjectShouldThrowQGException() {
-        qualityGateResponseParser.createJSONArrayFromString(
-                """
+    @Test
+    void testCreateJSONArrayFromStringThrowsExceptionWhenStringISAJSONObjectShouldThrowQGException() {
+        assertThrows(
+                QGException.class,
+                () -> qualityGateResponseParser.createJSONArrayFromString(
+                        """
                 {
                 err_code: 404,
                 err_msg: "Resource not found: wrongProjectKey"
                 }\
-                """);
+                """));
     }
 
     @Test
-    public void testGetJSONObjectFromArray() throws JSONException {
+    void testGetJSONObjectFromArray() throws JSONException {
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString(jsonArrayString);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", "455");
@@ -97,15 +102,14 @@ public class QualityGateResponseParserTest {
                 qualityGateResponseParser.getJSONObjectFromArray(array, 0).toString());
     }
 
-    @Test(expected = QGException.class)
-    public void testGetJSONObjectFromArrayThrowsExceptionDueToArrayOutOfBounds() {
+    @Test
+    void testGetJSONObjectFromArrayThrowsExceptionDueToArrayOutOfBounds() {
         JSONArray array = qualityGateResponseParser.createJSONArrayFromString(jsonArrayString);
-        qualityGateResponseParser.getJSONObjectFromArray(array, 2);
+        assertThrows(QGException.class, () -> qualityGateResponseParser.getJSONObjectFromArray(array, 2));
     }
 
     @Test
-    public void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen()
-            throws JSONException {
+    void testCreateObjectWithStatusGreenWhenEmptyArrayShouldReturnJSONObjectWithStatusGreen() throws JSONException {
         JSONObject expectedObject = new JSONObject();
         expectedObject.put("id", "1");
         expectedObject.put(DT, "2000-01-01T12:00:00+0100");
@@ -115,23 +119,20 @@ public class QualityGateResponseParserTest {
     }
 
     @Test
-    public void testGetValueForJSONKeyGivenArrayAndIndex() throws JSONException {
+    void testGetValueForJSONKeyGivenArrayAndIndex() throws JSONException {
         List<JSONObject> list = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(DT, T12_01_31_0100);
         list.add(jsonObject);
-        String expected = T12_01_31_0100;
-        assertEquals(expected, qualityGateResponseParser.getValueForJSONKey(list, 0, DT));
+        assertEquals(T12_01_31_0100, qualityGateResponseParser.getValueForJSONKey(list, 0, DT));
     }
 
-    @Test(expected = QGException.class)
-    public void testGetValueForJSONKeyGivenArrayAndIndexNonExistentKey() throws JSONException {
+    @Test
+    void testGetValueForJSONKeyGivenArrayAndIndexNonExistentKey() {
         List<JSONObject> list = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(DT, T12_01_31_0100);
         list.add(jsonObject);
-        String expected = T12_01_31_0100;
-        String actual = qualityGateResponseParser.getValueForJSONKey(list, 0, "dateeee");
-        assertEquals(expected, actual);
+        assertThrows(QGException.class, () -> qualityGateResponseParser.getValueForJSONKey(list, 0, "dateeee"));
     }
 }

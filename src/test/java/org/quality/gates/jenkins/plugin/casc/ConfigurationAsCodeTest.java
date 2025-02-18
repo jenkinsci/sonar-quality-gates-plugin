@@ -2,14 +2,16 @@ package org.quality.gates.jenkins.plugin.casc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import io.jenkins.plugins.casc.misc.RoundTripAbstractTest;
+import io.jenkins.plugins.casc.misc.junit.jupiter.AbstractRoundTripTest;
 import java.util.List;
 import jenkins.model.GlobalConfiguration;
-import org.jvnet.hudson.test.RestartableJenkinsRule;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import org.quality.gates.jenkins.plugin.GlobalSonarQualityGatesConfiguration;
 import org.quality.gates.jenkins.plugin.SonarInstance;
 
-public class ConfigurationAsCodeTest extends RoundTripAbstractTest {
+@WithJenkins
+class ConfigurationAsCodeTest extends AbstractRoundTripTest {
 
     @Override
     protected String configResource() {
@@ -22,7 +24,7 @@ public class ConfigurationAsCodeTest extends RoundTripAbstractTest {
     }
 
     @Override
-    protected void assertConfiguredAsExpected(RestartableJenkinsRule j, String configContent) {
+    protected void assertConfiguredAsExpected(JenkinsRule j, String configContent) {
         GlobalSonarQualityGatesConfiguration globalSonarQualityGatesConfiguration =
                 GlobalConfiguration.all().get(GlobalSonarQualityGatesConfiguration.class);
 

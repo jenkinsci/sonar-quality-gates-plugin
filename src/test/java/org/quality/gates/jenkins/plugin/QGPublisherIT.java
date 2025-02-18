@@ -13,17 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import jenkins.model.GlobalConfiguration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class QGPublisherIT {
+@WithJenkins
+class QGPublisherIT {
 
-    public static final String TEST_NAME = "TestName";
+    private static final String TEST_NAME = "TestName";
 
     private QGPublisher publisher;
 
@@ -48,13 +49,13 @@ public class QGPublisherIT {
 
     private List<SonarInstance> globalConfigDataForSonarInstanceList;
 
-    @Rule
-    public JenkinsRule jenkinsRule = new JenkinsRule();
+    private JenkinsRule jenkinsRule;
 
     private AutoCloseable closeable;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp(JenkinsRule jenkinsRule) throws IOException {
+        this.jenkinsRule = jenkinsRule;
         closeable = MockitoAnnotations.openMocks(this);
         jobConfigData = new JobConfigData();
         jobExecutionService = new JobExecutionService();
@@ -67,13 +68,13 @@ public class QGPublisherIT {
         globalConfigDataForSonarInstanceList = new ArrayList<>();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    void tearDown() throws Exception {
         closeable.close();
     }
 
     @Test
-    public void testPrebuildShouldFailBuildNoGlobalConfigWithSameName() throws Exception {
+    void testPrebuildShouldFailBuildNoGlobalConfigWithSameName() throws Exception {
         jobConfigData.setSonarInstanceName(TEST_NAME);
         doReturn(null).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         jenkinsRule.assertBuildStatus(Result.FAILURE, buildProject(freeStyleProject));
@@ -82,7 +83,7 @@ public class QGPublisherIT {
     }
 
     @Test
-    public void testPerformShouldFailBecauseOfPreviousSteps() throws Exception {
+    void testPerformShouldFailBecauseOfPreviousSteps() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         doReturn(null).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         doReturn(false).when(buildDecision).getStatus(sonarInstance, jobConfigData, listener);
@@ -92,7 +93,7 @@ public class QGPublisherIT {
     }
 
     @Test
-    public void testPerformShouldFail() throws Exception {
+    void testPerformShouldFail() throws Exception {
         setGlobalConfigDataAndJobConfigDataNames(TEST_NAME, TEST_NAME);
         doReturn(sonarInstance).when(buildDecision).chooseSonarInstance(globalConfig, jobConfigData);
         when(buildDecision.getStatus(sonarInstance, jobConfigData, listener)).thenReturn(true, false);
