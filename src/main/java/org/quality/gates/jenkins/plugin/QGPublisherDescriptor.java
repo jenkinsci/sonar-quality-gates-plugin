@@ -11,7 +11,7 @@ import java.util.Arrays;
 import javax.inject.Inject;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 import org.quality.gates.jenkins.plugin.enumeration.BuildStatusEnum;
 
 @Extension
@@ -69,13 +69,13 @@ public final class QGPublisherDescriptor extends BuildStepDescriptor<Publisher> 
     }
 
     @Override
-    public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+    public boolean configure(StaplerRequest2 req, JSONObject json) throws FormException {
         save();
         return true;
     }
 
     @Override
-    public QGPublisher newInstance(StaplerRequest req, JSONObject formData) throws QGException {
+    public QGPublisher newInstance(StaplerRequest2 req, JSONObject formData) throws QGException {
         var firstInstanceJobConfigData =
                 jobConfigurationService.createJobConfigData(formData, jobExecutionService.getGlobalConfigData());
         var sonarInstance = jobExecutionService
