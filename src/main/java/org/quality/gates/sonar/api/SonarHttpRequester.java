@@ -4,25 +4,25 @@ import static java.net.URLEncoder.encode;
 
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
 import org.quality.gates.jenkins.plugin.SonarInstance;
@@ -72,9 +72,10 @@ public abstract class SonarHttpRequester {
         } else {
             var credentialsProvider = new BasicCredentialsProvider();
             credentialsProvider.setCredentials(
-                    AuthScope.ANY,
+                    new AuthScope(null, -1),
                     new UsernamePasswordCredentials(
-                            sonarInstance.getUsername(), sonarInstance.getPass().getPlainText()));
+                            sonarInstance.getUsername(),
+                            sonarInstance.getPass().getPlainText().toCharArray()));
 
             httpClient = HttpClientBuilder.create()
                     .setDefaultCredentialsProvider(credentialsProvider)
@@ -102,18 +103,14 @@ public abstract class SonarHttpRequester {
 
     private void executePostRequest(CloseableHttpClient client, HttpPost loginHttpPost) throws QGException {
         try {
-            client.execute(loginHttpPost);
+            client.execute(loginHttpPost, classicHttpResponse -> classicHttpResponse);
         } catch (IOException e) {
             throw new QGException("POST execution error", e);
         }
     }
 
     private UrlEncodedFormEntity createEntity(List<NameValuePair> nvps) throws QGException {
-        try {
-            return new UrlEncodedFormEntity(nvps);
-        } catch (UnsupportedEncodingException e) {
-            throw new QGException("Encoding error", e);
-        }
+        return new UrlEncodedFormEntity(nvps);
     }
 
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
@@ -124,8 +121,8 @@ public abstract class SonarHttpRequester {
             request.addHeader(HttpHeaders.AUTHORIZATION, authHeader);
         }
 
-        try (var response = client.execute(request, httpClientContext)) {
-            var statusCode = response.getStatusLine().getStatusCode();
+        try (var response = client.execute(request, httpClientContext, classicHttpResponse -> classicHttpResponse)) {
+            var statusCode = response.getCode();
             var entity = response.getEntity();
             var returnResponse = EntityUtils.toString(entity);
 
@@ -136,7 +133,7 @@ public abstract class SonarHttpRequester {
             }
 
             return returnResponse;
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             throw new QGException("GET execution error", e);
         }
     }
