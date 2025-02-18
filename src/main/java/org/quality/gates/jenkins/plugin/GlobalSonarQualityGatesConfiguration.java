@@ -46,7 +46,6 @@ public class GlobalSonarQualityGatesConfiguration extends GlobalConfiguration {
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
         sonarInstances = globalConfigurationService.instantiateGlobalConfigData(json);
-        req.bindJSON(this, json);
         save();
 
         return true;

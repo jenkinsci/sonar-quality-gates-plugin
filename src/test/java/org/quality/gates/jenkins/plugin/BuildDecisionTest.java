@@ -1,6 +1,7 @@
 package org.quality.gates.jenkins.plugin;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -90,7 +91,7 @@ public class BuildDecisionTest {
         doReturn(globalConfigDataForSonarInstanceList).when(globalConfig).fetchSonarInstances();
         SonarInstance returnedInstance = buildDecision.chooseSonarInstance(globalConfig, jobConfigData);
         assertTrue(returnedInstance.getName().equals(emptyString));
-        assertTrue(returnedInstance.getPass().getPlainText().equals(emptyString));
+        assertNull(returnedInstance.getPass());
         assertTrue(returnedInstance.getUrl().equals(emptyString));
         assertTrue(returnedInstance.getUsername().equals(emptyString));
     }
