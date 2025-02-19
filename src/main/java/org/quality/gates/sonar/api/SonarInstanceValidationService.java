@@ -36,7 +36,8 @@ public class SonarInstanceValidationService {
     }
 
     SonarInstance validateData(SonarInstance sonarInstance) {
-        if (StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
+        if (sonarInstance.getToken() != null
+                && StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
             return new SonarInstance(
                     sonarInstance.getName(),
                     validateUrl(sonarInstance),
