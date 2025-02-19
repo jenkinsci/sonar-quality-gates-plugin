@@ -1,8 +1,6 @@
 package org.quality.gates.jenkins.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -12,15 +10,15 @@ import hudson.model.Descriptor;
 import java.util.ArrayList;
 import java.util.List;
 import net.sf.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class GlobalConfigTest {
+class GlobalConfigTest {
 
     private GlobalSonarQualityGatesConfiguration globalConfig;
 
@@ -39,8 +37,8 @@ public class GlobalConfigTest {
 
     private AutoCloseable closeable;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
         jsonObject = new JSONObject();
         globalConfigDataForSonarInstances = new ArrayList<>();
@@ -49,13 +47,13 @@ public class GlobalConfigTest {
         spyGlobalConfig = spy(globalConfig);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    void tearDown() throws Exception {
         closeable.close();
     }
 
     @Test
-    public void testConfigure() throws Descriptor.FormException {
+    void testConfigure() throws Descriptor.FormException {
         doNothing().when(spyGlobalConfig).save();
         doReturn(globalConfigDataForSonarInstances)
                 .when(globalConfigurationService)
@@ -64,7 +62,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testGetSonarInstanceByNameIF() {
+    void testGetSonarInstanceByNameIF() {
         SonarInstance globalConfig1 = new SonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
@@ -74,7 +72,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testGetSonarInstanceByNameELSE() {
+    void testGetSonarInstanceByNameELSE() {
         SonarInstance globalConfig1 = new SonarInstance();
         globalConfig1.setName("Name");
         globalConfigDataForSonarInstances.add(globalConfig1);
@@ -83,7 +81,7 @@ public class GlobalConfigTest {
     }
 
     @Test
-    public void testGetSonarInstanceByNameNULL() {
+    void testGetSonarInstanceByNameNULL() {
         assertNull(globalConfig.getSonarInstanceByName(""));
     }
 }

@@ -1,8 +1,6 @@
 package org.quality.gates.jenkins.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -14,13 +12,13 @@ import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class GlobalConfigurationServiceTest {
+class GlobalConfigurationServiceTest {
 
     private GlobalConfigurationService globalConfigurationService;
 
@@ -37,8 +35,8 @@ public class GlobalConfigurationServiceTest {
 
     private AutoCloseable closeable;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
         globalConfigurationService = new GlobalConfigurationService();
         spyGlobalConfigurationService = spy(globalConfigurationService);
@@ -50,13 +48,13 @@ public class GlobalConfigurationServiceTest {
         jsonObjectNotNull.put("pass", "admin");
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    void tearDown() throws Exception {
         closeable.close();
     }
 
     @Test
-    public void testGetGlobalConfigsArrayWhenObject() {
+    void testGetGlobalConfigsArrayWhenObject() {
         jsonArray = new JSONArray();
         doReturn(jsonArray)
                 .when(spyGlobalConfigurationService)
@@ -69,16 +67,16 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testGetGlobalConfigsArrayWhenArray() {
+    void testGetGlobalConfigsArrayWhenArray() {
         String arrayString =
                 "[{\"name\":\"Sonar1\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"},{\"name\":\"Sonar2\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"password\":\"admin\"}]";
         globalDataConfigs = JSONSerializer.toJSON(arrayString);
-        jsonArray = JSONArray.class.cast(globalDataConfigs);
+        jsonArray = (JSONArray) globalDataConfigs;
         assertEquals(jsonArray, globalConfigurationService.getGlobalConfigsArray(globalDataConfigs));
     }
 
     @Test
-    public void testCreateJsonArrayFromObject() {
+    void testCreateJsonArrayFromObject() {
         String array =
                 "[{\"name\":\"Sonar\",\"url\":\"http://localhost:9000\",\"account\":\"admin\",\"pass\":\"admin\"}]";
         assertEquals(
@@ -86,7 +84,7 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testInstantiateGlobalConfigData() {
+    void testInstantiateGlobalConfigData() {
         JSONObject json = new JSONObject();
         json.put(
                 "sonarInstances",
@@ -98,14 +96,14 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testInstantiateGlobalConfigDataWhenJsonIsNull() {
+    void testInstantiateGlobalConfigDataWhenJsonIsNull() {
         JSONObject json = new JSONObject();
         doNothing().when(spyGlobalConfigurationService).initGlobalDataConfig(any(JSON.class));
         assertEquals(sonarInstances, spyGlobalConfigurationService.instantiateGlobalConfigData(json));
     }
 
     @Test
-    public void testContainsGlobalConfigWithNameTrue() {
+    void testContainsGlobalConfigWithNameTrue() {
         String name = "Ime";
         SonarInstance sonarInstance = new SonarInstance();
         sonarInstance.setName("Ime");
@@ -115,7 +113,7 @@ public class GlobalConfigurationServiceTest {
     }
 
     @Test
-    public void testContainsGlobalConfigWithNameFalse() {
+    void testContainsGlobalConfigWithNameFalse() {
         String name = "Ime";
         SonarInstance sonarInstance = new SonarInstance();
         sonarInstance.setName("Ime3");

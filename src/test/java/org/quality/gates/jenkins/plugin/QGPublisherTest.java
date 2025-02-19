@@ -1,6 +1,6 @@
 package org.quality.gates.jenkins.plugin;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -15,10 +15,9 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -62,34 +61,27 @@ public class QGPublisherTest {
     @Mock
     private JobConfigurationService jobConfigurationService;
 
-    @Mock
-    private List<SonarInstance> globalConfigDataForSonarInstances;
-
     private AutoCloseable closeable;
 
-    @Before
-    public void setUp() {
-        try {
-            closeable = MockitoAnnotations.openMocks(this);
-            publisher = new QGPublisher(
-                    jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
-            when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
-                    .thenReturn(jobConfigData);
-            when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
-            doReturn(printStream).when(buildListener).getLogger();
-            doReturn(printWriter).when(buildListener).error(anyString(), any());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @BeforeEach
+    void setUp() {
+        closeable = MockitoAnnotations.openMocks(this);
+        publisher = new QGPublisher(
+                jobConfigData, buildDecision, jobExecutionService, jobConfigurationService, sonarInstance);
+        when(jobConfigurationService.checkProjectKeyIfVariable(any(), any(), any()))
+                .thenReturn(jobConfigData);
+        when(jobConfigData.getBuildStatus()).thenReturn(BuildStatusEnum.FAILED);
+        doReturn(printStream).when(buildListener).getLogger();
+        doReturn(printWriter).when(buildListener).error(anyString(), any());
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    void tearDown() throws Exception {
         closeable.close();
     }
 
     @Test
-    public void testPrebuildShouldFail() {
+    void testPrebuildShouldFail() {
         doReturn(null)
                 .when(buildDecision)
                 .chooseSonarInstance(any(GlobalSonarQualityGatesConfiguration.class), any(JobConfigData.class));
@@ -99,7 +91,7 @@ public class QGPublisherTest {
     }
 
     @Test
-    public void testPerformBuildResultFail() {
+    void testPerformBuildResultFail() {
         setBuildResult(Result.FAILURE);
         buildDecisionShouldBe(false);
         assertFalse(publisher.perform(abstractBuild, launcher, buildListener));
@@ -107,7 +99,7 @@ public class QGPublisherTest {
     }
 
     @Test
-    public void testPerformBuildResultFailWithWarningForDefaultInstance() throws QGException {
+    void testPerformBuildResultFailWithWarningForDefaultInstance() throws QGException {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(false);
         when(jobConfigData.getSonarInstanceName()).thenReturn("");
@@ -119,7 +111,7 @@ public class QGPublisherTest {
     }
 
     @Test
-    public void testPerformBuildResultFailWithNoWarning() throws QGException {
+    void testPerformBuildResultFailWithNoWarning() throws QGException {
         setBuildResult(Result.SUCCESS);
         buildDecisionShouldBe(false);
         doReturn("SomeName").when(sonarInstance).getName();
