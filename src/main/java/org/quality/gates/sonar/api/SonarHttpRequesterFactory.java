@@ -34,7 +34,7 @@ class SonarHttpRequesterFactory {
                 throw new UnsuportedVersionException("Plugin doesn't support this version of sonar api!");
             }
         } catch (IOException | ParseException e) {
-            throw new ApiConnectionException(e.getLocalizedMessage(),e);
+            throw new ApiConnectionException(e.getLocalizedMessage(), e);
         }
     }
 
