@@ -3,8 +3,6 @@ package org.quality.gates.sonar.api;
 import java.io.IOException;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.protocol.HttpClientContext;
-import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.quality.gates.jenkins.plugin.SonarInstance;
 import org.quality.gates.sonar.api80.SonarHttpRequester80;
@@ -20,11 +18,9 @@ class SonarHttpRequesterFactory {
 
     static SonarHttpRequester getSonarHttpRequester(SonarInstance sonarInstance) {
         var request = new HttpGet(getSonarApiServerVersion(sonarInstance));
-        var context = HttpClientContext.create();
-
-        try (var client = HttpClientBuilder.create().build();
-                var response = client.execute(request, context, classicHttpResponse -> classicHttpResponse)) {
-            var sonarVersion = EntityUtils.toString(response.getEntity());
+        try (var client = HttpClientBuilder.create().build()) {
+            var sonarVersion = client.execute(
+                    request, classicHttpResponse -> EntityUtils.toString(classicHttpResponse.getEntity()));
 
             if (majorSonarVersion(sonarVersion) == 8 && minorSonarVersion(sonarVersion) <= 7) {
                 return new SonarHttpRequester80();
@@ -33,8 +29,8 @@ class SonarHttpRequesterFactory {
             } else {
                 throw new UnsuportedVersionException("Plugin doesn't support this version of sonar api!");
             }
-        } catch (IOException | ParseException e) {
-            throw new ApiConnectionException(e.getLocalizedMessage());
+        } catch (IOException e) {
+            throw new ApiConnectionException(e.getLocalizedMessage(), e);
         }
     }
 
