@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
@@ -20,7 +22,6 @@ import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.quality.gates.jenkins.plugin.JobConfigData;
@@ -66,7 +67,9 @@ public abstract class SonarHttpRequester {
     private void loginApi(SonarInstance sonarInstance) {
         httpClientContext = HttpClientContext.create();
 
-        if (StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
+        // For some reason the Token Secret can be null even if empty in the Global Configuration UI
+        if (sonarInstance.getToken() != null
+                && StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
             token = sonarInstance.getToken().getPlainText();
             httpClient = HttpClientBuilder.create().build();
         } else {
@@ -121,19 +124,23 @@ public abstract class SonarHttpRequester {
             request.addHeader(HttpHeaders.AUTHORIZATION, authHeader);
         }
 
-        try (var response = client.execute(request, httpClientContext, classicHttpResponse -> classicHttpResponse)) {
-            var statusCode = response.getCode();
-            var entity = response.getEntity();
-            var returnResponse = EntityUtils.toString(entity);
+        try {
+            var responseMap = client.execute(request, httpClientContext, classicHttpResponse -> {
+                Map<String, Object> retVal = new HashMap<>();
+                retVal.put("statusCode", classicHttpResponse.getCode());
+                retVal.put("content", EntityUtils.toString(classicHttpResponse.getEntity()));
+                return retVal;
+            });
 
-            EntityUtils.consume(entity);
+            var statusCode = (Integer) responseMap.get("statusCode");
+            var returnResponse = responseMap.get("content").toString();
 
             if (statusCode != 200) {
                 throw new QGException("Expected status 200, got: " + statusCode + ". Response: " + returnResponse);
             }
 
             return returnResponse;
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             throw new QGException("GET execution error", e);
         }
     }
