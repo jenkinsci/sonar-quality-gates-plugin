@@ -3,6 +3,7 @@ package org.quality.gates.sonar.api;
 import static java.net.URLEncoder.encode;
 
 import com.google.gson.GsonBuilder;
+import hudson.Util;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -69,7 +69,7 @@ public abstract class SonarHttpRequester {
 
         // For some reason the Token Secret can be null even if empty in the Global Configuration UI
         if (sonarInstance.getToken() != null
-                && StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
+                && Util.fixEmpty(sonarInstance.getToken().getPlainText()) != null) {
             token = sonarInstance.getToken().getPlainText();
             httpClient = HttpClientBuilder.create().build();
         } else {
@@ -117,7 +117,7 @@ public abstract class SonarHttpRequester {
     }
 
     private String executeGetRequest(CloseableHttpClient client, HttpGet request) throws QGException {
-        if (StringUtils.isNotEmpty(token)) {
+        if (Util.fixEmpty(token) != null) {
             String authHeader =
                     "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes(StandardCharsets.UTF_8));
 

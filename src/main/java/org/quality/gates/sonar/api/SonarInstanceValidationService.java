@@ -1,7 +1,7 @@
 package org.quality.gates.sonar.api;
 
+import hudson.Util;
 import hudson.util.Secret;
-import org.apache.commons.lang.StringUtils;
 import org.quality.gates.jenkins.plugin.SonarInstance;
 
 public class SonarInstanceValidationService {
@@ -37,7 +37,7 @@ public class SonarInstanceValidationService {
 
     SonarInstance validateData(SonarInstance sonarInstance) {
         if (sonarInstance.getToken() != null
-                && StringUtils.isNotEmpty(sonarInstance.getToken().getPlainText())) {
+                && Util.fixEmpty(sonarInstance.getToken().getPlainText()) != null) {
             return new SonarInstance(
                     sonarInstance.getName(),
                     validateUrl(sonarInstance),
