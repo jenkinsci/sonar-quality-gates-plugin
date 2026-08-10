@@ -2,7 +2,6 @@ package org.quality.gates.sonar.api;
 
 import com.google.gson.GsonBuilder;
 import hudson.model.BuildListener;
-import org.apache.commons.lang.ArrayUtils;
 import org.json.JSONException;
 import org.quality.gates.jenkins.plugin.JobConfigData;
 import org.quality.gates.jenkins.plugin.QGException;
@@ -59,7 +58,7 @@ public class QualityGatesProvider {
             var gson = new GsonBuilder().create();
             var taskCE = gson.fromJson(statusResultJson, QualityGateTaskCE.class);
 
-            if (ArrayUtils.isNotEmpty(taskCE.getQueue())) {
+            if (taskCE.getQueue() != null && taskCE.getQueue().length > 0) {
                 listener.getLogger()
                         .println("Has build " + taskCE.getQueue()[0].getStatus() + " with id: "
                                 + taskCE.getQueue()[0].getId() + " - waiting " + timeToWait

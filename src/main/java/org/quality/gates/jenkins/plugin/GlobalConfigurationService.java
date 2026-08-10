@@ -7,7 +7,6 @@ import java.util.List;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 
 public class GlobalConfigurationService {
 
@@ -63,7 +62,7 @@ public class GlobalConfigurationService {
         if (!"".equals(name)) {
             SonarInstance sonarInstance;
             var token = globalConfigData.optString("token");
-            if (StringUtils.isNotEmpty(token)) {
+            if (Util.fixEmpty(token) != null) {
                 sonarInstance = new SonarInstance(
                         name,
                         url,
